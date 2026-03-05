@@ -6,7 +6,8 @@
     {
       "Name": "Software 1",
       "SourcePath": "/mnt/tools/backupdir1",
-      "RemoteRepo": "ssh://user@host:port/path/to/repo1::{now:${Timestamp}}",
+      "RemoteRepo": "ssh://user@host:port/path/to/repo1",
+      "ArchiveName":"{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
       "Repo_Initialized": false,
       "active": true
@@ -14,7 +15,8 @@
     {
       "Name": "Software 2",
       "SourcePath": "/mnt/tools/backupdir2",
-      "RemoteRepo": "ssh://user@host:port/path/to/repo2::{now:${Timestamp}}",
+      "RemoteRepo": "ssh://user@host:port/path/to/repo2",
+      "ArchiveName":"{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
       "Repo_Initialized": false,
       "active": false
