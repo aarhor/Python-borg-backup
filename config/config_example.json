@@ -2,11 +2,7 @@
   "General": {
     "Timestamp": "%Y-%m-%d",
     "Logfolder": "/var/lib/log/pythonBorgBackup/",
-    "ARGS_create": "--dry-run",
-    "SSH": {
-      "Use PrivateKey": false,
-      "Key Path": ""
-    }
+    "ARGS_create": "--dry-run"
   },
   "backup": [
     {
