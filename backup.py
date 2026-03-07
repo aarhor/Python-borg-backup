@@ -5,9 +5,9 @@ import os
 with open("config/config.json", "r") as file:
     json_data = json.load(file)
 
-Logfolder = json_data["Logfolder"]
-Timestamp = json_data["Timestamp"]
-ARGS_create = json_data["ARGS_create"]
+Logfolder = json_data["General"]["Logfolder"]
+Timestamp = json_data["General"]["Timestamp"]
+ARGS_create = json_data["General"]["ARGS_create"]
 
 for x in json_data["backup"]:
     Name = x["Name"]
@@ -28,7 +28,7 @@ for x in json_data["backup"]:
                     "create",
                     f"{x["RemoteRepo"]}::{ArchiveName}",
                     SourcePath,
-                    "--progress"
+                    "--progress",
                 ],
                 capture_output=True,
             )
