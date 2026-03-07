@@ -14,12 +14,26 @@ for x in json_data["backup"]:
     active = x["active"]
     Initialized = x["Repo_Initialized"]
     RemoteRepo = x["RemoteRepo"]
+    ArchiveName = x["ArchiveName"].replace("$Timestamp", Timestamp)
+    SourcePath = x["SourcePath"]
 
     if active:
         os.environ["BORG_PASSPHRASE"] = x["EncryptionPwd"]
 
         if Initialized:
             print("The repo is initialized.")
+            proc = subprocess.run(
+                [
+                    "borg",
+                    "create",
+                    f"{x["RemoteRepo"]}::{ArchiveName}",
+                    SourcePath,
+                    "--progress"
+                ],
+                capture_output=True,
+            )
+
+            print(proc.stdout)
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(
