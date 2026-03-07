@@ -2,7 +2,9 @@ import json
 import subprocess
 import os
 
-with open("config/config.json", "r") as file:
+with open(
+    f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json", "r"
+) as file:
     json_data = json.load(file)
 
 Logfolder = json_data["General"]["Logfolder"]
@@ -22,7 +24,7 @@ for x in json_data["backup"]:
 
         if Initialized:
             print("The repo is initialized.")
-            proc = subprocess.run(
+            subprocess.run(
                 [
                     "borg",
                     "create",
@@ -30,10 +32,7 @@ for x in json_data["backup"]:
                     SourcePath,
                     "--progress",
                 ],
-                capture_output=True,
             )
-
-            print(proc.stdout)
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(
