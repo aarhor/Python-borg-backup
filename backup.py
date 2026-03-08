@@ -24,19 +24,30 @@ for x in json_data["backup"]:
 
         if Initialized:
             print("The repo is initialized.")
-            subprocess.run(
+            proc = subprocess.run(
                 [
                     "borg",
                     "create",
+                    "--stats",
+                    "--json",
                     f"{x["RemoteRepo"]}::{ArchiveName}",
                     SourcePath,
-                    "--progress",
-                ],
+                ]
             )
+            returncode = proc.returncode
+            returnmessage = proc.stderr
+
+            match returncode:
+                case 0:
+                    print("Backup was successful.")
+                case 1:
+                    print("Backup was successful, but there were some warnings.")
+                case 2:
+                    print("The Backup wasn't successful, there were a fatal error.")
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(
                 ["borg", "init", "--encryption=repokey", f"{x["RemoteRepo"]}"]
             )
     else:
-        print(f"{Name} is not active")
+        print(f"Backup '{Name}' is not active.")
