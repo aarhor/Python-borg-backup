@@ -24,5 +24,13 @@
       "active": false
     }
   ],
-  "SMTP": {}
+  "SMTP": {
+    "SendMailOnError": true,
+    "Login": "",
+    "Password": "",
+    "Sender": "",
+    "SMTP_Server": "",
+    "Port": 465,
+    "Recipent": "mail1@example.com"
+  }
 }
