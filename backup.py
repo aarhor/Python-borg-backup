@@ -30,24 +30,42 @@ for x in json_data["backup"]:
                     "borg",
                     "create",
                     "--json",
+                    "--list",
                     f"{x["RemoteRepo"]}::{ArchiveName}",
                     SourcePath,
                 ],
                 capture_output=True,
             )
             returncode = proc.returncode
-            returnmessage_Error = proc.stderr.decode()
-            returnmessage_Successful = proc.stdout.decode()
-
+            return_stderr = proc.stderr.decode()
+            return_stdout = proc.stdout.decode()
             match returncode:
                 case 0:
-                    print("Backup was successful.")
 
-                    if json_data["SMTP"]["SendMailWhenSuccessful"] == True:
+                    returnjson = json.loads(return_stdout)
+                    print("Backup was successful.")
+                    print(f"\tArchive Name:\t{returnjson["archive"]["name"]}")
+                    print(f"\tID:\t\t{returnjson["archive"]["id"]}")
+                    print(f"\tStart:\t\t{returnjson["archive"]["start"]}")
+                    print(f"\tEnd:\t\t{returnjson["archive"]["end"]}")
+                    print(f"\tDuration:\t{returnjson["archive"]["duration"]}")
+                    print(f"Files:\n{return_stderr}")
+
+                    if json_data["SMTP"]["SendMailWhenSuccessful"]:
+                        MailMessage = (
+                            f"Backup was successful.\n"
+                            f"\tArchive Name:\t{returnjson["archive"]["name"]}\n"
+                            f"\tID:\t\t{returnjson["archive"]["id"]}\n"
+                            f"\tStart:\t\t{returnjson["archive"]["start"]}\n"
+                            f"\tEnd:\t\t{returnjson["archive"]["end"]}\n"
+                            f"\tDuration:\t{returnjson["archive"]["duration"]}\n"
+                            f"Files:\n{return_stderr}"
+                        )
+
                         send_mail(
                             json_data["SMTP"],
                             Name,
-                            returnmessage_Successful,
+                            MailMessage,
                             "Successful",
                         )
                 case 1:
@@ -55,8 +73,8 @@ for x in json_data["backup"]:
                 case 2:
                     print("The Backup wasn't successful, there were a fatal error.")
 
-                    if json_data["SMTP"]["SendMailOnError"] == True:
-                        send_mail(json_data["SMTP"], Name, returnmessage_Error, "Error")
+                    if json_data["SMTP"]["SendMailOnError"]:
+                        send_mail(json_data["SMTP"], Name, return_stderr, "Error")
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(
