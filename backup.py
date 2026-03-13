@@ -29,7 +29,6 @@ for x in json_data["backup"]:
                 [
                     "borg",
                     "create",
-                    "--stats",
                     "--json",
                     f"{x["RemoteRepo"]}::{ArchiveName}",
                     SourcePath,
@@ -37,18 +36,27 @@ for x in json_data["backup"]:
                 capture_output=True,
             )
             returncode = proc.returncode
-            returnmessage = proc.stderr.decode()
-
-            print(returnmessage)
+            returnmessage_Error = proc.stderr.decode()
+            returnmessage_Successful = proc.stdout.decode()
 
             match returncode:
                 case 0:
                     print("Backup was successful.")
+
+                    if json_data["SMTP"]["SendMailWhenSuccessful"] == True:
+                        send_mail(
+                            json_data["SMTP"],
+                            Name,
+                            returnmessage_Successful,
+                            "Successful",
+                        )
                 case 1:
                     print("Backup was successful, but there were some warnings.")
                 case 2:
                     print("The Backup wasn't successful, there were a fatal error.")
-                    send_error_mail(json_data["SMTP"], Name, returnmessage)
+
+                    if json_data["SMTP"]["SendMailOnError"] == True:
+                        send_mail(json_data["SMTP"], Name, returnmessage_Error, "Error")
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(

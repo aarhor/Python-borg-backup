@@ -26,6 +26,7 @@
   ],
   "SMTP": {
     "SendMailOnError": true,
+    "SendMailWhenSuccessful": false,
     "Login": "",
     "Password": "",
     "Sender": "",

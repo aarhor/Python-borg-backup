@@ -2,7 +2,7 @@ import smtplib
 from email.message import EmailMessage
 
 
-def send_error_mail(smtpsettings, current_backup, message):
+def send_mail(smtpsettings, current_backup, message, status):
     LOGINUSER = smtpsettings["Login"]
     SENDER = smtpsettings["Sender"]
     SMTP_SERVER = smtpsettings["SMTP_Server"]
@@ -12,7 +12,7 @@ def send_error_mail(smtpsettings, current_backup, message):
 
     msg = EmailMessage()
     msg.set_content(message)
-    msg["Subject"] = f"Error - Borgbackup for Backup '{current_backup}'"
+    msg["Subject"] = f"{status} - Borgbackup for Backup '{current_backup}'"
     msg["From"] = SENDER
     msg["To"] = RECIPIENT
 
