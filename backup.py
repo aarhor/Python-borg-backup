@@ -33,10 +33,13 @@ for x in json_data["backup"]:
                     "--json",
                     f"{x["RemoteRepo"]}::{ArchiveName}",
                     SourcePath,
-                ]
+                ],
+                capture_output=True,
             )
             returncode = proc.returncode
-            returnmessage = proc.stderr
+            returnmessage = proc.stderr.decode()
+
+            print(returnmessage)
 
             match returncode:
                 case 0:
@@ -45,7 +48,7 @@ for x in json_data["backup"]:
                     print("Backup was successful, but there were some warnings.")
                 case 2:
                     print("The Backup wasn't successful, there were a fatal error.")
-                    send_error_mail(json_data["SMTP"], Name)
+                    send_error_mail(json_data["SMTP"], Name, returnmessage)
         else:
             print("The repo isn't currently initialized.")
             subprocess.run(

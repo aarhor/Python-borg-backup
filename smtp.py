@@ -2,17 +2,16 @@ import smtplib
 from email.message import EmailMessage
 
 
-def send_error_mail(smtpsettings, current_backup):
+def send_error_mail(smtpsettings, current_backup, message):
     LOGINUSER = smtpsettings["Login"]
     SENDER = smtpsettings["Sender"]
     SMTP_SERVER = smtpsettings["SMTP_Server"]
     SMTP_PORT = smtpsettings["Port"]
     PASSWORD = smtpsettings["Password"]
     RECIPIENT = smtpsettings["Recipent"]
-    MESSAGE_TEXT = "There were an error with the backup. Please see the logs for more informations."
 
     msg = EmailMessage()
-    msg.set_content(MESSAGE_TEXT)
+    msg.set_content(message)
     msg["Subject"] = f"Error - Borgbackup for Backup '{current_backup}'"
     msg["From"] = SENDER
     msg["To"] = RECIPIENT
