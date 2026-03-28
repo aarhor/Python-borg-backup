@@ -45,10 +45,10 @@ for x in json_data["backup"]:
                     returnjson = json.loads(return_stdout)
                     FileArray = return_stderr.split('\n')
                     LOG_INFO("Backup was successful.", Logging_Folder_Filename)
-                    LOG_INFO(f"- Name:\t{returnjson["archive"]["name"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"- ID:\t{returnjson["archive"]["id"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"- Start:\t{returnjson["archive"]["start"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"- End:\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"-     Name:\t{returnjson["archive"]["name"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"-       ID:\t{returnjson["archive"]["id"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"-    Start:\t{returnjson["archive"]["start"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"-      End:\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
                     LOG_INFO(f"- Duration:\t{returnjson["archive"]["duration"]}", Logging_Folder_Filename)
                     LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
                     
@@ -61,10 +61,10 @@ for x in json_data["backup"]:
                     if json_data["SMTP"]["SendMailWhenSuccessful"]:
                         MailMessage = (
                             f"Backup was successful.\n"
-                            f"- Name:\t{returnjson["archive"]["name"]}\n"
-                            f"- ID:\t{returnjson["archive"]["id"]}\n"
-                            f"- Start:\t{returnjson["archive"]["start"]}\n"
-                            f"- End:\t{returnjson["archive"]["end"]}\n"
+                            f"-     Name:\t{returnjson["archive"]["name"]}\n"
+                            f"-       ID:\t{returnjson["archive"]["id"]}\n"
+                            f"-    Start:\t{returnjson["archive"]["start"]}\n"
+                            f"-      End:\t{returnjson["archive"]["end"]}\n"
                             f"- Duration:\t{returnjson["archive"]["duration"]}\n"
                             f"Affected Files:\n"
                         )
