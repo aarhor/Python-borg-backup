@@ -2,6 +2,7 @@ import json
 import subprocess
 import os
 from smtp import *
+from Logging import *
 
 with open(
     f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json", "r"
@@ -18,12 +19,13 @@ for x in json_data["backup"]:
     RemoteRepo = x["RemoteRepo"].replace("{$Name}", Name)
     ArchiveName = x["ArchiveName"].replace("$Timestamp", Timestamp)
     SourcePath = x["SourcePath"]
+    Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
     if active:
         os.environ["BORG_PASSPHRASE"] = x["EncryptionPwd"]
 
         if Initialized:
-            print("The repo is initialized.")
+            LOG_INFO("The repo is initialized.", Logging_Folder_Filename)
             proc = subprocess.run(
                 [
                     "borg",
@@ -40,43 +42,55 @@ for x in json_data["backup"]:
             return_stdout = proc.stdout.decode()
             match returncode:
                 case 0:
-
                     returnjson = json.loads(return_stdout)
-                    print("Backup was successful.")
-                    print(f"\tArchive Name:\t{returnjson["archive"]["name"]}")
-                    print(f"\tID:\t\t{returnjson["archive"]["id"]}")
-                    print(f"\tStart:\t\t{returnjson["archive"]["start"]}")
-                    print(f"\tEnd:\t\t{returnjson["archive"]["end"]}")
-                    print(f"\tDuration:\t{returnjson["archive"]["duration"]}")
-                    print(f"Files:\n{return_stderr}")
+                    FileArray = return_stderr.split('\n')
+                    LOG_INFO("Backup was successful.", Logging_Folder_Filename)
+                    LOG_INFO(f"- Archive Name:\t{returnjson["archive"]["name"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- ID:\t\t{returnjson["archive"]["id"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- Start:\t{returnjson["archive"]["start"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- End:\t\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- Duration:\t{returnjson["archive"]["duration"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"Files:", Logging_Folder_Filename)
+                    
+                    for x in FileArray:
+                        if x == "":
+                            break
+                        
+                        LOG_INFO(f"- {x}", Logging_Folder_Filename)
 
                     if json_data["SMTP"]["SendMailWhenSuccessful"]:
                         MailMessage = (
                             f"Backup was successful.\n"
-                            f"\tArchive Name:\t{returnjson["archive"]["name"]}\n"
-                            f"\tID:\t\t{returnjson["archive"]["id"]}\n"
-                            f"\tStart:\t\t{returnjson["archive"]["start"]}\n"
-                            f"\tEnd:\t\t{returnjson["archive"]["end"]}\n"
-                            f"\tDuration:\t{returnjson["archive"]["duration"]}\n"
-                            f"Files:\n{return_stderr}"
+                            f"- Archive Name:\t{returnjson["archive"]["name"]}\n"
+                            f"- ID:\t\t{returnjson["archive"]["id"]}\n"
+                            f"- Start:\t{returnjson["archive"]["start"]}\n"
+                            f"- End:\t\t{returnjson["archive"]["end"]}\n"
+                            f"- Duration:\t{returnjson["archive"]["duration"]}\n"
+                            f"Files:\n"
                         )
+                        
+                        for x in FileArray:
+                            if x == "":
+                                break
+                            
+                            MailMessage+=f"- {x}\n"
 
                         send_mail(
                             json_data["SMTP"],
                             Name,
                             MailMessage,
                             "Successful",
-                        )
+                        )                        
                 case 1:
-                    print("Backup was successful, but there were some warnings.")
+                    LOG_WARNING("Backup was successful, but there were some warnings.", Logging_Folder_Filename)
                 case 2:
-                    print("The Backup wasn't successful, there were a fatal error.")
+                    LOG_ERROR("The Backup wasn't successful, there were a fatal error.", Logging_Folder_Filename)
+                    LOG_ERROR(f"\t{return_stderr}", Logging_Folder_Filename)
 
                     if json_data["SMTP"]["SendMailOnError"]:
                         send_mail(json_data["SMTP"], Name, return_stderr, "Error")
         else:
-            print("The repo isn't currently initialized.")
-            print("---------------------------------")
+            LOG_INFO("The repo isn't currently initialized.", Logging_Folder_Filename)
             proc = subprocess.run(
                 [
                     "borg",
@@ -88,11 +102,14 @@ for x in json_data["backup"]:
                 capture_output=True,
             )
             output_init = proc.stderr.decode()
-
-            print(output_init)
-            print("---------------------------------")
-            print(
-                "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'."
-            )
+            
+            InitArray = output_init.split('\n')
+            LOG_INFO("--------------------------------", Logging_Folder_Filename)
+            
+            for x in InitArray:
+                LOG_INFO(x, Logging_Folder_Filename)
+                
+            LOG_INFO("--------------------------------", Logging_Folder_Filename)
+            LOG_INFO("The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.", Logging_Folder_Filename)
     else:
-        print(f"Backup '{Name}' is not active.")
+        LOG_WARNING(f"Backup '{Name}' is not active.", Logging_Folder_Filename)
