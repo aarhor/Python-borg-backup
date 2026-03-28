@@ -1,8 +1,7 @@
 {
   "General": {
     "Timestamp": "%Y-%m-%d",
-    "Logfolder": "/var/lib/log/pythonBorgBackup/",
-    "ARGS_create": "--dry-run"
+    "Logfolder": "/var/lib/log/pythonBorgBackup/"
   },
   "backup": [
     {

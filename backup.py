@@ -10,7 +10,6 @@ with open(
 
 Logfolder = json_data["General"]["Logfolder"]
 Timestamp = json_data["General"]["Timestamp"]
-ARGS_create = json_data["General"]["ARGS_create"]
 
 for x in json_data["backup"]:
     Name = x["Name"]
