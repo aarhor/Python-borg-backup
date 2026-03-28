@@ -45,12 +45,12 @@ for x in json_data["backup"]:
                     returnjson = json.loads(return_stdout)
                     FileArray = return_stderr.split('\n')
                     LOG_INFO("Backup was successful.", Logging_Folder_Filename)
-                    LOG_INFO(f"- Archive Name:\t{returnjson["archive"]["name"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"- ID:\t\t{returnjson["archive"]["id"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- Name:\t{returnjson["archive"]["name"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- ID:\t{returnjson["archive"]["id"]}", Logging_Folder_Filename)
                     LOG_INFO(f"- Start:\t{returnjson["archive"]["start"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"- End:\t\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
+                    LOG_INFO(f"- End:\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
                     LOG_INFO(f"- Duration:\t{returnjson["archive"]["duration"]}", Logging_Folder_Filename)
-                    LOG_INFO(f"Files:", Logging_Folder_Filename)
+                    LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
                     
                     for x in FileArray:
                         if x == "":
@@ -61,19 +61,19 @@ for x in json_data["backup"]:
                     if json_data["SMTP"]["SendMailWhenSuccessful"]:
                         MailMessage = (
                             f"Backup was successful.\n"
-                            f"- Archive Name:\t{returnjson["archive"]["name"]}\n"
-                            f"- ID:\t\t{returnjson["archive"]["id"]}\n"
+                            f"- Name:\t{returnjson["archive"]["name"]}\n"
+                            f"- ID:\t{returnjson["archive"]["id"]}\n"
                             f"- Start:\t{returnjson["archive"]["start"]}\n"
-                            f"- End:\t\t{returnjson["archive"]["end"]}\n"
+                            f"- End:\t{returnjson["archive"]["end"]}\n"
                             f"- Duration:\t{returnjson["archive"]["duration"]}\n"
-                            f"Files:\n"
+                            f"Affected Files:\n"
                         )
                         
                         for x in FileArray:
                             if x == "":
                                 break
                             
-                            MailMessage+=f"- {x}\n"
+                            MailMessage += f"- {x}\n"
 
                         send_mail(
                             json_data["SMTP"],
