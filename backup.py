@@ -77,9 +77,15 @@ for x in json_data["backup"]:
                         send_mail(json_data["SMTP"], Name, return_stderr, "Error")
         else:
             print("The repo isn't currently initialized.")
-            subprocess.run(
-                ["borg", "init", "--encryption=repokey", f"{x["RemoteRepo"]}"]
+            print("---------------------------------")
+            proc = subprocess.run(
+                ["borg", "init", "--encryption=repokey", f"{x["RemoteRepo"]}"],
+                capture_output=True,
             )
+            output_init = proc.stderr.decode()
+
+            print(output_init)
+            print("---------------------------------")
             print(
                 "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'."
             )
