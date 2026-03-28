@@ -8,7 +8,7 @@ def Write_Log(STATUS, MESSAGE, LogFile):
 
     date_Log = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
     date_Log = date_Log[:-3]
-    logMessage = f"{date_Log}\t{STATUS}\t{MESSAGE}"
+    logMessage = f"{date_Log}\t{STATUS} |\t{MESSAGE}"
 
     with open(LogFile, "a+") as f:
         f.write(f"{logMessage}\n")
