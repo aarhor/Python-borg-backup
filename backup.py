@@ -15,7 +15,7 @@ for x in json_data["backup"]:
     Name = x["Name"]
     active = x["active"]
     Initialized = x["Repo_Initialized"]
-    RemoteRepo = x["RemoteRepo"]
+    RemoteRepo = x["RemoteRepo"].replace("{$Name}", Name)
     ArchiveName = x["ArchiveName"].replace("$Timestamp", Timestamp)
     SourcePath = x["SourcePath"]
 
@@ -30,7 +30,7 @@ for x in json_data["backup"]:
                     "create",
                     "--json",
                     "--list",
-                    f"{x["RemoteRepo"]}::{ArchiveName}",
+                    f"{RemoteRepo}::{ArchiveName}",
                     SourcePath,
                 ],
                 capture_output=True,
@@ -83,7 +83,7 @@ for x in json_data["backup"]:
                     "init",
                     "--make-parent-dirs",
                     "--encryption=repokey",
-                    f"{x["RemoteRepo"]}",
+                    f"{RemoteRepo}",
                 ],
                 capture_output=True,
             )
