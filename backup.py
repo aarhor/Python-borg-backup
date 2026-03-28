@@ -79,7 +79,13 @@ for x in json_data["backup"]:
             print("The repo isn't currently initialized.")
             print("---------------------------------")
             proc = subprocess.run(
-                ["borg", "init", "--encryption=repokey", f"{x["RemoteRepo"]}"],
+                [
+                    "borg",
+                    "init",
+                    "--make-parent-dirs",
+                    "--encryption=repokey",
+                    f"{x["RemoteRepo"]}",
+                ],
                 capture_output=True,
             )
             output_init = proc.stderr.decode()
