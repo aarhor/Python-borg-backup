@@ -51,7 +51,10 @@ for x in json_data["backup"]:
                     LOG_INFO(f"-      End:\t{returnjson["archive"]["end"]}", Logging_Folder_Filename)
                     LOG_INFO(f"- Duration:\t{returnjson["archive"]["duration"]}", Logging_Folder_Filename)
                     LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
-                    
+                    LOG_INFO(
+                        "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --"
+                    )
+
                     for x in FileArray:
                         if x == "":
                             break
@@ -67,6 +70,7 @@ for x in json_data["backup"]:
                             f"-      End:\t{returnjson["archive"]["end"]}\n"
                             f"- Duration:\t{returnjson["archive"]["duration"]}\n"
                             f"Affected Files:\n"
+                            "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --"
                         )
                         
                         for x in FileArray:
