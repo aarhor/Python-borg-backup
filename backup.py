@@ -75,7 +75,8 @@ for x in json_data["backup"]:
                     )
                     LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
                     LOG_INFO(
-                        "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --"
+                        "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
+                        Logging_Folder_Filename,
                     )
 
                     for x in FileArray:
