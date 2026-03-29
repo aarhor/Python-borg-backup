@@ -1,12 +1,18 @@
 import json
 import subprocess
 import os
+import sys
 from smtp import *
 from Logging import *
 
-with open(
-    f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json", "r"
-) as file:
+Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
+
+i = 0
+for arg in sys.argv:
+    if arg.startswith("--config_file="):
+        Path_config = f"{sys.argv[i].replace("--config_file=", "")}"
+    i = i + 1
+with open(Path_config, "r") as file:
     json_data = json.load(file)
 
 Logfolder = json_data["General"]["Logfolder"]
@@ -87,7 +93,7 @@ for x in json_data["backup"]:
                             f"-      End:\t{returnjson["archive"]["end"]}\n"
                             f"- Duration:\t{returnjson["archive"]["duration"]}\n"
                             f"Affected Files:\n"
-                            "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --"
+                            "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags "
                         )
 
                         for x in FileArray:
