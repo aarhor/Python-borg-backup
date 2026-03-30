@@ -24,8 +24,11 @@
     }
   ],
   "SMTP": {
-    "SendMailOnError": true,
-    "SendMailWhenSuccessful": false,
+    "SendMailOn": {
+      "Success": false,
+      "Warning": false,
+      "Error": true
+    },
     "Login": "",
     "Password": "",
     "Sender": "",
