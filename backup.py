@@ -19,6 +19,10 @@ Logfolder = json_data["General"]["Logfolder"]
 Timestamp = json_data["General"]["Timestamp"]
 
 for x in json_data["backup"]:
+    Mail_succ = False
+    Mail_warn = False
+    Mail_err = False
+
     try:
         Name = x["Name"]
         active = x["active"]
@@ -51,6 +55,8 @@ for x in json_data["backup"]:
                     case 0:
                         returnjson = json.loads(return_stdout)
                         FileArray = return_stderr.split("\n")
+                        Mail_succ = True
+
                         LOG_INFO("Backup was successful.", Logging_Folder_Filename)
                         LOG_INFO(
                             f"-     Name:\t{returnjson["archive"]["name"]}",
@@ -80,48 +86,26 @@ for x in json_data["backup"]:
 
                         for x in FileArray:
                             if x == "":
-                                break
+                                continue
 
                             LOG_INFO(f"- {x}", Logging_Folder_Filename)
-
-                        if json_data["SMTP"]["SendMailWhenSuccessful"]:
-                            MailMessage = (
-                                f"Backup was successful.\n"
-                                f"-     Name:\t{returnjson["archive"]["name"]}\n"
-                                f"-       ID:\t{returnjson["archive"]["id"]}\n"
-                                f"-    Start:\t{returnjson["archive"]["start"]}\n"
-                                f"-      End:\t{returnjson["archive"]["end"]}\n"
-                                f"- Duration:\t{returnjson["archive"]["duration"]}\n"
-                                f"Affected Files:\n"
-                                "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags "
-                            )
-
-                            for x in FileArray:
-                                if x == "":
-                                    break
-
-                                MailMessage += f"- {x}\n"
-
-                            send_mail(
-                                json_data["SMTP"],
-                                Name,
-                                MailMessage,
-                                "Successful",
-                            )
                     case 1:
+                        Mail_warn = True
+                        MailMessage = (
+                            "Backup was successful, but there were some warnings."
+                        )
                         LOG_WARNING(
-                            "Backup was successful, but there were some warnings.",
+                            MailMessage,
                             Logging_Folder_Filename,
                         )
                     case 2:
+                        Mail_err = True
+                        MailMessage = f"The Backup wasn't successful, there were a fatal error.\n\t{return_stderr}"
                         LOG_ERROR(
                             "The Backup wasn't successful, there were a fatal error.",
                             Logging_Folder_Filename,
                         )
                         LOG_ERROR(f"\t{return_stderr}", Logging_Folder_Filename)
-
-                        if json_data["SMTP"]["SendMailOnError"]:
-                            send_mail(json_data["SMTP"], Name, return_stderr, "Error")
             elif Initialized == False:
                 LOG_INFO(
                     "The repo isn't currently initialized.", Logging_Folder_Filename
@@ -150,9 +134,57 @@ for x in json_data["backup"]:
                     Logging_Folder_Filename,
                 )
         else:
-            LOG_WARNING(f"Backup '{Name}' is not active.", Logging_Folder_Filename)
+            Mail_warn = True
+            MailMessage = f"Backup '{Name}' is not active."
+            LOG_WARNING(MailMessage, Logging_Folder_Filename)
     except Exception as e:
+        Mail_err = True
+        MailMessage = (
+            f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}"
+        )
         LOG_ERROR(
-            f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}",
+            MailMessage,
             Logging_Folder_Filename,
         )
+    finally:
+        if Mail_succ:
+            if json_data["SMTP"]["SendMailOn"]["Success"]:
+                MailMessage = (
+                    f"Backup was successful.\n"
+                    f"-     Name:\t{returnjson["archive"]["name"]}\n"
+                    f"-       ID:\t{returnjson["archive"]["id"]}\n"
+                    f"-    Start:\t{returnjson["archive"]["start"]}\n"
+                    f"-      End:\t{returnjson["archive"]["end"]}\n"
+                    f"- Duration:\t{returnjson["archive"]["duration"]}\n"
+                    f"Affected Files:\n"
+                    "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags\n"
+                )
+
+                for x in FileArray:
+                    if x == "":
+                        continue
+
+                    MailMessage += f"- {x}\n"
+
+                send_mail(
+                    json_data["SMTP"],
+                    Name,
+                    MailMessage,
+                    "Successful",
+                )
+        elif Mail_warn:
+            if json_data["SMTP"]["SendMailOn"]["Warning"]:
+                send_mail(
+                    json_data["SMTP"],
+                    Name,
+                    MailMessage,
+                    "Warning",
+                )
+        elif Mail_err:
+            if json_data["SMTP"]["SendMailOn"]["Error"]:
+                send_mail(
+                    json_data["SMTP"],
+                    Name,
+                    MailMessage,
+                    "Error",
+                )
