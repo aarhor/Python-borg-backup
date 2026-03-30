@@ -2,6 +2,7 @@ import json
 import subprocess
 import os
 import sys
+import datetime
 from smtp import *
 from Logging import *
 
@@ -45,7 +46,7 @@ for x in json_data["backup"]:
                         "create",
                         "--json",
                         "--list",
-                        f"{RemoteRepo}::{ArchiveName}",
+                        f"{RemoteRepo}::{ArchiveName}_245asdf",
                         SourcePath,
                     ],
                     capture_output=True,
@@ -61,23 +62,27 @@ for x in json_data["backup"]:
 
                         LOG_INFO("Backup was successful.", Logging_Folder_Filename)
                         LOG_INFO(
-                            f"-     Name:\t{returnjson["archive"]["name"]}",
+                            f"-        Name:\t{returnjson["archive"]["name"]}",
                             Logging_Folder_Filename,
                         )
                         LOG_INFO(
-                            f"-       ID:\t{returnjson["archive"]["id"]}",
+                            f"- Remote Repo:\t{returnjson["repository"]["location"]}",
                             Logging_Folder_Filename,
                         )
                         LOG_INFO(
-                            f"-    Start:\t{returnjson["archive"]["start"]}",
+                            f"-          ID:\t{returnjson["archive"]["id"]}",
                             Logging_Folder_Filename,
                         )
                         LOG_INFO(
-                            f"-      End:\t{returnjson["archive"]["end"]}",
+                            f"-       Start:\t{returnjson["archive"]["start"]}",
                             Logging_Folder_Filename,
                         )
                         LOG_INFO(
-                            f"- Duration:\t{returnjson["archive"]["duration"]}",
+                            f"-         End:\t{returnjson["archive"]["end"]}",
+                            Logging_Folder_Filename,
+                        )
+                        LOG_INFO(
+                            f"-    Duration:\t{returnjson["archive"]["duration"]}",
                             Logging_Folder_Filename,
                         )
                         LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
@@ -156,11 +161,12 @@ for x in json_data["backup"]:
             if json_data["SMTP"]["SendMailOn"]["Success"]:
                 MailMessage = (
                     f"Backup was successful.\n"
-                    f"-     Name:\t{returnjson["archive"]["name"]}\n"
-                    f"-       ID:\t{returnjson["archive"]["id"]}\n"
-                    f"-    Start:\t{returnjson["archive"]["start"]}\n"
-                    f"-      End:\t{returnjson["archive"]["end"]}\n"
-                    f"- Duration:\t{returnjson["archive"]["duration"]}\n"
+                    f"-        Name:\t{returnjson["archive"]["name"]}\n"
+                    f"- Remote Repo:\t{returnjson["repository"]["location"]}\n"
+                    f"-          ID:\t{returnjson["archive"]["id"]}\n"
+                    f"-       Start:\t{returnjson["archive"]["start"]}\n"
+                    f"-         End:\t{returnjson["archive"]["end"]}\n"
+                    f"-    Duration:\t{returnjson["archive"]["duration"]}\n"
                     f"Affected Files:\n"
                     "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags\n"
                 )
