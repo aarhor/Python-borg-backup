@@ -32,6 +32,8 @@ for x in json_data["backup"]:
         SourcePath = x["SourcePath"]
         Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
+        LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename)
+
         if active:
             os.environ["BORG_PASSPHRASE"] = x["EncryptionPwd"]
 
@@ -147,6 +149,9 @@ for x in json_data["backup"]:
             Logging_Folder_Filename,
         )
     finally:
+        LOG_INFO(f"Backup '{Name}' done.", Logging_Folder_Filename)
+        LOG_INFO("--------------------------------", Logging_Folder_Filename)
+
         if Mail_succ:
             if json_data["SMTP"]["SendMailOn"]["Success"]:
                 MailMessage = (
