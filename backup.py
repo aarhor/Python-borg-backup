@@ -40,6 +40,10 @@ for x in json_data["backup"]:
 
             if Initialized:
                 LOG_INFO("The repo is initialized.", Logging_Folder_Filename)
+                LOG_DEBUG(
+                    f'borg command: borg create --json --list "{RemoteRepo}::{ArchiveName}" {SourcePath}',
+                    Logging_Folder_Filename,
+                )
                 proc = subprocess.run(
                     [
                         "borg",
@@ -116,6 +120,10 @@ for x in json_data["backup"]:
             elif Initialized == False:
                 LOG_INFO(
                     "The repo isn't currently initialized.", Logging_Folder_Filename
+                )
+                LOG_DEBUG(
+                    f'borg command: borg init --make-parent-dirs --encryption=repokey "{RemoteRepo}"',
+                    Logging_Folder_Filename,
                 )
                 proc = subprocess.run(
                     [
