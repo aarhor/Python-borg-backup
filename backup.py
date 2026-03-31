@@ -46,7 +46,7 @@ for x in json_data["backup"]:
                         "create",
                         "--json",
                         "--list",
-                        f"{RemoteRepo}::{ArchiveName}_245asdf",
+                        f"{RemoteRepo}::{ArchiveName}",
                         SourcePath,
                     ],
                     capture_output=True,
