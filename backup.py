@@ -133,7 +133,12 @@ for x in json_data["backup"]:
                 LOG_INFO("--------------------------------", Logging_Folder_Filename)
 
                 for x in InitArray:
-                    LOG_INFO(x, Logging_Folder_Filename)
+                    LOG_INFO(
+                        x.replace(
+                            " REPOSITORY encrypted", f' "{RemoteRepo}" encrypted'
+                        ),
+                        Logging_Folder_Filename,
+                    )
 
                 LOG_INFO("--------------------------------", Logging_Folder_Filename)
                 LOG_INFO(
