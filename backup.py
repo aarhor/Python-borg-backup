@@ -195,7 +195,6 @@ for x in json_data["backup"]:
         )
 
         if Mail_succ:
-            MailMessage = MailMessage.replace("\n\n", "\n")
 
             if json_data["SMTP"]["SendMailOn"]["Success"]:
                 MailMessage = (
@@ -215,6 +214,8 @@ for x in json_data["backup"]:
                         continue
 
                     MailMessage += f"- {x}\n"
+
+                MailMessage = MailMessage.replace("\n\n", "\n")
 
                 send_mail(
                     json_data["SMTP"],
