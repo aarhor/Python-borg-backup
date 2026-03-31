@@ -161,6 +161,8 @@ for x in json_data["backup"]:
         )
 
         if Mail_succ:
+            MailMessage = MailMessage.replace("\n\n", "\n")
+
             if json_data["SMTP"]["SendMailOn"]["Success"]:
                 MailMessage = (
                     f"Backup was successful.\n"
@@ -187,6 +189,8 @@ for x in json_data["backup"]:
                     "Successful",
                 )
         elif Mail_warn:
+            MailMessage = MailMessage.replace("\n\n", "\n")
+
             if json_data["SMTP"]["SendMailOn"]["Warning"]:
                 send_mail(
                     json_data["SMTP"],
@@ -195,6 +199,8 @@ for x in json_data["backup"]:
                     "Warning",
                 )
         elif Mail_err:
+            MailMessage = MailMessage.replace("\n\n", "\n")
+
             if json_data["SMTP"]["SendMailOn"]["Error"]:
                 send_mail(
                     json_data["SMTP"],
