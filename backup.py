@@ -18,6 +18,7 @@ with open(Path_config, "r") as file:
 
 Logfolder = json_data["General"]["Logfolder"]
 Timestamp = json_data["General"]["Timestamp"]
+LogLevel = json_data["General"]["LogLevel"]
 
 for x in json_data["backup"]:
     Mail_succ = False
@@ -33,16 +34,17 @@ for x in json_data["backup"]:
         SourcePath = x["SourcePath"]
         Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
-        LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename)
+        LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename, LogLevel)
 
         if active:
             os.environ["BORG_PASSPHRASE"] = x["EncryptionPwd"]
 
             if Initialized:
-                LOG_INFO("The repo is initialized.", Logging_Folder_Filename)
+                LOG_INFO("The repo is initialized.", Logging_Folder_Filename, LogLevel)
                 LOG_DEBUG(
                     f'borg command: borg create --json --list "{RemoteRepo}::{ArchiveName}" {SourcePath}',
                     Logging_Folder_Filename,
+                    LogLevel,
                 )
                 proc = subprocess.run(
                     [
@@ -64,66 +66,78 @@ for x in json_data["backup"]:
                         FileArray = return_stderr.split("\n")
                         Mail_succ = True
 
-                        LOG_INFO("Backup was successful.", Logging_Folder_Filename)
+                        LOG_INFO(
+                            "Backup was successful.", Logging_Folder_Filename, LogLevel
+                        )
                         LOG_INFO(
                             f"-        Name:\t{returnjson["archive"]["name"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
                         LOG_INFO(
                             f"- Remote Repo:\t{returnjson["repository"]["location"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
                         LOG_INFO(
                             f"-          ID:\t{returnjson["archive"]["id"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
                         LOG_INFO(
                             f"-       Start:\t{returnjson["archive"]["start"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
                         LOG_INFO(
                             f"-         End:\t{returnjson["archive"]["end"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
                         LOG_INFO(
                             f"-    Duration:\t{returnjson["archive"]["duration"]}",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
-                        LOG_INFO(f"Affected Files:", Logging_Folder_Filename)
+                        LOG_INFO(f"Affected Files:", Logging_Folder_Filename, LogLevel)
                         LOG_INFO(
                             "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
 
                         for x in FileArray:
                             if x == "":
                                 continue
 
-                            LOG_INFO(f"- {x}", Logging_Folder_Filename)
+                            LOG_INFO(f"- {x}", Logging_Folder_Filename, LogLevel)
                     case 1:
                         Mail_warn = True
                         MailMessage = (
                             "Backup was successful, but there were some warnings."
                         )
-                        LOG_WARNING(
-                            MailMessage,
-                            Logging_Folder_Filename,
-                        )
+                        LOG_WARNING(MailMessage, Logging_Folder_Filename, LogLevel)
                     case 2:
                         Mail_err = True
                         MailMessage = f"The Backup wasn't successful, there were a fatal error.\n\t{return_stderr}"
                         LOG_ERROR(
                             "The Backup wasn't successful, there were a fatal error.",
                             Logging_Folder_Filename,
+                            LogLevel,
                         )
-                        LOG_ERROR(f"\t{return_stderr}", Logging_Folder_Filename)
+                        LOG_ERROR(
+                            f"\t{return_stderr}", Logging_Folder_Filename, LogLevel
+                        )
             elif Initialized == False:
                 LOG_INFO(
-                    "The repo isn't currently initialized.", Logging_Folder_Filename
+                    "The repo isn't currently initialized.",
+                    Logging_Folder_Filename,
+                    LogLevel,
                 )
                 LOG_DEBUG(
                     f'borg command: borg init --make-parent-dirs --encryption=repokey "{RemoteRepo}"',
                     Logging_Folder_Filename,
+                    LogLevel,
                 )
                 proc = subprocess.run(
                     [
@@ -138,7 +152,11 @@ for x in json_data["backup"]:
                 output_init = proc.stderr.decode()
 
                 InitArray = output_init.split("\n")
-                LOG_INFO("--------------------------------", Logging_Folder_Filename)
+                LOG_INFO(
+                    "--------------------------------",
+                    Logging_Folder_Filename,
+                    LogLevel,
+                )
 
                 for x in InitArray:
                     LOG_INFO(
@@ -146,29 +164,32 @@ for x in json_data["backup"]:
                             " REPOSITORY encrypted", f' "{RemoteRepo}" encrypted'
                         ),
                         Logging_Folder_Filename,
+                        LogLevel,
                     )
 
-                LOG_INFO("--------------------------------", Logging_Folder_Filename)
+                LOG_INFO(
+                    "--------------------------------",
+                    Logging_Folder_Filename,
+                    LogLevel,
+                )
                 LOG_INFO(
                     "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.",
                     Logging_Folder_Filename,
+                    LogLevel,
                 )
         else:
             Mail_warn = True
             MailMessage = f"Backup '{Name}' is not active."
-            LOG_WARNING(MailMessage, Logging_Folder_Filename)
+            LOG_WARNING(MailMessage, Logging_Folder_Filename, LogLevel)
     except Exception as e:
         Mail_err = True
         MailMessage = (
             f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}"
         )
-        LOG_ERROR(
-            MailMessage,
-            Logging_Folder_Filename,
-        )
+        LOG_ERROR(MailMessage, Logging_Folder_Filename, LogLevel)
     finally:
-        LOG_INFO(f"Backup '{Name}' done.", Logging_Folder_Filename)
-        LOG_INFO("--------------------------------", Logging_Folder_Filename)
+        LOG_INFO(f"Backup '{Name}' done.", Logging_Folder_Filename, LogLevel)
+        LOG_INFO("--------------------------------", Logging_Folder_Filename, LogLevel)
         os.environ["BORG_PASSPHRASE"] = (
             "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
         )

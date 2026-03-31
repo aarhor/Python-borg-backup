@@ -1,7 +1,8 @@
 {
   "General": {
     "Timestamp": "%Y-%m-%d",
-    "Logfolder": "/var/lib/log/pythonBorgBackup/"
+    "Logfolder": "/var/lib/log/pythonBorgBackup/",
+    "LogLevel": "WARNING"
   },
   "backup": [
     {

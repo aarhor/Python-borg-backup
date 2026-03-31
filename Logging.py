@@ -1,5 +1,13 @@
 import datetime
 import os
+from enum import Enum
+
+
+class enum_LogLevel(Enum):
+    debug = 0
+    info = 1
+    warning = 2
+    error = 3
 
 
 def Write_Log(STATUS, MESSAGE, LogFile):
@@ -16,17 +24,21 @@ def Write_Log(STATUS, MESSAGE, LogFile):
     print(logMessage)
 
 
-def LOG_DEBUG(MESSAGE, LogFile):
-    Write_Log("DEBUG", MESSAGE, LogFile)
+def LOG_DEBUG(MESSAGE, LogFile, LogLevel):
+    if enum_LogLevel.debug.value >= enum_LogLevel[LogLevel.lower()].value:
+        Write_Log("DEBUG", MESSAGE, LogFile)
 
 
-def LOG_INFO(MESSAGE, LogFile):
-    Write_Log("INFO", MESSAGE, LogFile)
+def LOG_INFO(MESSAGE, LogFile, LogLevel):
+    if enum_LogLevel.info.value >= enum_LogLevel[LogLevel.lower()].value:
+        Write_Log("INFO", MESSAGE, LogFile)
 
 
-def LOG_WARNING(MESSAGE, LogFile):
-    Write_Log("WARNING", MESSAGE, LogFile)
+def LOG_WARNING(MESSAGE, LogFile, LogLevel):
+    if enum_LogLevel.warning.value >= enum_LogLevel[LogLevel.lower()].value:
+        Write_Log("WARNING", MESSAGE, LogFile)
 
 
-def LOG_ERROR(MESSAGE, LogFile):
-    Write_Log("ERROR", MESSAGE, LogFile)
+def LOG_ERROR(MESSAGE, LogFile, LogLevel):
+    if enum_LogLevel.error.value >= enum_LogLevel[LogLevel.lower()].value:
+        Write_Log("ERROR", MESSAGE, LogFile)
