@@ -140,8 +140,6 @@ for x in json_data["backup"]:
                     "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.",
                     Logging_Folder_Filename,
                 )
-
-            os.environ["BORG_PASSPHRASE"] = "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
         else:
             Mail_warn = True
             MailMessage = f"Backup '{Name}' is not active."
@@ -158,6 +156,9 @@ for x in json_data["backup"]:
     finally:
         LOG_INFO(f"Backup '{Name}' done.", Logging_Folder_Filename)
         LOG_INFO("--------------------------------", Logging_Folder_Filename)
+        os.environ["BORG_PASSPHRASE"] = (
+            "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
+        )
 
         if Mail_succ:
             if json_data["SMTP"]["SendMailOn"]["Success"]:
