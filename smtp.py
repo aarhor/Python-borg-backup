@@ -1,5 +1,5 @@
 import smtplib
-from email.message import EmailMessage
+import email
 
 
 def send_mail(smtpsettings, current_backup, message, status):
@@ -10,11 +10,12 @@ def send_mail(smtpsettings, current_backup, message, status):
     PASSWORD = smtpsettings["Password"]
     RECIPIENT = smtpsettings["Recipent"]
 
-    msg = EmailMessage()
+    msg = email.message.EmailMessage()
     msg.set_content(message)
     msg["Subject"] = f"{status} - Borgbackup for Backup '{current_backup}'"
     msg["From"] = SENDER
     msg["To"] = RECIPIENT
+    msg["Date"] = email.utils.formatdate(localtime=True)
 
     try:
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
