@@ -1,5 +1,7 @@
 import smtplib
 import email
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 def send_mail(smtpsettings, current_backup, message, status):
@@ -15,7 +17,9 @@ def send_mail(smtpsettings, current_backup, message, status):
     msg["Subject"] = f"{status} - Borgbackup for Backup '{current_backup}'"
     msg["From"] = SENDER
     msg["To"] = RECIPIENT
-    msg["Date"] = email.utils.formatdate(localtime=True)
+    msg["Date"] = email.utils.format_datetime(
+        datetime.now(ZoneInfo(smtpsettings["DateHeaderTimezone"]))
+    )
 
     try:
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
