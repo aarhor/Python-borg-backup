@@ -194,52 +194,40 @@ for x in json_data["backup"]:
             "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
         )
 
-        if Mail_succ:
+        SendMail_Success = json_data["SMTP"]["SendMailOn"]["Success"]
+        SendMail_Warning = json_data["SMTP"]["SendMailOn"]["Warning"]
+        SendMail_Error = json_data["SMTP"]["SendMailOn"]["Error"]
 
-            if json_data["SMTP"]["SendMailOn"]["Success"]:
-                MailMessage = (
-                    f"Backup was successful.\n"
-                    f"-        Name:\t{returnjson["archive"]["name"]}\n"
-                    f"- Remote Repo:\t{returnjson["repository"]["location"]}\n"
-                    f"-          ID:\t{returnjson["archive"]["id"]}\n"
-                    f"-       Start:\t{returnjson["archive"]["start"]}\n"
-                    f"-         End:\t{returnjson["archive"]["end"]}\n"
-                    f"-    Duration:\t{returnjson["archive"]["duration"]}\n"
-                    f"Affected Files:\n"
-                    "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags\n"
-                )
+        if Mail_succ and SendMail_Success:
+            MailMessage = (
+                f"Backup was successful.\n"
+                f"-        Name:\t{returnjson["archive"]["name"]}\n"
+                f"- Remote Repo:\t{returnjson["repository"]["location"]}\n"
+                f"-          ID:\t{returnjson["archive"]["id"]}\n"
+                f"-       Start:\t{returnjson["archive"]["start"]}\n"
+                f"-         End:\t{returnjson["archive"]["end"]}\n"
+                f"-    Duration:\t{returnjson["archive"]["duration"]}\n"
+                f"Affected Files:\n"
+                "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags\n"
+            )
 
-                for x in FileArray:
-                    if x == "":
-                        continue
+            for x in FileArray:
+                if x == "":
+                    continue
 
-                    MailMessage += f"- {x}\n"
+                MailMessage += f"- {x}\n"
 
-                MailMessage = MailMessage.replace("\n\n", "\n")
+            Mail_status = "Successful"
+        elif Mail_warn and SendMail_Warning:
+            Mail_status = "Warning"
+        elif Mail_err and SendMail_Error:
+            Mail_status = "Error"
 
-                send_mail(
-                    json_data["SMTP"],
-                    Name,
-                    MailMessage,
-                    "Successful",
-                )
-        elif Mail_warn:
+        if True in (SendMail_Success, SendMail_Warning, SendMail_Error):
             MailMessage = MailMessage.replace("\n\n", "\n")
-
-            if json_data["SMTP"]["SendMailOn"]["Warning"]:
-                send_mail(
-                    json_data["SMTP"],
-                    Name,
-                    MailMessage,
-                    "Warning",
-                )
-        elif Mail_err:
-            MailMessage = MailMessage.replace("\n\n", "\n")
-
-            if json_data["SMTP"]["SendMailOn"]["Error"]:
-                send_mail(
-                    json_data["SMTP"],
-                    Name,
-                    MailMessage,
-                    "Error",
-                )
+            send_mail(
+                json_data["SMTP"],
+                Name,
+                MailMessage,
+                Mail_status,
+            )
