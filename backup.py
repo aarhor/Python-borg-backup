@@ -65,6 +65,11 @@ for x in json_data["backup"]:
                         returnjson = json.loads(return_stdout)
                         FileArray = return_stderr.split("\n")
                         Mail_succ = True
+                        duration = str(
+                            datetime.timedelta(
+                                seconds=returnjson["archive"]["duration"]
+                            )
+                        )[:-3]
 
                         LOG_INFO(
                             "Backup was successful.", Logging_Folder_Filename, LogLevel
@@ -95,7 +100,7 @@ for x in json_data["backup"]:
                             LogLevel,
                         )
                         LOG_INFO(
-                            f"-    Duration:\t{returnjson["archive"]["duration"]}",
+                            f"-    Duration:\t{duration}",
                             Logging_Folder_Filename,
                             LogLevel,
                         )
