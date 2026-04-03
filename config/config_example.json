@@ -12,7 +12,12 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
       "Repo_Initialized": false,
-      "active": true
+      "active": true,
+      "Cleanup": {
+        "daily": "14",
+        "monthly": "6",
+        "yearly": "1"
+      }
     },
     {
       "Name": "Software 2",
@@ -21,7 +26,12 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
       "Repo_Initialized": false,
-      "active": false
+      "active": false,
+      "Cleanup": {
+        "daily": "14",
+        "monthly": "6",
+        "yearly": "1"
+      }
     }
   ],
   "SMTP": {

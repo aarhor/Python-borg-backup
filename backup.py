@@ -101,16 +101,47 @@ for x in json_data["backup"]:
                         )
                         LOG_DEBUG(f"Affected Files:", Logging_Folder_Filename, LogLevel)
                         LOG_DEBUG(
-                            "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
+                            "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags #--",
                             Logging_Folder_Filename,
                             LogLevel,
                         )
-
-                        for x in FileArray:
-                            if x == "":
+                        for y in FileArray:
+                            if y == "":
                                 continue
 
-                            LOG_DEBUG(f"- {x}", Logging_Folder_Filename, LogLevel)
+                            LOG_DEBUG(f"- {y}", Logging_Folder_Filename, LogLevel)
+
+                        proc = subprocess.run(
+                            [
+                                "borg",
+                                "prune",
+                                f"--keep-daily={str(x["Cleanup"]["daily"])}",
+                                f"--keep-monthly={str(x["Cleanup"]["monthly"])}",
+                                f"--keep-yearly={str(x["Cleanup"]["yearly"])}",
+                                "--list",
+                                "--stats",
+                                f"{RemoteRepo}",
+                            ],
+                            capture_output=True,
+                        )
+
+                        returnstats = proc.stderr.decode().split("\n")
+
+                        for y in returnstats:
+                            if y == "":
+                                continue
+
+                            LOG_DEBUG(y, Logging_Folder_Filename, LogLevel)
+
+                        subprocess.run(
+                            "borg",
+                            "compact",
+                            f"{RemoteRepo}",
+                        )
+
+                        LOG_INFO(
+                            "Backup Cleanup successful. See the Debug message for more information."
+                        )
                     case 1:
                         Mail_warn = True
                         MailMessage = (
