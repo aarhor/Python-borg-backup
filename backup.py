@@ -99,8 +99,8 @@ for x in json_data["backup"]:
                             Logging_Folder_Filename,
                             LogLevel,
                         )
-                        LOG_INFO(f"Affected Files:", Logging_Folder_Filename, LogLevel)
-                        LOG_INFO(
+                        LOG_DEBUG(f"Affected Files:", Logging_Folder_Filename, LogLevel)
+                        LOG_DEBUG(
                             "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
                             Logging_Folder_Filename,
                             LogLevel,
@@ -110,7 +110,7 @@ for x in json_data["backup"]:
                             if x == "":
                                 continue
 
-                            LOG_INFO(f"- {x}", Logging_Folder_Filename, LogLevel)
+                            LOG_DEBUG(f"- {x}", Logging_Folder_Filename, LogLevel)
                     case 1:
                         Mail_warn = True
                         MailMessage = (
