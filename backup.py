@@ -136,16 +136,26 @@ for x in json_data["backup"]:
                             if y == "":
                                 continue
 
-                            LOG_DEBUG(y, Logging_Folder_Filename, LogLevel)
+                            LOG_INFO(y, Logging_Folder_Filename, LogLevel)
+
+                        LOG_DEBUG(
+                            f'borg command: borg compact "{RemoteRepo}"',
+                            Logging_Folder_Filename,
+                            LogLevel,
+                        )
 
                         subprocess.run(
-                            "borg",
-                            "compact",
-                            f"{RemoteRepo}",
+                            [
+                                "borg",
+                                "compact",
+                                f"{RemoteRepo}",
+                            ],
                         )
 
                         LOG_INFO(
-                            "Backup Cleanup successful. See the Debug message for more information."
+                            "Backup Cleanup successful. See the Debug message for more information.",
+                            Logging_Folder_Filename,
+                            LogLevel,
                         )
                     case 1:
                         Mail_warn = True
