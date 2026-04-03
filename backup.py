@@ -41,20 +41,33 @@ for x in json_data["backup"]:
 
             if Initialized:
                 LOG_INFO("The repo is initialized.", Logging_Folder_Filename, LogLevel)
+
+                Args_process = [
+                    "borg",
+                    "create",
+                    "--json",
+                    "--list",
+                    f"{RemoteRepo}::{ArchiveName}",
+                    SourcePath,
+                ]
+
+                if len(x["Exclude"]) >= 1:
+                    for y in x["Exclude"]:
+                        Args_process.append("--exclude")
+                        Args_process.append(y)
+
+                used_command = ""
+                for y in Args_process:
+                    used_command += f"{y} "
+
                 LOG_DEBUG(
-                    f'borg command: borg create --json --list "{RemoteRepo}::{ArchiveName}" {SourcePath}',
+                    f"borg command: {used_command}",
                     Logging_Folder_Filename,
                     LogLevel,
                 )
+
                 proc = subprocess.run(
-                    [
-                        "borg",
-                        "create",
-                        "--json",
-                        "--list",
-                        f"{RemoteRepo}::{ArchiveName}",
-                        SourcePath,
-                    ],
+                    Args_process,
                     capture_output=True,
                 )
                 returncode = proc.returncode

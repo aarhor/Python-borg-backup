@@ -8,6 +8,11 @@
     {
       "Name": "Software 1",
       "SourcePath": "/mnt/tools/backupdir1",
+      "Exclude": [
+        "/mnt/tools/backupdir1/subdir1",
+        "/mnt/tools/backupdir1/subdir2/file.txt",
+        "/mnt/tools/backupdir1/subdir2/picture.jpg"
+      ],
       "RemoteRepo": "ssh://user@host:port/path/to/repo1",
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
@@ -22,6 +27,7 @@
     {
       "Name": "Software 2",
       "SourcePath": "/mnt/tools/backupdir2",
+      "Exclude": [],
       "RemoteRepo": "ssh://user@host:port/path/to/{$Name}",
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
