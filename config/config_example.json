@@ -11,7 +11,7 @@
       "Exclude": [
         "/mnt/tools/backupdir1/subdir1",
         "/mnt/tools/backupdir1/subdir2/file.txt",
-        "/mnt/tools/backupdir1/subdir2/picture.jpg"
+        "{$SourcePath}/subdir2/picture.jpg"
       ],
       "RemoteRepo": "ssh://user@host:port/path/to/repo1",
       "ArchiveName": "{now:$Timestamp}",

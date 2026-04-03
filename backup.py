@@ -54,7 +54,7 @@ for x in json_data["backup"]:
                 if len(x["Exclude"]) >= 1:
                     for y in x["Exclude"]:
                         Args_process.append("--exclude")
-                        Args_process.append(y)
+                        Args_process.append(y.replace("{$SourcePath}", SourcePath))
 
                 used_command = ""
                 for y in Args_process:
