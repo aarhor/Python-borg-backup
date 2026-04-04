@@ -96,16 +96,19 @@ def borg_create(json_data_general, json_data_current_backup, Logging_file):
     Args_process = [
         "borg",
         "create",
-        "--json",
         "--list",
+        "--json",
         f"{RemoteRepo}::{ArchiveName}",
         SourcePath,
     ]
 
+    if json_data_current_backup["dry_run"]:
+        Args_process.insert(4, "--dry-run")
+
     if len(json_data_current_backup["Exclude"]) >= 1:
         for y in json_data_current_backup["Exclude"]:
-            Args_process.append("--exclude")
-            Args_process.append(y.replace("{$SourcePath}", SourcePath))
+            Args_process.insert(4, "--exclude")
+            Args_process.insert(5, y.replace("{$SourcePath}", SourcePath))
 
     used_command = ""
     for y in Args_process:
@@ -129,97 +132,104 @@ def borg_create(json_data_general, json_data_current_backup, Logging_file):
     return_stdout = proc.stdout.decode()
     match returncode:
         case 0:
-            returnjson = json.loads(return_stdout)
             FileArray = return_stderr.split("\n")
-            Mail_succ = True
-            duration = str(
-                datetime.timedelta(seconds=returnjson["archive"]["duration"])
-            )[:-3]
+            if json_data_current_backup["dry_run"] == False:
+                returnjson = json.loads(return_stdout)
+                Mail_succ = True
+                duration = str(
+                    datetime.timedelta(seconds=returnjson["archive"]["duration"])
+                )[:-3]
 
-            LOG_INFO("Backup was successful.", Logging_file, LogLevel)
-            LOG_INFO(
-                f"-        Name:\t{returnjson["archive"]["name"]}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_INFO(
-                f"- Remote Repo:\t{returnjson["repository"]["location"]}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_INFO(
-                f"-          ID:\t{returnjson["archive"]["id"]}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_INFO(
-                f"-       Start:\t{returnjson["archive"]["start"][:-7]}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_INFO(
-                f"-         End:\t{returnjson["archive"]["end"][:-7]}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_INFO(
-                f"-    Duration:\t{duration}",
-                Logging_file,
-                LogLevel,
-            )
-            LOG_DEBUG(f"Affected Files:", Logging_file, LogLevel)
-            LOG_DEBUG(
-                "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags #--",
-                Logging_file,
-                LogLevel,
-            )
-            for y in FileArray:
-                if y == "":
-                    continue
+                LOG_INFO("Backup was successful.", Logging_file, LogLevel)
+                LOG_INFO(
+                    f"-        Name:\t{returnjson["archive"]["name"]}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_INFO(
+                    f"- Remote Repo:\t{returnjson["repository"]["location"]}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_INFO(
+                    f"-          ID:\t{returnjson["archive"]["id"]}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_INFO(
+                    f"-       Start:\t{returnjson["archive"]["start"][:-7]}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_INFO(
+                    f"-         End:\t{returnjson["archive"]["end"][:-7]}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_INFO(
+                    f"-    Duration:\t{duration}",
+                    Logging_file,
+                    LogLevel,
+                )
+                LOG_DEBUG(f"Affected Files:", Logging_file, LogLevel)
+                LOG_DEBUG(
+                    "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags #--",
+                    Logging_file,
+                    LogLevel,
+                )
+                for y in FileArray:
+                    if y == "":
+                        continue
 
-                LOG_DEBUG(f"- {y}", Logging_file, LogLevel)
+                    LOG_DEBUG(f"- {y}", Logging_file, LogLevel)
 
-            proc = subprocess.run(
-                [
-                    "borg",
-                    "prune",
-                    f"--keep-daily={str(json_data_current_backup["Cleanup"]["daily"])}",
-                    f"--keep-monthly={str(json_data_current_backup["Cleanup"]["monthly"])}",
-                    f"--keep-yearly={str(json_data_current_backup["Cleanup"]["yearly"])}",
-                    "--list",
-                    "--stats",
-                    f"{RemoteRepo}",
-                ],
-                capture_output=True,
-            )
+                proc = subprocess.run(
+                    [
+                        "borg",
+                        "prune",
+                        f"--keep-daily={str(json_data_current_backup["Cleanup"]["daily"])}",
+                        f"--keep-monthly={str(json_data_current_backup["Cleanup"]["monthly"])}",
+                        f"--keep-yearly={str(json_data_current_backup["Cleanup"]["yearly"])}",
+                        "--list",
+                        "--stats",
+                        f"{RemoteRepo}",
+                    ],
+                    capture_output=True,
+                )
 
-            returnstats = proc.stderr.decode().split("\n")
+                returnstats = proc.stderr.decode().split("\n")
 
-            for y in returnstats:
-                if y == "":
-                    continue
+                for y in returnstats:
+                    if y == "":
+                        continue
 
-                LOG_INFO(y, Logging_file, LogLevel)
+                    LOG_INFO(y, Logging_file, LogLevel)
 
-            LOG_DEBUG(
-                f'borg command: borg compact "{RemoteRepo}"',
-                Logging_file,
-                LogLevel,
-            )
+                LOG_DEBUG(
+                    f'borg command: borg compact "{RemoteRepo}"',
+                    Logging_file,
+                    LogLevel,
+                )
 
-            subprocess.run(
-                [
-                    "borg",
-                    "compact",
-                    f"{RemoteRepo}",
-                ],
-            )
+                subprocess.run(
+                    [
+                        "borg",
+                        "compact",
+                        f"{RemoteRepo}",
+                    ],
+                )
 
-            LOG_INFO(
-                "Backup Cleanup successful.",
-                Logging_file,
-                LogLevel,
-            )
+                LOG_INFO(
+                    "Backup Cleanup successful.",
+                    Logging_file,
+                    LogLevel,
+                )
+            else:
+                LOG_INFO("Affected Files:", Logging_file, LogLevel)
+                for y in FileArray:
+                    if y == "":
+                        continue
+                    LOG_INFO(y, Logging_file, LogLevel)
         case 1:
             Mail_warn = True
             MailMessage = "Backup was successful, but there were some warnings."

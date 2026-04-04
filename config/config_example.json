@@ -17,6 +17,7 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
       "Repo_Initialized": false,
+      "dry_run": false,
       "active": true,
       "Cleanup": {
         "daily": "14",
@@ -32,6 +33,7 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
       "Repo_Initialized": false,
+      "dry_run": false,
       "active": false,
       "Cleanup": {
         "daily": "14",
