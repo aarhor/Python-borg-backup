@@ -22,23 +22,24 @@ def Write_Log(STATUS, MESSAGE, LogFile):
         f.write(f"{logMessage}\n")
 
     print(logMessage)
+    return f"{logMessage}\n"
 
 
 def LOG_DEBUG(MESSAGE, LogFile, LogLevel):
     if enum_LogLevel.debug.value >= enum_LogLevel[LogLevel.lower()].value:
-        Write_Log("DEBUG", MESSAGE, LogFile)
+        return Write_Log("DEBUG", MESSAGE, LogFile)
 
 
 def LOG_INFO(MESSAGE, LogFile, LogLevel):
     if enum_LogLevel.info.value >= enum_LogLevel[LogLevel.lower()].value:
-        Write_Log("INFO", MESSAGE, LogFile)
+        return Write_Log("INFO", MESSAGE, LogFile)
 
 
 def LOG_WARNING(MESSAGE, LogFile, LogLevel):
     if enum_LogLevel.warning.value >= enum_LogLevel[LogLevel.lower()].value:
-        Write_Log("WARNING", MESSAGE, LogFile)
+        return Write_Log("WARNING", MESSAGE, LogFile)
 
 
 def LOG_ERROR(MESSAGE, LogFile, LogLevel):
     if enum_LogLevel.error.value >= enum_LogLevel[LogLevel.lower()].value:
-        Write_Log("ERROR", MESSAGE, LogFile)
+        return Write_Log("ERROR", MESSAGE, LogFile)
