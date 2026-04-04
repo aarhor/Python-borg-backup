@@ -229,22 +229,32 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
 
             return 0, MailMessage_return
         case 1:
+            returnMessage = return_stderr.split("\n")
             MailMessage_return += LOG_WARNING(
                 "Backup was successful, but there were some warnings.",
                 Logging_file,
                 LogLevel,
             )
 
+            for y in returnMessage:
+                if y == "":
+                    continue
+
+                MailMessage_return += LOG_WARNING(y, Logging_file, LogLevel)
+
             return 1, MailMessage_return
         case 2:
+            returnMessage = return_stderr.split("\n")
             MailMessage_return += LOG_ERROR(
                 "The Backup wasn't successful, there were a fatal error.",
                 Logging_file,
                 LogLevel,
             )
-            MailMessage_return += LOG_ERROR(
-                f"\t{return_stderr}", Logging_file, LogLevel
-            )
+            for y in returnMessage:
+                if y == "":
+                    continue
+
+                MailMessage_return += LOG_ERROR(f"\t{y}", Logging_file, LogLevel)
 
             return 2, MailMessage_return
 
