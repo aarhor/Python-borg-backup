@@ -182,29 +182,9 @@ def borg_create(json_data_general, json_data_current_backup, Logging_file):
                         continue
 
                     LOG_DEBUG(f"- {y}", Logging_file, LogLevel)
-
-                proc = subprocess.run(
-                    [
-                        "borg",
-                        "prune",
-                        f"--keep-daily={str(json_data_current_backup["Cleanup"]["daily"])}",
-                        f"--keep-monthly={str(json_data_current_backup["Cleanup"]["monthly"])}",
-                        f"--keep-yearly={str(json_data_current_backup["Cleanup"]["yearly"])}",
-                        "--list",
-                        "--stats",
-                        f"{RemoteRepo}",
-                    ],
-                    capture_output=True,
-                )
-
-                returnstats = proc.stderr.decode().split("\n")
-
-                for y in returnstats:
-                    if y == "":
-                        continue
-
-                    LOG_INFO(y, Logging_file, LogLevel)
-
+                
+                borg_prune(json_data_general, json_data_current_backup, Logging_file)
+                
                 LOG_DEBUG(
                     f'borg command: borg compact "{RemoteRepo}"',
                     Logging_file,
@@ -243,3 +223,45 @@ def borg_create(json_data_general, json_data_current_backup, Logging_file):
                 LogLevel,
             )
             LOG_ERROR(f"\t{return_stderr}", Logging_file, LogLevel)
+
+
+def borg_prune(json_data_general, json_data_current_backup, Logging_file):
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    LogLevel = json_data_general["LogLevel"]
+    Args_process = [
+        "borg",
+        "prune",
+        f"--keep-daily={str(json_data_current_backup["Cleanup"]["daily"])}",
+        f"--keep-monthly={str(json_data_current_backup["Cleanup"]["monthly"])}",
+        f"--keep-yearly={str(json_data_current_backup["Cleanup"]["yearly"])}",
+        "--list",
+        "--stats",
+        f"{RemoteRepo}",
+    ]
+
+    used_command = ""
+    for y in Args_process:
+        if y == "":
+            continue
+
+        used_command += f"{y} "
+
+    LOG_DEBUG(
+        f"borg command: {used_command}",
+        Logging_file,
+        LogLevel,
+    )
+
+    proc = subprocess.run(
+        Args_process,
+        capture_output=True,
+    )
+
+    returnstats = proc.stderr.decode().split("\n")
+
+    for y in returnstats:
+        if y == "":
+            continue
+
+        LOG_INFO(y, Logging_file, LogLevel)
