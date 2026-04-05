@@ -2,7 +2,6 @@ import json
 import os
 import sys
 import datetime
-import traceback
 from smtp import *
 from Logging import *
 from functions import *
@@ -42,6 +41,7 @@ for backup in json_data["backup"]:
 
         if active:
             os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
+            os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data["General"]["Allow Relocated Repos"]
 
             if Initialized:
                 MailMessage += LOG_INFO(
