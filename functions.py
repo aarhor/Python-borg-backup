@@ -14,6 +14,7 @@ def borg_init(json_data, json_data_current_backup, Logging_file):
     if (
         json_data_current_backup["EncryptionPwd"] == "supersecurePassword1337"
         or json_data_current_backup["EncryptionPwd"] == "anothersupersecurePassword420"
+        or json_data_current_backup["EncryptionPwd"] == ""
     ):
         MailMessage_return += LOG_ERROR(
             "You shall not pass!",
@@ -21,7 +22,7 @@ def borg_init(json_data, json_data_current_backup, Logging_file):
             LogLevel,
         )
         MailMessage_return += LOG_ERROR(
-            "It's not secure to use the default example password. Change it in the json config file.",
+            "It's not secure to use the default example password or an empty password. Change it in the json config file.",
             Logging_file,
             LogLevel,
         )
