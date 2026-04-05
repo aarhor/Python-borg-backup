@@ -63,10 +63,12 @@ for backup in json_data["backup"]:
         MailMessage += returnfunc[1]
     except Exception as e:
         Mail_err = True
-        MailMessage = (
-            f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}"
+        MailMessage += LOG_ERROR(
+            f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}",
+            Logging_Folder_Filename,
+            LogLevel,
         )
-        MailMessage += LOG_ERROR(MailMessage, Logging_Folder_Filename, LogLevel)
+        returnfunc = [2]
     finally:
         MailMessage += LOG_INFO(
             f"Backup '{Name}' done.", Logging_Folder_Filename, LogLevel
@@ -83,14 +85,14 @@ for backup in json_data["backup"]:
         if True in (SendMail_Success, SendMail_Warning, SendMail_Error):
             returncode_func = returnfunc[0]
             MailMessage = MailMessage.replace("\n\n", "\n")
-            
+
             if returnfunc[0] == 0:
                 Mail_status = "Successful"
             elif returnfunc[0] == 1:
                 Mail_status = "Warning"
             elif returnfunc[0] == 2:
                 Mail_status = "Error"
-            
+
             send_mail(
                 json_data["SMTP"],
                 Name,

@@ -11,83 +11,104 @@ def borg_init(json_data, json_data_current_backup, Logging_file):
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
     LogLevel = json_data["General"]["LogLevel"]
 
-    Args_process = [
-        "borg",
-        "init",
-        "--make-parent-dirs",
-        "--encryption=repokey",
-        f"{RemoteRepo}",
-    ]
+    if (
+        json_data_current_backup["EncryptionPwd"] == "supersecurePassword1337"
+        or json_data_current_backup["EncryptionPwd"] == "anothersupersecurePassword420"
+    ):
+        MailMessage_return += LOG_ERROR(
+            "You shall not pass!",
+            Logging_file,
+            LogLevel,
+        )
+        MailMessage_return += LOG_ERROR(
+            "It's not secure to use the default example password. Change it in the json config file.",
+            Logging_file,
+            LogLevel,
+        )
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+        return 2, MailMessage_return
+    else:
+        Args_process = [
+            "borg",
+            "init",
+            "--make-parent-dirs",
+            "--encryption=repokey",
+            f"{RemoteRepo}",
+        ]
 
-        used_command += f"{y} "
+        used_command = ""
+        for y in Args_process:
+            if y == "":
+                continue
 
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}",
-        Logging_file,
-        LogLevel,
-    )
+            used_command += f"{y} "
 
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
+        MailMessage_return += LOG_DEBUG(
+            f"borg command: {used_command}",
+            Logging_file,
+            LogLevel,
+        )
 
-    output_init = proc.stderr.decode()
-    returncode = proc.returncode
-    InitArray = output_init.split("\n")
-    match returncode:
-        case 0:
-            MailMessage_return += LOG_INFO(
-                "--------------------------------",
-                Logging_file,
-                LogLevel,
-            )
+        proc = subprocess.run(
+            Args_process,
+            capture_output=True,
+        )
 
-            for x in InitArray:
+        output_init = proc.stderr.decode()
+        returncode = proc.returncode
+        InitArray = output_init.split("\n")
+        match returncode:
+            case 0:
                 MailMessage_return += LOG_INFO(
-                    x.replace(" REPOSITORY encrypted", f' "{RemoteRepo}" encrypted'),
+                    "--------------------------------",
                     Logging_file,
                     LogLevel,
                 )
 
-            MailMessage_return += LOG_INFO(
-                "--------------------------------",
-                Logging_file,
-                LogLevel,
-            )
-            MailMessage_return += LOG_INFO(
-                "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.",
-                Logging_file,
-                LogLevel,
-            )
-            MailMessage_return += LOG_INFO(
-                "The first backup will now be made.",
-                Logging_file,
-                LogLevel,
-            )
+                for x in InitArray:
+                    MailMessage_return += LOG_INFO(
+                        x.replace(
+                            " REPOSITORY encrypted", f' "{RemoteRepo}" encrypted'
+                        ),
+                        Logging_file,
+                        LogLevel,
+                    )
 
-            returnfunc = borg_create(json_data, json_data_current_backup, Logging_file)
-            MailMessage_return += returnfunc[1]
+                MailMessage_return += LOG_INFO(
+                    "--------------------------------",
+                    Logging_file,
+                    LogLevel,
+                )
+                MailMessage_return += LOG_INFO(
+                    "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.",
+                    Logging_file,
+                    LogLevel,
+                )
+                MailMessage_return += LOG_INFO(
+                    "The first backup will now be made.",
+                    Logging_file,
+                    LogLevel,
+                )
 
-            return 0, MailMessage_return
-        case 2:
-            MailMessage_return += LOG_ERROR(
-                "An error occurred.",
-                Logging_file,
-                LogLevel,
-            )
-            MailMessage_return += LOG_ERROR(
-                f"\t{output_init}",
-                Logging_file,
-                LogLevel,
-            )
+                returnfunc = borg_create(
+                    json_data, json_data_current_backup, Logging_file
+                )
+                MailMessage_return += returnfunc[1]
 
-            return 2, MailMessage_return
+                return 0, MailMessage_return
+            case 2:
+                MailMessage_return += LOG_ERROR(
+                    "An error occurred.",
+                    Logging_file,
+                    LogLevel,
+                )
+                MailMessage_return += LOG_ERROR(
+                    f"\t{output_init}",
+                    Logging_file,
+                    LogLevel,
+                )
+
+                return 2, MailMessage_return
 
 
 def borg_create(json_data, json_data_current_backup, Logging_file):
@@ -183,7 +204,7 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                     f"Affected Files:", Logging_file, LogLevel
                 )
                 MailMessage_return += LOG_DEBUG(
-                    "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags #--",
+                    "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
                     Logging_file,
                     LogLevel,
                 )

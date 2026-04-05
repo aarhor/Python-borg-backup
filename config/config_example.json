@@ -36,9 +36,9 @@
       "dry_run": false,
       "active": false,
       "Cleanup": {
-        "daily": "14",
-        "monthly": "6",
-        "yearly": "1"
+        "daily": "7",
+        "monthly": "3",
+        "yearly": "2"
       }
     }
   ],
