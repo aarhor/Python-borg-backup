@@ -120,10 +120,10 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     ArchiveName = json_data_current_backup["ArchiveName"].replace(
         "$Timestamp", json_data["General"]["Timestamp"]
     )
-    SourcePath = Path(json_data_current_backup["SourcePath"])
+    SourcePath = json_data_current_backup["SourcePath"]
     LogLevel = json_data["General"]["LogLevel"]
 
-    if SourcePath.exists():
+    if Path(json_data_current_backup["SourcePath"]).exists():
         Args_process = [
             "borg",
             "create",

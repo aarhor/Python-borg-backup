@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import datetime
+import traceback
 from smtp import *
 from Logging import *
 from functions import *
@@ -63,7 +64,12 @@ for backup in json_data["backup"]:
     except Exception as e:
         Mail_err = True
         MailMessage += LOG_FATAL(
-            f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}",
+            f"There were a unhandled Error while Backing up '{Name}':",
+            Logging_Folder_Filename,
+            LogLevel,
+        )
+        MailMessage += LOG_FATAL(
+            f"\t{e.args[0]}",
             Logging_Folder_Filename,
             LogLevel,
         )
