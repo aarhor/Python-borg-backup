@@ -10,6 +10,7 @@
     - [General](#general)
     - [backup](#backup)
     - [SMTP](#smtp)
+    - [Parameter](#parameter)
 
 Mit diesem Python Skript ist es möglich mittels [BorgBackup](https://www.borgbackup.org/) Backups anzustoßen und diese auf einem externen Ziel zu sichern.
 Desweiteren ist es möglich über eine json Datei mehere Backup Quellen / Ziele anzugeben und diese nacheinaner sichern zu lassen.
@@ -179,3 +180,5 @@ Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokument
 ### SMTP
 
 Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den Abschlussmails benötigt werden. Wie z.B. der Ziel SMTP Server und dessen Zugangsdaten.<br>
+
+### Parameter

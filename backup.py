@@ -7,12 +7,16 @@ from Logging import *
 from functions import *
 
 Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
+Only_Init = False
 
 i = 0
 for arg in sys.argv:
     if arg.startswith("--config_file="):
         Path_config = f"{sys.argv[i].replace("--config_file=", "")}"
+    if arg.startswith("--repo_init"):
+        Only_Init = True
     i = i + 1
+
 with open(Path_config, "r") as file:
     json_data = json.load(file)
 
@@ -41,7 +45,18 @@ for backup in json_data["backup"]:
 
         if active:
             os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
-            os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data["General"]["Allow Relocated Repos"]
+            os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data["General"][
+                "Allow Relocated Repos"
+            ]
+
+            if Initialized and Only_Init:
+                MailMessage += LOG_INFO(
+                    "Due to the parameter '--repo_init' and because it is already initialized, this backup was skipped.",
+                    Logging_Folder_Filename,
+                    LogLevel,
+                )
+                returnfunc = [0]
+                continue
 
             if Initialized:
                 MailMessage += LOG_INFO(
@@ -54,7 +69,9 @@ for backup in json_data["backup"]:
                     Logging_Folder_Filename,
                     LogLevel,
                 )
-                returnfunc = borg_init(json_data, backup, Logging_Folder_Filename)
+                returnfunc = borg_init(
+                    json_data, backup, Logging_Folder_Filename, Only_Init
+                )
         else:
             Mail_warn = True
             MailMessage += LOG_WARNING(

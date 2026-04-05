@@ -6,7 +6,7 @@ from Logging import *
 from pathlib import Path
 
 
-def borg_init(json_data, json_data_current_backup, Logging_file):
+def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
     MailMessage_return = ""
     Name = json_data_current_backup["Name"]
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
@@ -23,7 +23,7 @@ def borg_init(json_data, json_data_current_backup, Logging_file):
             LogLevel,
         )
         MailMessage_return += LOG_ERROR(
-            "It's not secure to use the default example password or an empty password. Change it in the json config file.",
+            "Using the default password or a blank password is insecure. Change it in the JSON configuration file.",
             Logging_file,
             LogLevel,
         )
@@ -82,22 +82,31 @@ def borg_init(json_data, json_data_current_backup, Logging_file):
                     LogLevel,
                 )
                 MailMessage_return += LOG_INFO(
-                    "The repo is now initialized. Please set the value 'Repo_Initialized' in the config to the value 'true'.",
-                    Logging_file,
-                    LogLevel,
-                )
-                MailMessage_return += LOG_INFO(
-                    "The first backup will now be made.",
+                    "The repository is now initialized. Please set the value 'Repo_Initialized' to 'true' in the configuration.",
                     Logging_file,
                     LogLevel,
                 )
 
-                returnfunc = borg_create(
-                    json_data, json_data_current_backup, Logging_file
-                )
-                MailMessage_return += returnfunc[1]
+                if Only_init == False:
+                    MailMessage_return += LOG_INFO(
+                        "The first backup will now be made.",
+                        Logging_file,
+                        LogLevel,
+                    )
 
-                return returnfunc[0], MailMessage_return
+                    returnfunc = borg_create(
+                        json_data, json_data_current_backup, Logging_file
+                    )
+                    MailMessage_return += returnfunc[1]
+
+                    return returnfunc[0], MailMessage_return
+                else:
+                    MailMessage_return += LOG_INFO(
+                        "Due to the parameter '--repo_init', no initial backup was created.",
+                        Logging_file,
+                        LogLevel,
+                    )
+                    return 0, MailMessage_return
             case 2:
                 MailMessage_return += LOG_ERROR(
                     "An error occurred.",
