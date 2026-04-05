@@ -1,5 +1,4 @@
 import json
-import subprocess
 import os
 import sys
 import datetime
@@ -63,12 +62,12 @@ for backup in json_data["backup"]:
         MailMessage += returnfunc[1]
     except Exception as e:
         Mail_err = True
-        MailMessage += LOG_ERROR(
+        MailMessage += LOG_FATAL(
             f"There were a unhandled Error while Backing up '{Name}':\t{e.args[0]}",
             Logging_Folder_Filename,
             LogLevel,
         )
-        returnfunc = [2]
+        returnfunc = [3]
     finally:
         MailMessage += LOG_INFO(
             f"Backup '{Name}' done.", Logging_Folder_Filename, LogLevel
@@ -81,17 +80,20 @@ for backup in json_data["backup"]:
         SendMail_Success = json_data["SMTP"]["SendMailOn"]["Success"]
         SendMail_Warning = json_data["SMTP"]["SendMailOn"]["Warning"]
         SendMail_Error = json_data["SMTP"]["SendMailOn"]["Error"]
+        SendMail_Fatal = json_data["SMTP"]["SendMailOn"]["Fatal"]
 
-        if True in (SendMail_Success, SendMail_Warning, SendMail_Error):
+        if True in (SendMail_Success, SendMail_Warning, SendMail_Error, SendMail_Fatal):
             returncode_func = returnfunc[0]
             MailMessage = MailMessage.replace("\n\n", "\n")
 
-            if returnfunc[0] == 0:
+            if returncode_func == 0:
                 Mail_status = "Successful"
-            elif returnfunc[0] == 1:
+            elif returncode_func == 1:
                 Mail_status = "Warning"
-            elif returnfunc[0] == 2:
+            elif returncode_func == 2:
                 Mail_status = "Error"
+            elif returncode_func == 3:
+                Mail_status = "Fatal"
 
             send_mail(
                 json_data["SMTP"],

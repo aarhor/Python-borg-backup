@@ -8,6 +8,7 @@ class enum_LogLevel(Enum):
     info = 1
     warning = 2
     error = 3
+    fatal = 4
 
 
 def Write_Log(STATUS, MESSAGE, LogFile):
@@ -43,3 +44,8 @@ def LOG_WARNING(MESSAGE, LogFile, LogLevel):
 def LOG_ERROR(MESSAGE, LogFile, LogLevel):
     if enum_LogLevel.error.value >= enum_LogLevel[LogLevel.lower()].value:
         return Write_Log("ERROR", MESSAGE, LogFile)
+
+
+def LOG_FATAL(MESSAGE, LogFile, LogLevel):
+    if enum_LogLevel.fatal.value >= enum_LogLevel[LogLevel.lower()].value:
+        return Write_Log("FATAL", MESSAGE, LogFile)

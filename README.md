@@ -56,7 +56,7 @@ Unter `LogFolder` wird pro Sicherung ein Ordner angelegt, innerhalb dieses Ordne
       |-> /2026-04-04.log
 ```
 
-`LogLevel` wird dafür genutzt um die Logging Ausgabe zu kontrollieren. Aktuell wird diese Einstellung auch für den Mailversand genutzt. Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR`
+`LogLevel` wird dafür genutzt um die Logging Ausgabe zu kontrollieren. Aktuell wird diese Einstellung auch für den Mailversand genutzt. Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
 
 ### backup
 
@@ -125,6 +125,7 @@ Im Standard werden folgende Sicherungen behalten:
 - Täglich:    14 Tage
 - Monatlich:   6 Monate
 - Jährlich:    1 Jahr
+
 Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokumentation](https://borgbackup.readthedocs.io/en/stable/usage/prune.html#examples).
 
 ### SMTP

@@ -46,7 +46,8 @@
     "SendMailOn": {
       "Success": false,
       "Warning": false,
-      "Error": true
+      "Error": true,
+      "Fatal": true
     },
     "Login": "",
     "Password": "",
