@@ -100,27 +100,23 @@ for backup in json_data["backup"]:
             "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
         )
 
-        SendMail_Success = json_data["SMTP"]["SendMailOn"]["Success"]
-        SendMail_Warning = json_data["SMTP"]["SendMailOn"]["Warning"]
-        SendMail_Error = json_data["SMTP"]["SendMailOn"]["Error"]
-        SendMail_Fatal = json_data["SMTP"]["SendMailOn"]["Fatal"]
+        returncode_func = returnfunc[0]
+        status_map = {
+            0: ("Successful", "Success"),
+            1: ("Warning", "Warning"),
+            2: ("Error", "Error"),
+            3: ("Fatal", "Fatal"),
+        }
 
-        if True in (SendMail_Success, SendMail_Warning, SendMail_Error, SendMail_Fatal):
-            returncode_func = returnfunc[0]
-            MailMessage = MailMessage.replace("\n\n", "\n")
+        if returncode_func in status_map:
+            status_text, config_key = status_map[returncode_func]
 
-            if returncode_func == 0:
-                Mail_status = "Successful"
-            elif returncode_func == 1:
-                Mail_status = "Warning"
-            elif returncode_func == 2:
-                Mail_status = "Error"
-            elif returncode_func == 3:
-                Mail_status = "Fatal"
+            if json_data["SMTP"]["SendMailOn"].get(config_key):
+                MailMessage = MailMessage.replace("\n\n", "\n")
 
-            send_mail(
-                json_data["SMTP"],
-                Name,
-                MailMessage,
-                Mail_status,
-            )
+                send_mail(
+                    json_data["SMTP"],
+                    Name,
+                    MailMessage,
+                    status_text,
+                )
