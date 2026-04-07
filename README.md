@@ -182,3 +182,9 @@ Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokument
 Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den Abschlussmails benötigt werden. Wie z.B. der Ziel SMTP Server und dessen Zugangsdaten.<br>
 
 ### Parameter
+
+### TODO
+
+- [ ] Automatisches löschen alter Logdateien
+- [ ] Mehrere Quellpfade sichern
+- [ ]
