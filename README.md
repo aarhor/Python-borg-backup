@@ -42,7 +42,15 @@ Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu
 | `LogLevel`              | -                                                                                                                                                   | -                  | `INFO`                 |
 | `Allow Relocated Repos` | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#environment-variables:~:text=BORG%5FRELOCATED%5FREPO%5FACCESS%5FIS%5FOK) | -                  |                        |
 
-In diesem Bereich lassen sich allgemeinere Einstellungen tätigen. Die Einstellung `Timestamp` wird genutzt um den Namen der Logdatei festzulegen. Des Weiteren ist es möglich `Timestamp` als Archivname für die Sicherung zu nutzen.<br>
+In diesem Bereich lassen sich allgemeinere Einstellungen tätigen.
+
+**`Timestamp`**<br>
+
+Die Einstellung `Timestamp` wird genutzt um den Namen der Logdatei festzulegen. Des Weiteren ist es möglich `Timestamp` als Archivname für die Sicherung zu nutzen.<br>
+Es werden alle [formatierungen der python Funktion `strftime()`](https://docs.python.org/3.14/library/datetime.html#strftime-and-strptime-format-codes) unterstützt. Für eine Optimale Übersicht wird jedoch `%Y-%m-%d` empfohlen.
+
+**`LogFolder`**<br>
+
 Unter `LogFolder` wird pro Sicherung ein Ordner angelegt, innerhalb dieses Ordners werden die Logdateien nach dem Muster von `Timestamp` gespeichert.
 
 ```plaintext
@@ -58,7 +66,10 @@ Unter `LogFolder` wird pro Sicherung ein Ordner angelegt, innerhalb dieses Ordne
       |-> /2026-04-04.log
 ```
 
-`LogLevel` wird dafür genutzt um die Logging Ausgabe zu kontrollieren. Aktuell wird diese Einstellung auch für den Mailversand genutzt. Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
+**`LogLevel`**<br>
+
+Mit der Einstellung `LogLevel` wird die Logging Ausgabe kontrolliert. Aktuell wird diese Einstellung auch für den Mailversand genutzt.<br>
+Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
 
 **`Allow Relocated Repos`**<br>
 
@@ -106,9 +117,11 @@ Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fo
 Unter `backup` werden die gewünschten Sicherungen konfiguriert, die erstellt werden sollen. Es ist möglich mehrere Quellpfade als einzelene Backups anzugeben und diese sichern zu lassen.
 
 **`Name`**<br>
+
 Der Name der Sicherung.<br>
 
 **`SourcePath`**<br>
+
 Der Quellordner der gesichert werden soll. Solange der Ordner lokal verfügbar ist, kann dieser gesichert werden. Wenn eine Netzwerkfreigabe geischert werden soll, muss diese zuvor eingebunden werden.
 Anschließend kann dieser Ordner gesichert werden. Als Quellpfad ist alles erlaubt was von borg unterstützt wird.
 
@@ -116,20 +129,24 @@ Anschließend kann dieser Ordner gesichert werden. Als Quellpfad ist alles erlau
 > Es ist immer nur möglich, pro einzelne Sicherung, **ein** Ordner sichern zu lassen.
 
 **`Exclude`**<br>
+
 Sollten gewisse Ordner oder Dateien in der Sicherung nicht benötigt werden, da diese z.B. nur temporäre Dateien sind oder Systemdateien, können diese über die Einstellung `Exclude` ausgeschlossen werden.
 Die Pfade können absolute oder auch relative Pfade sein. Wildcards werden auch unterstützt. Für weitere Informationen siehe die [borg create Dokumentation](https://borgbackup.readthedocs.io/en/stable/usage/create.html).
 Es ist möglich, über die Variable `{$SourcePath}` den Quellpfad zu übernehmen sollten die Ordner / Dateien in einem Unterordner befinden.
 
 **`RemoteRepo`**<br>
+
 Das Ziel wo borg die Dateien hinsichern soll. Als Ziel kann alles genutzt werden was von [borg unterstützt wird](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls).
 
 > [!NOTE]
 > Auch wenn andere Ziele von borg unterstützt werden sollten, wurde dieses Skript bisher nur mit ssh Zielen erfolgreich getestet (_ssh://user@host:port/path/to/repo_).
 
 **`ArchiveName`**<br>
+
 Der Name des Archives, wo die aktuellen Daten gespeichert werden sollen. Im Standard wird hier die Syntax von der `$Timestamp` Variable genommen. Das ist `%Y-%m-%d`. Daraus wird dann `2026-04-05` als Archivname.
 
 **`EncryptionPwd`**<br>
+
 Das Passwort was zur Verschlüsselung des Archives genutzt werden soll.
 
 > [!CAUTION]
@@ -165,7 +182,7 @@ Ein Durchlauf <ins>ohne</ins> dabei etwas wirklich zu sichern. In der Abschließ
   - `true`
   - `false`
 
-Gibt an ob eine Sicherung aktiv ist (`true`) oder nicht (`false`). Eine nicht aktive Sicherung erzeugt ein `Warning` Fehler.
+Gibt an ob eine Sicherung aktiv ist (`true`) oder nicht (`false`). Eine nicht aktive Sicherung erzeugt einen `Warning` Fehler und wird nicht weiter beachtet.
 
 **`Cleanup`**<br>
 
@@ -187,4 +204,4 @@ Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den A
 
 - [ ] Automatisches löschen alter Logdateien
 - [ ] Mehrere Quellpfade sichern
-- [ ]
+- [ ] Vor und Nach der Sicherung einen Befehl ausführen
