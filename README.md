@@ -102,7 +102,7 @@ Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fo
 | ------------------ | ------------------------------------------------------------------------------------------- | ------------------ | ---------------------- |
 | `Name`             | -                                                                                           | -                  |                        |
 | `SourcePath`       | -                                                                                           | -                  |                        |
-| `Exclude`          | -                                                                                           | `{$SourcePath}`    |                        |
+| `Exclude`          | -                                                                                           | `{$SourcePathX}`   |                        |
 | `RemoteRepo`       | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls) | -                  |                        |
 | `ArchiveName`      | -                                                                                           | `{now:$Timestamp}` | `{now:$Timestamp}`     |
 | `EncryptionPwd`    | -                                                                                           | -                  |                        |
@@ -123,16 +123,18 @@ Der Name der Sicherung.<br>
 **`SourcePath`**<br>
 
 Der Quellordner der gesichert werden soll. Solange der Ordner lokal verfügbar ist, kann dieser gesichert werden. Wenn eine Netzwerkfreigabe geischert werden soll, muss diese zuvor eingebunden werden.
-Anschließend kann dieser Ordner gesichert werden. Als Quellpfad ist alles erlaubt was von borg unterstützt wird.
-
-> [!WARNING]
-> Es ist immer nur möglich, pro einzelne Sicherung, **ein** Ordner sichern zu lassen.
+Anschließend kann dieser Ordner gesichert werden. Als Quellpfad ist alles erlaubt was von borg unterstützt wird. Es ist möglich mehrere Pfade zu sichern.
 
 **`Exclude`**<br>
 
 Sollten gewisse Ordner oder Dateien in der Sicherung nicht benötigt werden, da diese z.B. nur temporäre Dateien sind oder Systemdateien, können diese über die Einstellung `Exclude` ausgeschlossen werden.
 Die Pfade können absolute oder auch relative Pfade sein. Wildcards werden auch unterstützt. Für weitere Informationen siehe die [borg create Dokumentation](https://borgbackup.readthedocs.io/en/stable/usage/create.html).
-Es ist möglich, über die Variable `{$SourcePath}` den Quellpfad zu übernehmen sollten die Ordner / Dateien in einem Unterordner befinden.
+Es ist möglich, über die Variable `{$SourcePathX}` den Quellpfad zu übernehmen sollten die Ordner / Dateien in einem Unterordner befinden.
+
+> [!NOTE]
+> Über das _X_ in der Variable `{$SourcePathX}` lässt sich steuern welcher Pfad aus `SourcePath` genutzt werden soll. Die Angabe ist 0 basiert.
+> Wenn nun der 1. Eintrag genutzt werden soll, so muss das X mit einer "0" getauscht werden (`{$SourcePath0}`). Bei dem 3. Eintrag ist es dann "2" (`{$SourcePath2}`).
+> Diese Schreibweise muss auch dann genutzt werden, vorausgesetzt die Variable wird genutzt, wenn unter `SourcePath` nur **ein** Pfad angegeben ist.
 
 **`RemoteRepo`**<br>
 
@@ -203,5 +205,5 @@ Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den A
 ### TODO
 
 - [ ] Automatisches löschen alter Logdateien
-- [ ] Mehrere Quellpfade sichern
+- [x] Mehrere Quellpfade sichern
 - [ ] Vor und Nach der Sicherung einen Befehl ausführen
