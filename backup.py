@@ -73,12 +73,18 @@ for backup in json_data["backup"]:
                 returnfunc = borg_init(
                     json_data, backup, Logging_Folder_Filename, Only_Init
                 )
+                MailMessage += LOG_INFO(
+                    f"Backup '{Name}' done.",
+                    Logging_Folder_Filename,
+                    LogLevel,
+                )
+                MailMessage += returnfunc[1]
         else:
             Mail_warn = True
             MailMessage += LOG_WARNING(
                 f"Backup '{Name}' is not active.", Logging_Folder_Filename, LogLevel
             )
-        MailMessage += returnfunc[1]
+            returnfunc = [1]
     except Exception as e:
         Mail_err = True
         MailMessage += LOG_FATAL(
