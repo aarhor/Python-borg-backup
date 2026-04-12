@@ -1,4 +1,8 @@
-config/config.json
+config/*
+export/*
+
+!config/config_example.json
+!export/.placeholder
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
