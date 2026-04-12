@@ -26,18 +26,12 @@ Timestamp = json_data["General"]["Timestamp"]
 LogLevel = json_data["General"]["LogLevel"]
 
 for backup in json_data["backup"]:
-    Mail_succ = False
-    Mail_warn = False
-    Mail_err = False
     MailMessage = ""
 
     try:
         Name = backup["Name"]
         active = backup["active"]
         Initialized = backup["Repo_Initialized"]
-        RemoteRepo = backup["RemoteRepo"].replace("{$Name}", Name)
-        ArchiveName = backup["ArchiveName"].replace("$Timestamp", Timestamp)
-        SourcePath = backup["SourcePath"]
         Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
         MailMessage += LOG_INFO(
@@ -80,13 +74,11 @@ for backup in json_data["backup"]:
                 )
                 MailMessage += returnfunc[1]
         else:
-            Mail_warn = True
             MailMessage += LOG_WARNING(
                 f"Backup '{Name}' is not active.", Logging_Folder_Filename, LogLevel
             )
             returnfunc = [1]
     except Exception as e:
-        Mail_err = True
         MailMessage += LOG_FATAL(
             f"There were a unhandled Error while Backing up '{Name}':",
             Logging_Folder_Filename,
@@ -102,11 +94,11 @@ for backup in json_data["backup"]:
             Logging_Folder_Filename,
             LogLevel,
         )
+        MailMessage += LOG_INFO(
+            f"Backup '{Name}' done with errors.", Logging_Folder_Filename, LogLevel
+        )
         returnfunc = [3]
     finally:
-        MailMessage += LOG_INFO(
-            f"Backup '{Name}' done.", Logging_Folder_Filename, LogLevel
-        )
         LOG_INFO("--------------------------------", Logging_Folder_Filename, LogLevel)
         os.environ["BORG_PASSPHRASE"] = (
             "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
