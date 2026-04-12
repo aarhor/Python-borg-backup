@@ -77,6 +77,11 @@ for backup in json_data["backup"]:
             MailMessage += LOG_WARNING(
                 f"Backup '{Name}' is not active.", Logging_Folder_Filename, LogLevel
             )
+            MailMessage += LOG_INFO(
+                f"Backup '{Name}' done with warnings.",
+                Logging_Folder_Filename,
+                LogLevel,
+            )
             returnfunc = [1]
     except Exception as e:
         MailMessage += LOG_FATAL(
