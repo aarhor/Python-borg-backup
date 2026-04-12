@@ -356,3 +356,54 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
         MailMessage_return += LOG_INFO(y, Logging_file, LogLevel)
 
     return 0, MailMessage_return
+
+
+def borg_key_export(json_data):
+    MailMessage_return = ""
+    LogLevel = json_data["General"]["LogLevel"]
+    Logfolder = json_data["General"]["Logfolder"]
+    Logging_file = f"{Logfolder}{{Name}}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+    all_backups = json_data["backup"]
+
+    for backup in all_backups:
+        Name = backup["Name"]
+        RemoteRepo = backup["RemoteRepo"]
+        Logging_file = Logging_file.replace("{Name}", Name)
+        Export_filename = f"{os.path.dirname(os.path.abspath(__file__))}/export/encrypted-key-backup_{Name.replace(" ", "_")}.txt"
+        Args_process = [
+            "borg",
+            "key",
+            "export",
+            "--paper",
+            RemoteRepo,
+            Export_filename,
+        ]
+        MailMessage_return += LOG_INFO(f"Key export of {Name}.", Logging_file, LogLevel)
+        MailMessage_return += LOG_INFO(f"\t{Export_filename}", Logging_file, LogLevel)
+
+        os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
+        os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data["General"][
+            "Allow Relocated Repos"
+        ]
+
+        used_command = ""
+        for y in Args_process:
+            if y == "":
+                continue
+
+            used_command += f"{y} "
+
+        MailMessage_return += LOG_DEBUG(
+            f"borg command: {used_command}",
+            Logging_file,
+            LogLevel,
+        )
+
+        subprocess.run(
+            Args_process,
+            capture_output=True,
+        )
+
+    MailMessage_return += LOG_INFO("Key export was successful.", Logging_file, LogLevel)
+
+    return 0, MailMessage_return
