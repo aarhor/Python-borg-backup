@@ -72,7 +72,8 @@ for backup in json_data["backup"]:
                     Logging_Folder_Filename,
                     LogLevel,
                 )
-                MailMessage += returnfunc[1]
+
+            MailMessage += returnfunc[1]
         else:
             MailMessage += LOG_WARNING(
                 f"Backup '{Name}' is not active.", Logging_Folder_Filename, LogLevel
