@@ -17,12 +17,16 @@ def start_backup_routine():
 
     for backup in json_data["backup"]:
         MailMessage = ""
+        Name = backup["Name"]
+        Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+
+        if Single_Import == True and Name != Single_Import_Name:
+            LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, LogLevel)
+            continue
 
         try:
-            Name = backup["Name"]
             active = backup["active"]
             Initialized = backup["Repo_Initialized"]
-            Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
             MailMessage += LOG_INFO(
                 f"Current Backup: {Name}", Logging_Folder_Filename, LogLevel
@@ -130,6 +134,9 @@ def Mail_handling(json_data, MailMessage, returnfunc, Name=""):
 
 Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
 Only_Init = False
+Single_Import = False
+Single_Import_Name = ""
+
 
 i = 0
 for arg in sys.argv:
@@ -144,6 +151,11 @@ for arg in sys.argv:
         returnfunc = borg_key_export(json_data)
         Mail_handling(json_data, returnfunc[1], returnfunc)
         exit()
+    if arg.startswith("--single_import="):
+        Single_Import = True
+        Single_Import_Name = (
+            f"{sys.argv[i].replace("--single_import=", "").replace("\"","")}"
+        )
     i = i + 1
 
 start_backup_routine()

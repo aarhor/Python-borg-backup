@@ -207,3 +207,8 @@ Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den A
 - [ ] Automatisches löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
 - [ ] Vor und Nach der Sicherung einen Befehl ausführen
+- [ ] Daten in ein Grafana Dasboard exportieren lassen
+  - [ ] Gesamte Anzahl der Dateien
+  - [ ] Gesamte Größe der Sicherung
+  - [ ] Dauer der Sicherung
+- [ ] Verschiedene Loglevel für Mail und Datei
