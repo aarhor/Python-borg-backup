@@ -12,8 +12,7 @@ def start_backup_routine():
     with open(Path_config, "r") as file:
         json_data = json.load(file)
 
-    Logfolder = json_data["General"]["Logfolder"]
-    LogLevel = json_data["General"]["LogLevel"]
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
 
     for backup in json_data["backup"]:
         MailMessage = ""
@@ -21,7 +20,7 @@ def start_backup_routine():
         Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
         if Single_Import == True and Name != Single_Import_Name:
-            LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, LogLevel)
+            LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
             continue
 
         try:
@@ -29,7 +28,7 @@ def start_backup_routine():
             Initialized = backup["Repo_Initialized"]
 
             MailMessage += LOG_INFO(
-                f"Current Backup: {Name}", Logging_Folder_Filename, LogLevel
+                f"Current Backup: {Name}", Logging_Folder_Filename, json_data
             )
 
             if active:
@@ -42,21 +41,21 @@ def start_backup_routine():
                     MailMessage += LOG_INFO(
                         "Due to the parameter '--repo_init' and because it is already initialized, this backup was skipped.",
                         Logging_Folder_Filename,
-                        LogLevel,
+                        json_data,
                     )
                     returnfunc = [0]
                     continue
 
                 if Initialized:
                     MailMessage += LOG_INFO(
-                        "The repo is initialized.", Logging_Folder_Filename, LogLevel
+                        "The repo is initialized.", Logging_Folder_Filename, json_data
                     )
                     returnfunc = borg_create(json_data, backup, Logging_Folder_Filename)
                 elif Initialized == False:
                     MailMessage += LOG_INFO(
                         "The repo isn't currently initialized.",
                         Logging_Folder_Filename,
-                        LogLevel,
+                        json_data,
                     )
                     returnfunc = borg_init(
                         json_data, backup, Logging_Folder_Filename, Only_Init
@@ -64,43 +63,43 @@ def start_backup_routine():
                     MailMessage += LOG_INFO(
                         f"Backup '{Name}' done.",
                         Logging_Folder_Filename,
-                        LogLevel,
+                        json_data,
                     )
 
                 MailMessage += returnfunc[1]
             else:
                 MailMessage += LOG_WARNING(
-                    f"Backup '{Name}' is not active.", Logging_Folder_Filename, LogLevel
+                    f"Backup '{Name}' is not active.", Logging_Folder_Filename, json_data
                 )
                 MailMessage += LOG_INFO(
                     f"Backup '{Name}' done with warnings.",
                     Logging_Folder_Filename,
-                    LogLevel,
+                    json_data,
                 )
                 returnfunc = [1]
         except Exception as e:
             MailMessage += LOG_FATAL(
                 f"There were a unhandled Error while Backing up '{Name}':",
                 Logging_Folder_Filename,
-                LogLevel,
+                json_data,
             )
             MailMessage += LOG_FATAL(
                 f"\t{e.args[0]}",
                 Logging_Folder_Filename,
-                LogLevel,
+                json_data,
             )
             MailMessage += LOG_FATAL(
                 f"\t{traceback.format_exc()}",
                 Logging_Folder_Filename,
-                LogLevel,
+                json_data,
             )
             MailMessage += LOG_INFO(
-                f"Backup '{Name}' done with errors.", Logging_Folder_Filename, LogLevel
+                f"Backup '{Name}' done with errors.", Logging_Folder_Filename, json_data
             )
             returnfunc = [3]
         finally:
             LOG_INFO(
-                "--------------------------------", Logging_Folder_Filename, LogLevel
+                "--------------------------------", Logging_Folder_Filename, json_data
             )
             os.environ["BORG_PASSPHRASE"] = (
                 "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."

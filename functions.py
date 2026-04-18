@@ -11,7 +11,6 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
     MailMessage_return = ""
     Name = json_data_current_backup["Name"]
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
-    LogLevel = json_data["General"]["LogLevel"]
 
     if (
         json_data_current_backup["EncryptionPwd"] == "supersecurePassword1337"
@@ -21,12 +20,12 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
         MailMessage_return += LOG_ERROR(
             "You shall not pass!",
             Logging_file,
-            LogLevel,
+            json_data,
         )
         MailMessage_return += LOG_ERROR(
             "Using the default password or a blank password is insecure. Change it in the JSON configuration file.",
             Logging_file,
-            LogLevel,
+            json_data,
         )
 
         return 2, MailMessage_return
@@ -47,9 +46,7 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
             used_command += f"{y} "
 
         MailMessage_return += LOG_DEBUG(
-            f"borg command: {used_command}",
-            Logging_file,
-            LogLevel,
+            f"borg command: {used_command}", Logging_file, json_data
         )
 
         proc = subprocess.run(
@@ -65,7 +62,7 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
                 MailMessage_return += LOG_INFO(
                     "--------------------------------",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
 
                 for x in InitArray:
@@ -74,25 +71,25 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
                             " REPOSITORY encrypted", f' "{RemoteRepo}" encrypted'
                         ),
                         Logging_file,
-                        LogLevel,
+                        json_data,
                     )
 
                 MailMessage_return += LOG_INFO(
                     "--------------------------------",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     "The repository is now initialized. Please set the value 'Repo_Initialized' to 'true' in the configuration.",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
 
                 if Only_init == False:
                     MailMessage_return += LOG_INFO(
                         "The first backup will now be made.",
                         Logging_file,
-                        LogLevel,
+                        json_data,
                     )
 
                     returnfunc = borg_create(
@@ -105,19 +102,19 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
                     MailMessage_return += LOG_INFO(
                         "Due to the parameter '--repo_init', no initial backup was created.",
                         Logging_file,
-                        LogLevel,
+                        json_data,
                     )
                     return 0, MailMessage_return
             case 2:
                 MailMessage_return += LOG_ERROR(
                     "An error occurred.",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_ERROR(
                     f"\t{output_init}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
 
                 return 2, MailMessage_return
@@ -131,7 +128,6 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
         "$Timestamp", json_data["General"]["Timestamp"]
     )
     SourcePath_list = json_data_current_backup["SourcePath"]
-    LogLevel = json_data["General"]["LogLevel"]
     Args_process = [
         "borg",
         "create",
@@ -145,7 +141,7 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
             Args_process.append(SourcePath)
         else:
             MailMessage_return += LOG_FATAL(
-                f"The source path {SourcePath} does not exist!", Logging_file, LogLevel
+                f"The source path {SourcePath} does not exist!", Logging_file, json_data
             )
             return 3, MailMessage_return
 
@@ -179,9 +175,7 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
         used_command += f"{y} "
 
     MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}",
-        Logging_file,
-        LogLevel,
+        f"borg command: {used_command}", Logging_file, json_data
     )
 
     proc = subprocess.run(
@@ -201,51 +195,51 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                 )[:-3]
 
                 MailMessage_return += LOG_INFO(
-                    "Backup was successful.", Logging_file, LogLevel
+                    "Backup was successful.", Logging_file, json_data
                 )
                 MailMessage_return += LOG_INFO(
                     f"-        Name:\t{returnjson["archive"]["name"]}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     f"- Remote Repo:\t{returnjson["repository"]["location"]}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     f"-          ID:\t{returnjson["archive"]["id"]}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     f"-       Start:\t{returnjson["archive"]["start"][:-7]}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     f"-         End:\t{returnjson["archive"]["end"][:-7]}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_INFO(
                     f"-    Duration:\t{duration}",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 MailMessage_return += LOG_DEBUG(
-                    f"Affected Files:", Logging_file, LogLevel
+                    f"Affected Files:", Logging_file, json_data
                 )
                 MailMessage_return += LOG_DEBUG(
                     "-- For Information about the meaning of the letters see the documentation: https://borgbackup.readthedocs.io/en/stable/usage/create.html#item-flags --",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
                 for y in FileArray:
                     if y == "":
                         continue
 
-                    MailMessage_return += LOG_DEBUG(f"- {y}", Logging_file, LogLevel)
+                    MailMessage_return += LOG_DEBUG(f"- {y}", Logging_file, json_data)
 
                 returnfunc = borg_prune(
                     json_data, json_data_current_backup, Logging_file
@@ -256,7 +250,7 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                 MailMessage_return += LOG_DEBUG(
                     f'borg command: borg compact "{RemoteRepo}"',
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
 
                 subprocess.run(
@@ -270,16 +264,16 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                 MailMessage_return += LOG_INFO(
                     "Backup Cleanup successful.",
                     Logging_file,
-                    LogLevel,
+                    json_data,
                 )
             else:
                 MailMessage_return += LOG_INFO(
-                    "Affected Files:", Logging_file, LogLevel
+                    "Affected Files:", Logging_file, json_data
                 )
                 for y in FileArray:
                     if y == "":
                         continue
-                    MailMessage_return += LOG_INFO(y, Logging_file, LogLevel)
+                    MailMessage_return += LOG_INFO(y, Logging_file, json_data)
 
             return 0, MailMessage_return
         case 1:
@@ -287,14 +281,14 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
             MailMessage_return += LOG_WARNING(
                 "Backup was successful, but there were some warnings.",
                 Logging_file,
-                LogLevel,
+                json_data,
             )
 
             for y in returnMessage:
                 if y == "":
                     continue
 
-                MailMessage_return += LOG_WARNING(y, Logging_file, LogLevel)
+                MailMessage_return += LOG_WARNING(y, Logging_file, json_data)
 
             return 1, MailMessage_return
         case 2:
@@ -302,13 +296,13 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
             MailMessage_return += LOG_ERROR(
                 "The Backup wasn't successful, there were a fatal error.",
                 Logging_file,
-                LogLevel,
+                json_data,
             )
             for y in returnMessage:
                 if y == "":
                     continue
 
-                MailMessage_return += LOG_ERROR(f"\t{y}", Logging_file, LogLevel)
+                MailMessage_return += LOG_ERROR(f"\t{y}", Logging_file, json_data)
 
             return 2, MailMessage_return
 
@@ -317,7 +311,6 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
     MailMessage_return = ""
     Name = json_data_current_backup["Name"]
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
-    LogLevel = json_data["General"]["LogLevel"]
     Args_process = [
         "borg",
         "prune",
@@ -337,9 +330,7 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
         used_command += f"{y} "
 
     MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}",
-        Logging_file,
-        LogLevel,
+        f"borg command: {used_command}", Logging_file, json_data
     )
 
     proc = subprocess.run(
@@ -353,15 +344,14 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
         if y == "":
             continue
 
-        MailMessage_return += LOG_INFO(y, Logging_file, LogLevel)
+        MailMessage_return += LOG_INFO(y, Logging_file, json_data)
 
     return 0, MailMessage_return
 
 
 def borg_key_export(json_data):
     MailMessage_return = ""
-    LogLevel = json_data["General"]["LogLevel"]
-    Logfolder = json_data["General"]["Logfolder"]
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
     Logging_file = f"{Logfolder}{{Name}}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
     all_backups = json_data["backup"]
 
@@ -378,8 +368,10 @@ def borg_key_export(json_data):
             RemoteRepo,
             Export_filename,
         ]
-        MailMessage_return += LOG_INFO(f"Key export of {Name}.", Logging_file, LogLevel)
-        MailMessage_return += LOG_INFO(f"\t{Export_filename}", Logging_file, LogLevel)
+        MailMessage_return += LOG_INFO(
+            f"Key export of {Name}.", Logging_file, json_data
+        )
+        MailMessage_return += LOG_INFO(f"\t{Export_filename}", Logging_file, json_data)
 
         os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
         os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data["General"][
@@ -394,9 +386,7 @@ def borg_key_export(json_data):
             used_command += f"{y} "
 
         MailMessage_return += LOG_DEBUG(
-            f"borg command: {used_command}",
-            Logging_file,
-            LogLevel,
+            f"borg command: {used_command}", Logging_file, json_data
         )
 
         subprocess.run(
@@ -404,6 +394,8 @@ def borg_key_export(json_data):
             capture_output=True,
         )
 
-    MailMessage_return += LOG_INFO("Key export was successful.", Logging_file, LogLevel)
+    MailMessage_return += LOG_INFO(
+        "Key export was successful.", Logging_file, json_data
+    )
 
     return 0, MailMessage_return
