@@ -3,7 +3,7 @@
     "Timestamp": "%Y-%m-%d",
     "Logging": {
       "Logfolder": "/var/lib/log/pythonBorgBackup/",
-      "LogLevel_Mail": "WARNING",
+      "LogLevel_Mail": "INFO",
       "LogLevel_File": "DEBUG"
     },
     "Allow Relocated Repos": "no"
@@ -49,7 +49,7 @@
   "SMTP": {
     "SendMailOn": {
       "Success": false,
-      "Warning": false,
+      "Warning": true,
       "Error": true,
       "Fatal": true
     },

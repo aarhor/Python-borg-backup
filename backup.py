@@ -69,7 +69,9 @@ def start_backup_routine():
                 MailMessage += returnfunc[1]
             else:
                 MailMessage += LOG_WARNING(
-                    f"Backup '{Name}' is not active.", Logging_Folder_Filename, json_data
+                    f"Backup '{Name}' is not active.",
+                    Logging_Folder_Filename,
+                    json_data,
                 )
                 MailMessage += LOG_INFO(
                     f"Backup '{Name}' done with warnings.",
