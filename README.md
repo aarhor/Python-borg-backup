@@ -5,17 +5,16 @@
 # Inhalt
 
 - [Deutsch / German](#inhalt)
-  - [Vorrausetzungen](#Vorrausetzungen)
+  - [Voraussetzungen](#Voraussetzungen)
   - [Nutzung](#nutzung)
     - [General](#general)
     - [backup](#backup)
     - [SMTP](#smtp)
-    - [Parameter](#parameter)
+    - [Skript Parameter](#skript-parameter)
 
-Mit diesem Python Skript ist es möglich mittels [BorgBackup](https://www.borgbackup.org/) Backups anzustoßen und diese auf einem externen Ziel zu sichern.
-Desweiteren ist es möglich über eine json Datei mehere Backup Quellen / Ziele anzugeben und diese nacheinaner sichern zu lassen.
+Mit diesem Python-Skript können Backups mittels [BorgBackup](https://www.borgbackup.org/) angestoßen und auf einem externen Ziel gesichert werden. Über eine JSON-Konfigurationsdatei lassen sich mehrere Backup-Quellen und -Ziele definieren, die sequenziell abgearbeitet werden.
 
-## Vorrausetzungen
+## Vorraussetzungen
 
 Damit das Skript (automatisiert) genutzt werden kann werden folgende Programme benötigt:
 
@@ -35,14 +34,15 @@ Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu
 
 ### General
 
-| Einstellung             | Doku                                                                                                                                                | Nutzbare Variablen | Empfohlene Einstellung |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------------------- |
-| `Timestamp`             | [python Datetime](https://docs.python.org/3.14/library/datetime.html#strftime-and-strptime-format-codes)                                            | -                  | `%Y-%m-%d`             |
-| `LogFolder`             | -                                                                                                                                                   | -                  |                        |
-| `LogLevel`              | -                                                                                                                                                   | -                  | `INFO`                 |
-| `Allow Relocated Repos` | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#environment-variables:~:text=BORG%5FRELOCATED%5FREPO%5FACCESS%5FIS%5FOK) | -                  |                        |
+| Einstellung             | Doku                                                                                                                                                | Nutzbare Variablen | Empfohlene Einstellung           |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | -------------------------------- |
+| `Timestamp`             | [python Datetime](https://docs.python.org/3.14/library/datetime.html#strftime-and-strptime-format-codes)                                            | -                  | `%Y-%m-%d`                       |
+| `LogFolder`             | -                                                                                                                                                   | -                  | `/var/lib/log/pythonBorgBackup/` |
+| `LogLevel_Mail`         | Bestimmt das LogLevel für den Mailversand                                                                                                           | -                  | `INFO`                           |
+| `LogLevel_File`         | Bestimmt das LogLevel für den Ausgabe in der Konsole und Logging in eine Datei.                                                                     | -                  | `DEBUG`                          |
+| `Allow Relocated Repos` | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#environment-variables:~:text=BORG%5FRELOCATED%5FREPO%5FACCESS%5FIS%5FOK) | -                  | `no`                             |
 
-In diesem Bereich lassen sich allgemeinere Einstellungen tätigen.
+In diesem Bereich lassen sich allgemeinere Einstellungen vornehmen.
 
 **`Timestamp`**<br>
 
@@ -66,9 +66,19 @@ Unter `LogFolder` wird pro Sicherung ein Ordner angelegt, innerhalb dieses Ordne
       |-> /2026-04-04.log
 ```
 
-**`LogLevel`**<br>
+**`LogLevel_*`**<br>
 
-Mit der Einstellung `LogLevel` wird die Logging Ausgabe kontrolliert. Aktuell wird diese Einstellung auch für den Mailversand genutzt.<br>
+- Standardeinstellung:
+  - `"LogLevel_Mail": "INFO"`
+  - `"LogLevel_File": "DEBUG"`
+- Mögliche Werte:
+  - `DEBUG`
+  - `INFO`
+  - `WARNING`
+  - `ERROR`
+  - `FATAL`
+
+Mit den Einstellungen `LogLevel_Mail` & `LogLevel_File` wird die Logging Ausgabe kontrolliert.<br>
 Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
 
 **`Allow Relocated Repos`**<br>
@@ -79,7 +89,7 @@ Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
   - `yes`
   - `no`
 
-Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fort wenn die Abfrage mit _yes_ oder _no_ beantwortet wurde. Da diese Frage bei der Skript ausführung nicht angezeigt wird, wird über diese Einstellung die Antwort automatisch eingegeben. Bei _yes_ wird die Ausführung fortgeführt und der neue Pfad wird zukünftig akzeptiert. Diese Einstellung betrifft <ins>alle</ins> konfigurierten Sicherungen.
+Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fort wenn die Abfrage mit _yes_ oder _no_ beantwortet wurde. Da das Skript im Automatikmodus keine interaktiven Eingaben erlaubt, wird die Antwort über diese Einstellung vorab festgelegt. Bei _yes_ wird die Ausführung fortgeführt und der neue Pfad wird zukünftig akzeptiert. Diese Einstellung betrifft <ins>alle</ins> konfigurierten Sicherungen.
 
 > [!NOTE]
 > Wenn die Eingabe nicht dem vorgegebene Muster entspricht (Einstellung bleibt leer oder es steht was komplett anderes drin), wird borg seitig _no_ angegeben.
@@ -132,7 +142,7 @@ Die Pfade können absolute oder auch relative Pfade sein. Wildcards werden auch 
 Es ist möglich, über die Variable `{$SourcePathX}` den Quellpfad zu übernehmen sollten die Ordner / Dateien in einem Unterordner befinden.
 
 > [!NOTE]
-> Über das _X_ in der Variable `{$SourcePathX}` lässt sich steuern welcher Pfad aus `SourcePath` genutzt werden soll. Die Angabe ist 0 basiert.
+> Über das _X_ in der Variable `{$SourcePathX}` lässt sich steuern welcher Pfad aus `SourcePath` genutzt werden soll. Die Angabe ist 0-basiert.
 > Wenn nun der 1. Eintrag genutzt werden soll, so muss das X mit einer "0" getauscht werden (`{$SourcePath0}`). Bei dem 3. Eintrag ist es dann "2" (`{$SourcePath2}`).
 > Diese Schreibweise muss auch dann genutzt werden, vorausgesetzt die Variable wird genutzt, wenn unter `SourcePath` nur **ein** Pfad angegeben ist.
 
@@ -152,8 +162,9 @@ Der Name des Archives, wo die aktuellen Daten gespeichert werden sollen. Im Stan
 Das Passwort was zur Verschlüsselung des Archives genutzt werden soll.
 
 > [!CAUTION]
-> Bei der Initialisierung des repos wird geprüft ob das angegebene Kennwort ein leeres oder eins der Beispielkennwörter aus der config Datei ist.
-> Wenn dies der Fall ist, wird der weitere Vorgang abgebrochen.
+>
+> - Das Skript prüft vor der Initialisierung, ob das Kennwort leer ist oder einem der Platzhalter aus der config_example.json entspricht. In diesem Fall bricht das Skript mit einer Fehlermeldung ab. Ändere in diesem Fall das hinterlegte Kennwort. Nutze hierfür z.B. einen Passwort Manager.
+> - Alle Dateien (außer die Datei `config_example.json`) aus dem Ordner `config` sind standardmäßig in der .gitignore hinterlegt.
 
 **`Repo_Initialized`**<br>
 
@@ -198,17 +209,68 @@ Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokument
 
 ### SMTP
 
+| Einstellung          | Doku | Nutzbare Variablen | Empfohlene Einstellung |
+| -------------------- | ---- | ------------------ | ---------------------- |
+| `SendMailOn`         | -    | -                  |                        |
+| `Login`              | -    | -                  |                        |
+| `Password`           | -    | -                  |                        |
+| `SMTP_Server`        | -    | -                  |                        |
+| `Port`               | -    | -                  | 465                    |
+| `DateHeaderTimezone` | -    | -                  |                        |
+| `Sender`             | -    | -                  |                        |
+| `Recipent`           | -    | -                  |                        |
+
 Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den Abschlussmails benötigt werden. Wie z.B. der Ziel SMTP Server und dessen Zugangsdaten.<br>
 
-### Parameter
+**`SendMailOn`**<br>
+Steuert in welchem Fall eine Mail gesendet werden soll. In der Standardeinstellung wird ab der Stufe _Warning_ eine Mail verschickt.<br>
+Der Inhalt der Mail umfasst den gesamten Inhalt des Skript eigenen Loggings. Der genaue Inhalt lässt sich über die Einstellung `General` > `Logging` > `LogLevel_Mail` konfigurieren.
+
+**`Login`**<br>
+Der Anmeldename an dem SMTP Server. Dies kann die eigene Haupt E-Mail Adresse sein oder der normale Benutzername.
+
+**`Password`**<br>
+
+Das Passwort was für die Anmeldung am SMTP Server benötigt wird. In der Regel ist dies ein eigener App-Token, kann aber auch das normale Benutzerkennwort sein. Dies ist je nach Anbieter unterschiedlich. Bei Unsicherheiten frage beim Support des Anbieters nach.
+
+**`SMTP_Server`**<br>
+
+Der SMTP Server für den weiteren Mailversand.
+Beispiele:
+
+- Google: `imap.gmail.com`
+- Apple: `imap.mail.me.com`
+- Mailbox.org: `imap.mailbox.org`
+- posteo.de: `posteo.de`
+
+**`Port`**<br>
+
+Der gewünschte Port. Standardmäßig ist hier 465 für TLS eingestellt.<br>
+Muss die Verbindung über STARTTLS erfolgen, ist hier der Standardport 587. Nach Möglichkeit sollte jedoch **immer**, aus Sicherheitsgründen, eine Verbindung über TLS aufgebaut werden.
+
+**`DateHeaderTimezone`**<br>
+
+**`Sender`**<br>
+
+Der Absender der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup <mail1@example.com>`
+
+**`Recipent`**<br>
+
+Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup <mail1@example.com>`
+
+### Skript Parameter
 
 ### TODO
 
-- [ ] Automatisches löschen alter Logdateien
+- [ ] Automatisches Löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
 - [ ] Vor und Nach der Sicherung einen Befehl ausführen
-- [ ] Daten in ein Grafana Dasboard exportieren lassen
-  - [ ] Gesamte Anzahl der Dateien
-  - [ ] Gesamte Größe der Sicherung
-  - [ ] Dauer der Sicherung
-- [ ] Verschiedene Loglevel für Mail und Datei
+- [ ] Monitoring
+  - [ ] Daten in ein Grafana Dasboard exportieren lassen
+    - [ ] Gesamte Anzahl der Dateien
+    - [ ] Gesamte Größe der Sicherung
+    - [ ] Dauer der Sicherung
+  - [ ] healthcheck.io Integration
+- [x] Verschiedene Loglevel für Mail und Datei
+- [ ] Automatische Integritätsprüfung vor der Sicherung
+      => Abbrechen wenn ein Fehler festgestellt wurde
