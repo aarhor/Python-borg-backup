@@ -30,7 +30,7 @@ Es ist auch möglich diese Datei in einen anderen Ordner als dem config Unterord
 > [!TIP]  
 > Auch wenn es möglich ist einen anderen Pfad anzugeben, sollte die config Datei in dem config Unterordner belassen werden.
 
-Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun. Zur besseren
+Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun. 
 
 ### General
 
@@ -163,7 +163,7 @@ Das Passwort was zur Verschlüsselung des Archives genutzt werden soll.
 
 > [!CAUTION]
 >
-> - Das Skript prüft vor der Initialisierung, ob das Kennwort leer ist oder einem der Platzhalter aus der config_example.json entspricht. In diesem Fall bricht das Skript mit einer Fehlermeldung ab. Ändere in diesem Fall das hinterlegte Kennwort. Nutze hierfür z.B. einen Passwort Manager.
+> - Das Skript prüft vor der Initialisierung, ob das Kennwort leer ist oder einem der Platzhalter aus der config_example.json entspricht. In diesem Fall bricht das Skript mit einer Fehlermeldung ab. Ändere in diesem Fall das hinterlegte Kennwort. Nutze hierfür z.B. einen lokalen Passwort Manager wie [KeePass](https://keepass.info/index.html).
 > - Alle Dateien (außer die Datei `config_example.json`) aus dem Ordner `config` sind standardmäßig in der .gitignore hinterlegt.
 
 **`Repo_Initialized`**<br>
@@ -272,5 +272,5 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
     - [ ] Dauer der Sicherung
   - [ ] healthcheck.io Integration
 - [x] Verschiedene Loglevel für Mail und Datei
-- [ ] Automatische Integritätsprüfung vor der Sicherung
+- [x] Automatische Integritätsprüfung vor der Sicherung<br>
       => Abbrechen wenn ein Fehler festgestellt wurde

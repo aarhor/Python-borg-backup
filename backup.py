@@ -50,7 +50,24 @@ def start_backup_routine():
                     MailMessage += LOG_INFO(
                         "The repo is initialized.", Logging_Folder_Filename, json_data
                     )
-                    returnfunc = borg_create(json_data, backup, Logging_Folder_Filename)
+
+                    returnfunc = borg_check(json_data, backup, Logging_Folder_Filename)
+
+                    if returnfunc[0] == 0:
+                        returnfunc = borg_create(
+                            json_data, backup, Logging_Folder_Filename
+                        )
+                    else:
+                        MailMessage += LOG_INFO(
+                            "Because of an error with the Integrity of the repo, no backup has been made.\nSee the logs for more information.",
+                            Logging_Folder_Filename,
+                            json_data,
+                        )
+                        MailMessage += LOG_INFO(
+                            f"Backup '{Name}' done with errors.",
+                            Logging_Folder_Filename,
+                            json_data,
+                        )
                 elif Initialized == False:
                     MailMessage += LOG_INFO(
                         "The repo isn't currently initialized.",

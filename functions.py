@@ -349,6 +349,60 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
     return 0, MailMessage_return
 
 
+def borg_check(json_data, json_data_current_backup, Logging_file):
+    MailMessage_return = ""
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    Args_process = [
+        "borg",
+        "check",
+        "--verify-data",
+        f"{RemoteRepo}",
+    ]
+
+    used_command = ""
+    for y in Args_process:
+        if y == "":
+            continue
+
+        used_command += f"{y} "
+
+    MailMessage_return += LOG_DEBUG(
+        f"borg command: {used_command}", Logging_file, json_data
+    )
+
+    proc = subprocess.run(
+        Args_process,
+        capture_output=True,
+    )
+
+    returnstats = proc.stderr.decode().split("\n")
+    returncode = proc.returncode
+
+    match (returncode):
+        case 0:
+            MailMessage_return += LOG_INFO(
+                f"Repo {Name} has no errors.", Logging_file, json_data
+            )
+            returncode_func = 0
+        case 1:
+            for y in returnstats:
+                if y == "":
+                    continue
+
+                MailMessage_return += LOG_FATAL(y, Logging_file, json_data)
+            returncode_func = 3
+        case 2:
+            for y in returnstats:
+                if y == "":
+                    continue
+
+                MailMessage_return += LOG_ERROR(y, Logging_file, json_data)
+            returncode_func = 2
+
+    return returncode_func, MailMessage_return
+
+
 def borg_key_export(json_data):
     MailMessage_return = ""
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
