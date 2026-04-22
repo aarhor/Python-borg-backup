@@ -349,16 +349,18 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
     return 0, MailMessage_return
 
 
-def borg_check(json_data, json_data_current_backup, Logging_file):
+def borg_check(json_data, json_data_current_backup, Logging_file, sys_args):
     MailMessage_return = ""
     Name = json_data_current_backup["Name"]
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
     Args_process = [
         "borg",
         "check",
-        "--verify-data",
         f"{RemoteRepo}",
     ]
+
+    if "--verify-data" in sys_args:
+        Args_process.insert(2, "--verify-data")
 
     used_command = ""
     for y in Args_process:
