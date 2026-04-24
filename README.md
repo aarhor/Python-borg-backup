@@ -30,7 +30,7 @@ Es ist auch möglich diese Datei in einen anderen Ordner als dem config Unterord
 > [!TIP]  
 > Auch wenn es möglich ist einen anderen Pfad anzugeben, sollte die config Datei in dem config Unterordner belassen werden.
 
-Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun. 
+Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun.
 
 ### General
 
@@ -260,9 +260,37 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
 
 ### Skript Parameter
 
+**`--config_file="[Pfad zur config Datei]"`**<br>
+Über den Parameter `--config_file=` ist es möglich die config Datei aus einem anderen Verzeichnis zu starten.
+
+**`--repo_init`**<br>
+Initiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt ist. Nach der Einrichtung muss `Repo_Initialized` auf `True` umgestellt werden!
+
+> [!NOTE]
+> Mit dieser Einstellung wird nach der Erfolgreichen Ininitierung keine Sicherung angelegt.
+
+**`--key_export`**<br>
+Erstellt eine Sicherung aller Schlüssel und erstellt im Ordner `export` eine Textdatei die ausgedruckt werden kann und bei Bedarf wieder importiert werden kann. Ein Import wird aktuell nicht unterstützt und muss manuell erfolgen.<br>
+Der benötigte Befehl ist in der Datei hinterlegt.
+
+> [!NOTE]
+> Vor dem Drucken sollte in der Textdatei der Teil `/path/to/repo` mit dem tatsächlichen Repo getauscht werden.
+
+**`--single_import=[Name der Sicherung]`**<br>
+Startet nur einen Einzelnen Import. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
+
+- `--single_import="Software 1"` <= Knorke
+- `--single_import=Software 1` <= Nicht so Knorke
+
+**`--verify-data`**<br>
+Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrität.<br>
+
+> [!CAUTION]
+> Je nach Größe der bereits vorhandenen Dateien, kann die Sicherung hiermit auch mehere Stunden dauern!
+
 ### TODO
 
-- [ ] Automatisches Löschen alter Logdateien
+- [x] Automatisches Löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
 - [ ] Vor und Nach der Sicherung einen Befehl ausführen
 - [ ] Monitoring
@@ -274,3 +302,4 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
 - [x] Verschiedene Loglevel für Mail und Datei
 - [x] Automatische Integritätsprüfung vor der Sicherung<br>
       => Abbrechen wenn ein Fehler festgestellt wurde
+- [ ] Eine Abschlussmail mit allen Informationen anstelle eine Mail pro Sicherung.

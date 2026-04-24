@@ -17,7 +17,9 @@ def start_backup_routine():
     for backup in json_data["backup"]:
         MailMessage = ""
         Name = backup["Name"]
-        Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+        Logging_Folder_Filename = (
+            f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+        )
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
@@ -60,7 +62,7 @@ def start_backup_routine():
                             json_data, backup, Logging_Folder_Filename
                         )
                     else:
-                        MailMessage += LOG_INFO(
+                        MailMessage += LOG_ERROR(
                             "Because of an error with the Integrity of the repo, no backup has been made.\nSee the logs for more information.",
                             Logging_Folder_Filename,
                             json_data,
