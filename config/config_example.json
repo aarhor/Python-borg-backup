@@ -60,6 +60,6 @@
     "Port": 465,
     "DateHeaderTimezone": "Europe/Berlin",
     "Sender": "",
-    "Recipent": "mail1@example.com"
+    "Recipient": "mail1@example.com"
   }
 }

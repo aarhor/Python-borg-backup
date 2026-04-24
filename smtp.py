@@ -10,7 +10,7 @@ def send_mail(smtpsettings, current_backup, message, status):
     SMTP_SERVER = smtpsettings["SMTP_Server"]
     SMTP_PORT = smtpsettings["Port"]
     PASSWORD = smtpsettings["Password"]
-    RECIPIENT = smtpsettings["Recipent"]
+    RECIPIENT = smtpsettings["Recipient"]
 
     msg = email.message.EmailMessage()
     msg.set_content(message)

@@ -2,19 +2,20 @@
 
 **🦅🦅ENGLISH VERSION BELOW🦅🦅**
 
-# Inhalt
-
-- [Deutsch / German](#inhalt)
-  - [Voraussetzungen](#Voraussetzungen)
+- [Deutsch / German](#deutsch--german)
+  - [Voraussetzungen](#voraussetzungen)
   - [Nutzung](#nutzung)
     - [General](#general)
     - [backup](#backup)
     - [SMTP](#smtp)
     - [Skript Parameter](#skript-parameter)
+- [English / Englisch](#english--englisch)
+
+# Deutsch / German
 
 Mit diesem Python-Skript können Backups mittels [BorgBackup](https://www.borgbackup.org/) angestoßen und auf einem externen Ziel gesichert werden. Über eine JSON-Konfigurationsdatei lassen sich mehrere Backup-Quellen und -Ziele definieren, die sequenziell abgearbeitet werden.
 
-## Vorraussetzungen
+## Voraussetzungen
 
 Damit das Skript (automatisiert) genutzt werden kann werden folgende Programme benötigt:
 
@@ -209,16 +210,16 @@ Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokument
 
 ### SMTP
 
-| Einstellung          | Doku | Nutzbare Variablen | Empfohlene Einstellung |
-| -------------------- | ---- | ------------------ | ---------------------- |
-| `SendMailOn`         | -    | -                  |                        |
-| `Login`              | -    | -                  |                        |
-| `Password`           | -    | -                  |                        |
-| `SMTP_Server`        | -    | -                  |                        |
-| `Port`               | -    | -                  | 465                    |
-| `DateHeaderTimezone` | -    | -                  |                        |
-| `Sender`             | -    | -                  |                        |
-| `Recipent`           | -    | -                  |                        |
+| Einstellung          | Doku                                                                           | Nutzbare Variablen | Empfohlene Einstellung |
+| -------------------- | ------------------------------------------------------------------------------ | ------------------ | ---------------------- |
+| `SendMailOn`         | -                                                                              | -                  |                        |
+| `Login`              | -                                                                              | -                  |                        |
+| `Password`           | -                                                                              | -                  |                        |
+| `SMTP_Server`        | -                                                                              | -                  |                        |
+| `Port`               | -                                                                              | -                  | 465                    |
+| `DateHeaderTimezone` | [IANA-Zeitzonen](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | -                  | `Europe/Berlin`        |
+| `Sender`             | -                                                                              | -                  |                        |
+| `Recipient`          | -                                                                              | -                  |                        |
 
 Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den Abschlussmails benötigt werden. Wie z.B. der Ziel SMTP Server und dessen Zugangsdaten.<br>
 
@@ -238,9 +239,9 @@ Das Passwort was für die Anmeldung am SMTP Server benötigt wird. In der Regel 
 Der SMTP Server für den weiteren Mailversand.
 Beispiele:
 
-- Google: `imap.gmail.com`
-- Apple: `imap.mail.me.com`
-- Mailbox.org: `imap.mailbox.org`
+- Google: `smtp.gmail.com`
+- Apple: `smtp.mail.me.com`
+- Mailbox.org: `smtp.mailbox.org`
 - posteo.de: `posteo.de`
 
 **`Port`**<br>
@@ -249,12 +250,17 @@ Der gewünschte Port. Standardmäßig ist hier 465 für TLS eingestellt.<br>
 Muss die Verbindung über STARTTLS erfolgen, ist hier der Standardport 587. Nach Möglichkeit sollte jedoch **immer**, aus Sicherheitsgründen, eine Verbindung über TLS aufgebaut werden.
 
 **`DateHeaderTimezone`**<br>
+Gibt die Zeitzone an, die im Header der E-Mail für das Datum verwendet werden soll. Dies stellt sicher, dass die Sendezeit in der Abschlussmail korrekt angezeigt wird, unabhängig davon, in welcher Zeitzone der Server selbst läuft.
+Wird dieses Feld leer gelassen, nutzt das Skript die lokale Systemzeit des Servers.
+
+- Standardeinstellung: `Europe/Berlin`
+- Mögliche Werte: Alle gültigen [IANA-Zeitzonen](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (z. B. `UTC`, `America/New_York`).
 
 **`Sender`**<br>
 
 Der Absender der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup <mail1@example.com>`
 
-**`Recipent`**<br>
+**`Recipient`**<br>
 
 Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup <mail1@example.com>`
 
@@ -264,10 +270,10 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
 Über den Parameter `--config_file=` ist es möglich die config Datei aus einem anderen Verzeichnis zu starten.
 
 **`--repo_init`**<br>
-Initiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt ist. Nach der Einrichtung muss `Repo_Initialized` auf `True` umgestellt werden!
+Initiiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt ist. Nach der Einrichtung muss `Repo_Initialized` auf `True` umgestellt werden!
 
 > [!NOTE]
-> Mit dieser Einstellung wird nach der Erfolgreichen Ininitierung keine Sicherung angelegt.
+> Mit dieser Einstellung wird nach der Erfolgreichen Initiierung keine Sicherung angelegt.
 
 **`--key_export`**<br>
 Erstellt eine Sicherung aller Schlüssel und erstellt im Ordner `export` eine Textdatei die ausgedruckt werden kann und bei Bedarf wieder importiert werden kann. Ein Import wird aktuell nicht unterstützt und muss manuell erfolgen.<br>
@@ -277,7 +283,7 @@ Der benötigte Befehl ist in der Datei hinterlegt.
 > Vor dem Drucken sollte in der Textdatei der Teil `/path/to/repo` mit dem tatsächlichen Repo getauscht werden.
 
 **`--single_import=[Name der Sicherung]`**<br>
-Startet nur einen Einzelnen Import. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
+Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
 
 - `--single_import="Software 1"` <= Knorke
 - `--single_import=Software 1` <= Nicht so Knorke
@@ -302,4 +308,10 @@ Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrit�
 - [x] Verschiedene Loglevel für Mail und Datei
 - [x] Automatische Integritätsprüfung vor der Sicherung<br>
       => Abbrechen wenn ein Fehler festgestellt wurde
-- [ ] Eine Abschlussmail mit allen Informationen anstelle eine Mail pro Sicherung.
+- [ ] Zusammenfassung aller Backup-Ergebnisse (Erfolg/Fehler) in einer einzigen Tabelle am Ende der Mail.
+
+---
+
+# English / Englisch
+
+Later please be patient.
