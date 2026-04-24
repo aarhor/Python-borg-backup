@@ -6,7 +6,8 @@
       "LogLevel_Mail": "INFO",
       "LogLevel_File": "DEBUG"
     },
-    "Allow Relocated Repos": "no"
+    "Allow Relocated Repos": "no",
+    "LogRotation": 21
   },
   "backup": [
     {

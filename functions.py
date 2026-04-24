@@ -1,6 +1,6 @@
 import json
 import subprocess
-import datetime
+from datetime import datetime, timedelta
 import re
 from smtp import *
 from Logging import *
@@ -190,9 +190,9 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
             FileArray = return_stderr.split("\n")
             if json_data_current_backup["dry_run"] == False:
                 returnjson = json.loads(return_stdout)
-                duration = str(
-                    datetime.timedelta(seconds=returnjson["archive"]["duration"])
-                )[:-3]
+                duration = str(timedelta(seconds=returnjson["archive"]["duration"]))[
+                    :-3
+                ]
 
                 MailMessage_return += LOG_INFO(
                     "Backup was successful.", Logging_file, json_data
@@ -408,7 +408,9 @@ def borg_check(json_data, json_data_current_backup, Logging_file, sys_args):
 def borg_key_export(json_data):
     MailMessage_return = ""
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
-    Logging_file = f"{Logfolder}{{Name}}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+    Logging_file = (
+        f"{Logfolder}{{Name}}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+    )
     all_backups = json_data["backup"]
 
     for backup in all_backups:

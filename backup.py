@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-import datetime
+from datetime import datetime
 import traceback
 from smtp import *
 from Logging import *
@@ -17,7 +17,7 @@ def start_backup_routine():
     for backup in json_data["backup"]:
         MailMessage = ""
         Name = backup["Name"]
-        Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+        Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
@@ -127,6 +127,7 @@ def start_backup_routine():
             )
 
             Mail_handling(json_data, MailMessage, returnfunc, Name)
+            LogRotation(json_data, f"{Logfolder}{Name}")
 
 
 def Mail_handling(json_data, MailMessage, returnfunc, Name=""):

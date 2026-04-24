@@ -1,5 +1,6 @@
-import datetime
+from datetime import datetime, timedelta
 import os
+import time
 from enum import Enum
 
 
@@ -11,11 +12,24 @@ class enum_LogLevel(Enum):
     fatal = 4
 
 
+def LogRotation(json_data, LogPath):
+    b = os.path.expanduser(LogPath)
+    LogRotation = json_data["General"]["LogRotation"]
+
+    for full in os.listdir(b):
+        f = os.path.join(b, full)
+        file_mtime = datetime.fromtimestamp(os.path.getmtime(f))
+        max_mtime = datetime.now() - timedelta(days=LogRotation)
+
+        if file_mtime < max_mtime:
+            os.remove(f)
+
+
 def Write_Log(STATUS, MESSAGE, LogFile, print_Message):
     if not os.path.exists(LogFile):
         os.makedirs(os.path.dirname(LogFile), exist_ok=True)
 
-    date_Log = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    date_Log = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     logMessage = f"{date_Log}\t{STATUS}\t|  {MESSAGE}"
 
     if print_Message:  # print Message = True => Write into LogFile and to console
