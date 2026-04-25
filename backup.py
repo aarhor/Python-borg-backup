@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import shutil
 from datetime import datetime
 import traceback
 from smtp import *
@@ -135,6 +136,27 @@ def start_backup_routine():
             LogRotation(json_data, f"{Logfolder}{Name}")
 
 
+def dependency_check():
+    with open(Path_config, "r") as file:
+        json_data = json.load(file)
+
+    borg_path = shutil.which("borg")
+    if borg_path:
+        LOG_DEBUG(
+            f"BorgBackup binary found in $PATH.",
+            "",
+            json_data,
+        )
+        return True
+    else:
+        LOG_FATAL(
+            f"BorgBackup not found. Please use 'sudo apt install borgbackup' or use the instructions on https://borgbackup.readthedocs.io/en/stable/installation.html",
+            "",
+            json_data,
+        )
+        return False
+
+
 def Mail_handling(json_data, MailMessage, returnfunc, Name=""):
     returncode_func = returnfunc[0]
     status_map = {
@@ -184,4 +206,5 @@ for arg in sys.argv:
         )
     i = i + 1
 
-start_backup_routine()
+if dependency_check():
+    start_backup_routine()

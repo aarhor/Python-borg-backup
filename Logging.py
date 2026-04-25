@@ -26,15 +26,18 @@ def LogRotation(json_data, LogPath):
 
 
 def Write_Log(STATUS, MESSAGE, LogFile, print_Message):
-    if not os.path.exists(LogFile):
+    if not os.path.exists(LogFile) and LogFile != "":
         os.makedirs(os.path.dirname(LogFile), exist_ok=True)
 
     date_Log = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     logMessage = f"{date_Log}\t{STATUS}\t|  {MESSAGE}"
 
     if print_Message:  # print Message = True => Write into LogFile and to console
-        with open(LogFile, "a+") as f:
-            f.write(f"{logMessage}\n")
+        try:
+            with open(LogFile, "a+") as f:
+                f.write(f"{logMessage}\n")
+        except Exception as e:
+            a = ""
 
         print(logMessage)
     else:  # print Message = False => return logMessage to write into MailMessage variable
