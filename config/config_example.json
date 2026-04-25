@@ -22,6 +22,8 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
       "Repo_Initialized": false,
+      "Pre_BackupCommand": "docker;stop;Software 1",
+      "Post_BackupCommand": "docker;start;Software 1",
       "dry_run": false,
       "active": true,
       "Cleanup": {
@@ -38,6 +40,8 @@
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
       "Repo_Initialized": false,
+      "Pre_BackupCommand": "",
+      "Post_BackupCommand": "",
       "dry_run": false,
       "active": false,
       "Cleanup": {

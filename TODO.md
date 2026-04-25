@@ -2,7 +2,7 @@
 
 - [x] Automatisches Löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
-- [ ] Vor und Nach der Sicherung einen Befehl ausführen
+- [x] Vor und Nach der Sicherung einen Befehl ausführen
 - [ ] Monitoring
   - [ ] Daten in ein Grafana Dasboard exportieren lassen
     - [ ] Gesamte Anzahl der Dateien

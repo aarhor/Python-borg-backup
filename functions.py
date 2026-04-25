@@ -128,6 +128,29 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
         "$Timestamp", json_data["General"]["Timestamp"]
     )
     SourcePath_list = json_data_current_backup["SourcePath"]
+    Pre_BackupCommand = json_data_current_backup["Pre_BackupCommand"]
+    Post_BackupCommand = json_data_current_backup["Post_BackupCommand"]
+
+    if Pre_BackupCommand != "":
+        Args_process = Pre_BackupCommand.split(";")
+
+        used_command = ""
+        for y in Args_process:
+            if y == "":
+                continue
+
+            used_command += f"{y} "
+
+        MailMessage_return += LOG_DEBUG(
+            f"Pre Backup command: {used_command}", Logging_file, json_data
+        )
+
+        proc = subprocess.run(Args_process, capture_output=True)
+
+        MailMessage_return += LOG_INFO(
+            "Pre Backup command executed", Logging_file, json_data
+        )
+
     Args_process = [
         "borg",
         "create",
@@ -188,6 +211,26 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
 
     with open(f"{os.path.dirname(Logging_file)}/stats.json", "w") as file:
         file.write(return_stdout)
+
+    if Post_BackupCommand != "":
+        Args_process = Post_BackupCommand.split(";")
+
+        used_command = ""
+        for y in Args_process:
+            if y == "":
+                continue
+
+            used_command += f"{y} "
+
+        MailMessage_return += LOG_DEBUG(
+            f"Post Backup command: {used_command}", Logging_file, json_data
+        )
+
+        proc = subprocess.run(Args_process, capture_output=True)
+
+        MailMessage_return += LOG_INFO(
+            "Post Backup command executed", Logging_file, json_data
+        )
 
     match returncode:
         case 0:

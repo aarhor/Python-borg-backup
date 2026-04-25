@@ -110,18 +110,20 @@ Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fo
 
 ### backup
 
-| Einstellung        | Doku                                                                                        | Nutzbare Variablen | Empfohlene Einstellung |
-| ------------------ | ------------------------------------------------------------------------------------------- | ------------------ | ---------------------- |
-| `Name`             | -                                                                                           | -                  |                        |
-| `SourcePath`       | -                                                                                           | -                  |                        |
-| `Exclude`          | -                                                                                           | `{$SourcePathX}`   |                        |
-| `RemoteRepo`       | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls) | -                  |                        |
-| `ArchiveName`      | -                                                                                           | `{now:$Timestamp}` | `{now:$Timestamp}`     |
-| `EncryptionPwd`    | -                                                                                           | -                  |                        |
-| `Repo_Initialized` | -                                                                                           | -                  |                        |
-| `dry_run`          | -                                                                                           | -                  |                        |
-| `active`           | -                                                                                           | -                  |                        |
-| `Cleanup`          | [borg prune](https://borgbackup.readthedocs.io/en/stable/usage/prune.html)                  | -                  |                        |
+| Einstellung          | Doku                                                                                        | Nutzbare Variablen | Empfohlene Einstellung |
+| -------------------- | ------------------------------------------------------------------------------------------- | ------------------ | ---------------------- |
+| `Name`               | -                                                                                           | -                  |                        |
+| `SourcePath`         | -                                                                                           | -                  |                        |
+| `Exclude`            | -                                                                                           | `{$SourcePathX}`   |                        |
+| `RemoteRepo`         | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls) | -                  |                        |
+| `ArchiveName`        | -                                                                                           | `{now:$Timestamp}` | `{now:$Timestamp}`     |
+| `EncryptionPwd`      | -                                                                                           | -                  |                        |
+| `Repo_Initialized`   | -                                                                                           | -                  |                        |
+| `Pre_BackupCommand`  | -                                                                                           | -                  |                        |
+| `Post_BackupCommand` | -                                                                                           | -                  |                        |
+| `dry_run`            | -                                                                                           | -                  |                        |
+| `active`             | -                                                                                           | -                  |                        |
+| `Cleanup`            | [borg prune](https://borgbackup.readthedocs.io/en/stable/usage/prune.html)                  | -                  |                        |
 
 > [!NOTE]
 > Für Beispiele schaue dir dafür die [Beispielconfig](config/config_example.json) Datei an. Dort wird gezeigt wie sich was Konfigurieren lässt.
@@ -178,6 +180,16 @@ Das Passwort was zur Verschlüsselung des Archives genutzt werden soll.
 
 Diese Einstellung wird, aktuell, genutzt um festzustellen ob das Repository bereits Initialisiert wurde. Sobald das repo erfolgreich Initialisiert wurde, **muss** der Wert von `false` auf `true` gesetzt werden.<br>
 Nachdem das Repository eingerichtet wurde, erfolgt direkt im Anschluss eine erste Sicherung der Daten. Je nach Größe der gesamten Daten, kann dies einen Moment dauern. Dies ist in der Ausgabe nicht direkt ersichtlich.
+
+**`Pre_BackupCommand`**<br>
+
+Ein Befehl der **vor** der eigentlichen Sicherung ausgeführt werden soll. Hierdurch kann z.B. ein Docker Container beendet werden damit die Daten während der Sicherung nicht verändert werden können.<br>
+Die einzelnen Teile des Befehls müssen mit einem Semikolon ";" getrennt werden. => `docker;stop;Software`
+
+**`Post_BackupCommand`**<br>
+
+Ein Befehl der **nach** der eigentlichen Sicherung ausgeführt werden soll. Sollte es nicht zu einem allgemeinen Fehler kommen wird dieser Befehl <ins>**immer**</ins> ausgeführt.<br>
+Die einzelnen Teile des Befehls müssen mit einem Semikolon ";" getrennt werden. => `docker;start;Software`
 
 **`dry_run`**<br>
 
