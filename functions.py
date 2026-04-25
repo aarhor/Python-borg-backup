@@ -452,6 +452,18 @@ def borg_key_export(json_data):
             capture_output=True,
         )
 
+        # Read in the file
+        with open(Export_filename, "r") as file:
+            filedata = file.read()
+
+        # Replace the target string
+        filedata = filedata.replace("/path/to/repo", f'"{RemoteRepo}"')
+        filedata = filedata.replace("key use borg key", f"key use:\nborg key")
+
+        # Write the file out again
+        with open(Export_filename, "w") as file:
+            file.write(filedata)
+
     MailMessage_return += LOG_INFO(
         "Key export was successful.", Logging_file, json_data
     )

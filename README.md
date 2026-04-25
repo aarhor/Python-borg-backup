@@ -285,9 +285,6 @@ Initiiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt 
 Erstellt eine Sicherung aller Schlüssel und erstellt im Ordner `export` eine Textdatei die ausgedruckt werden kann und bei Bedarf wieder importiert werden kann. Ein Import wird aktuell nicht unterstützt und muss manuell erfolgen.<br>
 Der benötigte Befehl ist in der Datei hinterlegt.
 
-> [!NOTE]
-> Vor dem Drucken sollte in der Textdatei der Teil `/path/to/repo` mit dem tatsächlichen Repo getauscht werden.
-
 **`--single_import=[Name der Sicherung]`**<br>
 
 Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
