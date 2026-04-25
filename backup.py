@@ -53,9 +53,12 @@ def start_backup_routine():
                         "The repo is initialized.", Logging_Folder_Filename, json_data
                     )
 
-                    returnfunc = borg_check(
-                        json_data, backup, Logging_Folder_Filename, sys.argv
-                    )
+                    if "--skip_pre_check" not in sys.argv:
+                        returnfunc = borg_check(
+                            json_data, backup, Logging_Folder_Filename, sys.argv
+                        )
+                    else:
+                        returnfunc = [0]
 
                     if returnfunc[0] == 0:
                         returnfunc = borg_create(

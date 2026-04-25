@@ -224,10 +224,12 @@ Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokument
 Im Bereich `SMTP` befinden sich die Einstellungen die für den Versand von den Abschlussmails benötigt werden. Wie z.B. der Ziel SMTP Server und dessen Zugangsdaten.<br>
 
 **`SendMailOn`**<br>
+
 Steuert in welchem Fall eine Mail gesendet werden soll. In der Standardeinstellung wird ab der Stufe _Warning_ eine Mail verschickt.<br>
 Der Inhalt der Mail umfasst den gesamten Inhalt des Skript eigenen Loggings. Der genaue Inhalt lässt sich über die Einstellung `General` > `Logging` > `LogLevel_Mail` konfigurieren.
 
 **`Login`**<br>
+
 Der Anmeldename an dem SMTP Server. Dies kann die eigene Haupt E-Mail Adresse sein oder der normale Benutzername.
 
 **`Password`**<br>
@@ -250,6 +252,7 @@ Der gewünschte Port. Standardmäßig ist hier 465 für TLS eingestellt.<br>
 Muss die Verbindung über STARTTLS erfolgen, ist hier der Standardport 587. Nach Möglichkeit sollte jedoch **immer**, aus Sicherheitsgründen, eine Verbindung über TLS aufgebaut werden.
 
 **`DateHeaderTimezone`**<br>
+
 Gibt die Zeitzone an, die im Header der E-Mail für das Datum verwendet werden soll. Dies stellt sicher, dass die Sendezeit in der Abschlussmail korrekt angezeigt wird, unabhängig davon, in welcher Zeitzone der Server selbst läuft.
 Wird dieses Feld leer gelassen, nutzt das Skript die lokale Systemzeit des Servers.
 
@@ -267,15 +270,18 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
 ### Skript Parameter
 
 **`--config_file="[Pfad zur config Datei]"`**<br>
+
 Über den Parameter `--config_file=` ist es möglich die config Datei aus einem anderen Verzeichnis zu starten.
 
 **`--repo_init`**<br>
+
 Initiiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt ist. Nach der Einrichtung muss `Repo_Initialized` auf `True` umgestellt werden!
 
 > [!NOTE]
 > Mit dieser Einstellung wird nach der Erfolgreichen Initiierung keine Sicherung angelegt.
 
 **`--key_export`**<br>
+
 Erstellt eine Sicherung aller Schlüssel und erstellt im Ordner `export` eine Textdatei die ausgedruckt werden kann und bei Bedarf wieder importiert werden kann. Ein Import wird aktuell nicht unterstützt und muss manuell erfolgen.<br>
 Der benötigte Befehl ist in der Datei hinterlegt.
 
@@ -283,16 +289,26 @@ Der benötigte Befehl ist in der Datei hinterlegt.
 > Vor dem Drucken sollte in der Textdatei der Teil `/path/to/repo` mit dem tatsächlichen Repo getauscht werden.
 
 **`--single_import=[Name der Sicherung]`**<br>
+
 Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
 
 - `--single_import="Software 1"` <= Knorke
 - `--single_import=Software 1` <= Nicht so Knorke
 
 **`--verify-data`**<br>
+
 Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrität.<br>
 
 > [!CAUTION]
 > Je nach Größe der bereits vorhandenen Dateien, kann die Sicherung hiermit auch mehere Stunden dauern!
+
+**`--skip_pre_check`**<br>
+
+> [!NOTE]
+> Setze diesen Parameter nur bei Bedarf und insbesondere nicht automatisiert im Hintergrund, da dardurch eventuelle Fehler im repo nicht erkannt werden können.
+
+Überspringt den check der vor der Sicherung durchgeführt wird
+
 
 ### TODO
 
