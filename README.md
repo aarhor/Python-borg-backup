@@ -9,6 +9,7 @@
     - [backup](#backup)
     - [SMTP](#smtp)
     - [Skript Parameter](#skript-parameter)
+  - [Monitoring](#monitoring)
 - [English / Englisch](#english--englisch)
 
 # Deutsch / German
@@ -306,6 +307,10 @@ Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrit�
 
 Überspringt den check der vor der Sicherung durchgeführt wird
 
+## Monitoring
+
+Nach jedem Durchlauf wird eine Mail mit den aktuellen Logausgaben versendet. In der config Datei kann der SMTP Server unter `SMTP` eingerichtet werden.<br>
+Externe Monitoring tools können die Datei `stats.json` nutzen. Diese befindet sich in dem Logging verzeichnis der entsprechenden Sicherung.
 
 ### TODO
 
@@ -318,6 +323,7 @@ Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrit�
     - [ ] Gesamte Größe der Sicherung
     - [ ] Dauer der Sicherung
   - [ ] healthcheck.io Integration
+  - [x] json Ausgabe in stats.json speichern
 - [x] Verschiedene Loglevel für Mail und Datei
 - [x] Automatische Integritätsprüfung vor der Sicherung<br>
       => Abbrechen wenn ein Fehler festgestellt wurde

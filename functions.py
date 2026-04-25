@@ -185,6 +185,10 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     returncode = proc.returncode
     return_stderr = proc.stderr.decode()
     return_stdout = proc.stdout.decode()
+
+    with open(f"{os.path.dirname(Logging_file)}/stats.json", "w") as file:
+        file.write(return_stdout)
+
     match returncode:
         case 0:
             FileArray = return_stderr.split("\n")

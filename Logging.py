@@ -36,7 +36,7 @@ def Write_Log(STATUS, MESSAGE, LogFile, print_Message):
         try:
             with open(LogFile, "a+") as f:
                 f.write(f"{logMessage}\n")
-        except Exception as e:
+        except:
             a = ""
 
         print(logMessage)
