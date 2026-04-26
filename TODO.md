@@ -9,10 +9,6 @@
 - [ ] Zusammenfassung aller Backup-Ergebnisse (Erfolg/Fehler) in einer einzigen Tabelle am Ende der Mail.
 - [ ] Einmal im Monat `borg check --verify-data` ausführen.
 - [ ] Global excludes
-- [ ] **CLI-Erweiterung: `--list` Parameter**
-  - [ ] Übersichtstabelle aller konfigurierten Backup-Jobs
-  - [ ] Anzeige von Status, letztem erfolgreichen Lauf und Repository-Größe
-  - [ ] Optionaler `--verbose` Modus für detaillierte Job-Konfigurationen
 
 # Erledigt
 
@@ -24,5 +20,7 @@
 - [x] Automatisches Löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
 - [x] Vor und Nach der Sicherung einen Befehl ausführen
-- [ ] **CLI-Erweiterung: `--list` Parameter**
+- [x] **CLI-Erweiterung: `--list` Parameter**
   - [x] json Daten über `borg info` erhalten und abspeichern
+  - [x] Übersichtstabelle aller konfigurierten Backup-Jobs
+  - [x] Anzeige von Status, letztem erfolgreichen Lauf und Repository-Größe

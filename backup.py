@@ -15,6 +15,10 @@ def start_backup_routine():
 
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
 
+    if "--list" in sys.argv:
+        list_all_backups(json_data)
+        exit()
+
     for backup in json_data["backup"]:
         MailMessage = ""
         Name = backup["Name"]

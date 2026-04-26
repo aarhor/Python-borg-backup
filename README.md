@@ -24,6 +24,10 @@ Damit das Skript (automatisiert) genutzt werden kann werden folgende Programme b
   _Getestet mit 3.14.3_
 - BorgBackup Client und Server Installation.<br>
 
+Des Weiteren werden folgende python module benötigt:
+
+- `prettytable` => `pip install prettytable`
+
 ## Nutzung
 
 Damit das Skript genutzt werden kann, muss von der Beispiel config Datei `config\config_example.json` eine Kopie erstellt werden und diese `config.json` genannt werden.
@@ -317,7 +321,19 @@ Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrit�
 > [!NOTE]
 > Setze diesen Parameter nur bei Bedarf und insbesondere nicht automatisiert im Hintergrund, da dardurch eventuelle Fehler im repo nicht erkannt werden können.
 
-Überspringt den check der vor der Sicherung durchgeführt wird
+Überspringt den check der vor der Sicherung durchgeführt wird.
+
+**`--list`**<br>
+
+Listet alle konfigurierten Sicherungen auf.
+
+```plaintext
++------------+--------+---------------------+-------+--------------+
+|    Name    | Active |       Last Run      | Files | Size (Total) |
++------------+--------+---------------------+-------+--------------+
+| Software 1 |  True  | 2026-04-26 13:51:00 |   14  |   0.005 GB   |
++------------+--------+---------------------+-------+--------------+
+```
 
 ## Monitoring
 

@@ -503,3 +503,43 @@ def execute_write_command(Args, Logging_file, json_data, command_type="borg"):
     proc = subprocess.run(Args, capture_output=True)
 
     return MailMessage_return, proc
+
+
+def list_all_backups(json_data):
+    from prettytable import PrettyTable
+
+    MailMessage_return = ""
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
+    table = PrettyTable()
+    table.field_names = ["Name", "Active", "Last Run", "Files", "Size (Total)"]
+
+    for backup in json_data["backup"]:
+        data = []
+        Name = backup["Name"]
+        file_stats_last = f"{Logfolder}{Name}/stats_last.json"
+        file_stats = f"{Logfolder}{Name}/stats.json"
+
+        with open(file_stats_last, "r") as file:
+            json_data_last = json.load(file)
+
+        with open(file_stats, "r") as file:
+            json_data_repo = json.load(file)
+
+        number_of_files = json_data_last["archives"][0]["stats"]["nfiles"]
+        size = round(json_data_repo["cache"]["stats"]["unique_csize"] / 1000 / 1000, 3)
+        date_string = (
+            json_data_repo["repository"]["last_modified"]
+            .replace(".000000", "")
+            .replace("T", " ")
+        )
+        date_object = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+
+        data.append(Name)
+        data.append(backup["active"])
+        data.append(date_object)
+        data.append(number_of_files)
+        data.append(f"{size} GB")
+
+        table.add_row(data)
+
+    print(table)
