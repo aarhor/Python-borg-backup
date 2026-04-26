@@ -209,9 +209,6 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     return_stderr = proc.stderr.decode()
     return_stdout = proc.stdout.decode()
 
-    with open(f"{os.path.dirname(Logging_file)}/stats.json", "w") as file:
-        file.write(return_stdout)
-
     if Post_BackupCommand != "":
         Args_process = Post_BackupCommand.split(";")
 
