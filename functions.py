@@ -2,7 +2,6 @@ import json
 import subprocess
 from datetime import datetime, timedelta
 import re
-from smtp import *
 from Logging import *
 from pathlib import Path
 
@@ -310,6 +309,8 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                     Logging_file,
                     json_data,
                 )
+
+                borg_info(json_data, json_data_current_backup, Logging_file)
             else:
                 MailMessage_return += LOG_INFO(
                     "Affected Files:", Logging_file, json_data
@@ -511,5 +512,67 @@ def borg_key_export(json_data):
     MailMessage_return += LOG_INFO(
         "Key export was successful.", Logging_file, json_data
     )
+
+    return 0, MailMessage_return
+
+
+def borg_info(json_data, json_data_current_backup, Logging_file):
+    MailMessage_return = ""
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    Args_process = [
+        "borg",
+        "info",
+        "--json",
+        f"{RemoteRepo}",
+        "--last",
+        "1",
+    ]
+
+    os.environ["BORG_PASSPHRASE"] = json_data_current_backup["EncryptionPwd"]
+
+    used_command = ""
+    for y in Args_process:
+        if y == "":
+            continue
+
+        used_command += f"{y} "
+
+    MailMessage_return += LOG_DEBUG(
+        f"borg command: {used_command}", Logging_file, json_data
+    )
+
+    proc = subprocess.run(
+        Args_process,
+        capture_output=True,
+    )
+
+    return_stdout = proc.stdout.decode()
+
+    with open(f"{os.path.dirname(Logging_file)}/stats_last.json", "w") as file:
+        file.write(return_stdout)
+
+    Args_process.pop(4)
+    Args_process.pop(4)
+
+    used_command = ""
+    for y in Args_process:
+        if y == "":
+            continue
+
+        used_command += f"{y} "
+    MailMessage_return += LOG_DEBUG(
+        f"borg command: {used_command}", Logging_file, json_data
+    )
+
+    proc = subprocess.run(
+        Args_process,
+        capture_output=True,
+    )
+
+    return_stdout = proc.stdout.decode()
+
+    with open(f"{os.path.dirname(Logging_file)}/stats.json", "w") as file:
+        file.write(return_stdout)
 
     return 0, MailMessage_return
