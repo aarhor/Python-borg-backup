@@ -526,8 +526,8 @@ def list_all_backups(json_data):
 
         number_of_files = json_data_last["archives"][0]["stats"]["nfiles"]
         size = int(json_data_repo["cache"]["stats"]["unique_csize"])
-        size_string=""
-        
+        size_string = ""
+
         for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
             if size < 1000:
                 size_string = f"{size:.2f} {unit}"
@@ -549,4 +549,7 @@ def list_all_backups(json_data):
 
         table.add_row(data)
 
+    table.align = "l"
+    table.align["Size (Total)"] = "r"
+    table.align["Files"] = "r"
     print(table)

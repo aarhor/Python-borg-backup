@@ -26,7 +26,7 @@ Damit das Skript (automatisiert) genutzt werden kann werden folgende Programme b
 
 Des Weiteren werden folgende python module benötigt:
 
-- `prettytable` => `pip install prettytable`
+- `prettytable` => `pip install prettytable` or `sudo apt install python3-prettytable`
 
 ## Nutzung
 
@@ -329,9 +329,11 @@ Listet alle konfigurierten Sicherungen auf.
 
 ```plaintext
 +------------+--------+---------------------+-------+--------------+
-|    Name    | Active |       Last Run      | Files | Size (Total) |
+| Name       | Active | Last Run            | Files | Size (Total) |
 +------------+--------+---------------------+-------+--------------+
-| Software 1 |  True  | 2026-04-26 13:51:00 |   14  |   0.005 GB   |
+| Software 1 | True   | 2026-04-26 13:51:00 |     1 |      4.72 KB |
+| Software 2 | True   | 2026-04-26 12:10:56 |     8 |    472.05 GB |
+| Software 3 | True   | 2026-04-24 14:37:31 |     7 |    133.70 GB |
 +------------+--------+---------------------+-------+--------------+
 ```
 
