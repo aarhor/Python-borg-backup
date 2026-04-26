@@ -508,7 +508,6 @@ def execute_write_command(Args, Logging_file, json_data, command_type="borg"):
 def list_all_backups(json_data):
     from prettytable import PrettyTable
 
-    MailMessage_return = ""
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
     table = PrettyTable()
     table.field_names = ["Name", "Active", "Last Run", "Files", "Size (Total)"]
@@ -526,7 +525,15 @@ def list_all_backups(json_data):
             json_data_repo = json.load(file)
 
         number_of_files = json_data_last["archives"][0]["stats"]["nfiles"]
-        size = round(json_data_repo["cache"]["stats"]["unique_csize"] / 1000 / 1000, 3)
+        size = int(json_data_repo["cache"]["stats"]["unique_csize"])
+        size_string=""
+        
+        for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+            if size < 1000:
+                size_string = f"{size:.2f} {unit}"
+                break
+            size /= 1000
+
         date_string = (
             json_data_repo["repository"]["last_modified"]
             .replace(".000000", "")
@@ -538,7 +545,7 @@ def list_all_backups(json_data):
         data.append(backup["active"])
         data.append(date_object)
         data.append(number_of_files)
-        data.append(f"{size} GB")
+        data.append(size_string)
 
         table.add_row(data)
 
