@@ -322,7 +322,12 @@ Prüft vor der eigentlichen Sicherung auch alle vorhandene Dateien auf Integrit�
 ## Monitoring
 
 Nach jedem Durchlauf wird eine Mail mit den aktuellen Logausgaben versendet. In der config Datei kann der SMTP Server unter `SMTP` eingerichtet werden.<br>
-Externe Monitoring tools können die Datei `stats.json` nutzen. Diese befindet sich in dem Logging verzeichnis der entsprechenden Sicherung.
+Für Monitoring tools werden in dem Logging verzeichnis zwei json Dateien gespeichert. Der Inhalt wird nach jeder Sicherung überschrieben.
+
+| Datei             | Inhalt                                       |
+| ----------------- | -------------------------------------------- |
+| `stats.json`      | Informationen über das komplette repo.       |
+| `stats_last.json` | Informationen über die **letzte** Sicherung. |
 
 ### TODO
 

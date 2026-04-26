@@ -14,7 +14,7 @@
   - [ ] Anzeige von Status, letztem erfolgreichen Lauf und Repository-Größe
   - [ ] Optionaler `--verbose` Modus für detaillierte Job-Konfigurationen
 
-# Done
+# Erledigt
 
 - [ ] **Monitoring**
   - [x] json Ausgabe in stats.json speichern
@@ -24,3 +24,5 @@
 - [x] Automatisches Löschen alter Logdateien
 - [x] Mehrere Quellpfade sichern
 - [x] Vor und Nach der Sicherung einen Befehl ausführen
+- [ ] **CLI-Erweiterung: `--list` Parameter**
+  - [x] json Daten über `borg info` erhalten und abspeichern

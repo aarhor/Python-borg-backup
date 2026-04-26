@@ -37,21 +37,10 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
             f"{RemoteRepo}",
         ]
 
-        used_command = ""
-        for y in Args_process:
-            if y == "":
-                continue
+        return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-            used_command += f"{y} "
-
-        MailMessage_return += LOG_DEBUG(
-            f"borg command: {used_command}", Logging_file, json_data
-        )
-
-        proc = subprocess.run(
-            Args_process,
-            capture_output=True,
-        )
+        MailMessage_return += return_ewc[0]
+        proc = return_ewc[1]
 
         output_init = proc.stderr.decode()
         returncode = proc.returncode
@@ -133,18 +122,10 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     if Pre_BackupCommand != "":
         Args_process = Pre_BackupCommand.split(";")
 
-        used_command = ""
-        for y in Args_process:
-            if y == "":
-                continue
-
-            used_command += f"{y} "
-
-        MailMessage_return += LOG_DEBUG(
-            f"Pre Backup command: {used_command}", Logging_file, json_data
+        return_ewc = execute_write_command(
+            Args_process, Logging_file, json_data, "Pre Backup"
         )
-
-        proc = subprocess.run(Args_process, capture_output=True)
+        MailMessage_return += return_ewc[0]
 
         MailMessage_return += LOG_INFO(
             "Pre Backup command executed", Logging_file, json_data
@@ -189,21 +170,11 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
                 Args_process.insert(4, "--exclude")
                 Args_process.insert(5, y)
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+    return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-        used_command += f"{y} "
+    MailMessage_return += return_ewc[0]
+    proc = return_ewc[1]
 
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}", Logging_file, json_data
-    )
-
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
     returncode = proc.returncode
     return_stderr = proc.stderr.decode()
     return_stdout = proc.stdout.decode()
@@ -211,18 +182,10 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     if Post_BackupCommand != "":
         Args_process = Post_BackupCommand.split(";")
 
-        used_command = ""
-        for y in Args_process:
-            if y == "":
-                continue
-
-            used_command += f"{y} "
-
-        MailMessage_return += LOG_DEBUG(
-            f"Post Backup command: {used_command}", Logging_file, json_data
+        return_ewc = execute_write_command(
+            Args_process, Logging_file, json_data, "Post Backup"
         )
-
-        proc = subprocess.run(Args_process, capture_output=True)
+        MailMessage_return += return_ewc[0]
 
         MailMessage_return += LOG_INFO(
             "Post Backup command executed", Logging_file, json_data
@@ -367,21 +330,10 @@ def borg_prune(json_data, json_data_current_backup, Logging_file):
         f"{RemoteRepo}",
     ]
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+    return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-        used_command += f"{y} "
-
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}", Logging_file, json_data
-    )
-
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
+    MailMessage_return += return_ewc[0]
+    proc = return_ewc[1]
 
     returnstats = proc.stderr.decode().split("\n")
 
@@ -407,21 +359,10 @@ def borg_check(json_data, json_data_current_backup, Logging_file, sys_args):
     if "--verify-data" in sys_args:
         Args_process.insert(2, "--verify-data")
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+    return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-        used_command += f"{y} "
-
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}", Logging_file, json_data
-    )
-
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
+    MailMessage_return += return_ewc[0]
+    proc = return_ewc[1]
 
     returnstats = proc.stderr.decode().split("\n")
     returncode = proc.returncode
@@ -481,21 +422,9 @@ def borg_key_export(json_data):
             "Allow Relocated Repos"
         ]
 
-        used_command = ""
-        for y in Args_process:
-            if y == "":
-                continue
+        return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-            used_command += f"{y} "
-
-        MailMessage_return += LOG_DEBUG(
-            f"borg command: {used_command}", Logging_file, json_data
-        )
-
-        subprocess.run(
-            Args_process,
-            capture_output=True,
-        )
+        MailMessage_return += return_ewc[0]
 
         # Read in the file
         with open(Export_filename, "r") as file:
@@ -531,21 +460,10 @@ def borg_info(json_data, json_data_current_backup, Logging_file):
 
     os.environ["BORG_PASSPHRASE"] = json_data_current_backup["EncryptionPwd"]
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+    return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-        used_command += f"{y} "
-
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}", Logging_file, json_data
-    )
-
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
+    MailMessage_return += return_ewc[0]
+    proc = return_ewc[1]
 
     return_stdout = proc.stdout.decode()
 
@@ -555,20 +473,10 @@ def borg_info(json_data, json_data_current_backup, Logging_file):
     Args_process.pop(4)
     Args_process.pop(4)
 
-    used_command = ""
-    for y in Args_process:
-        if y == "":
-            continue
+    return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
-        used_command += f"{y} "
-    MailMessage_return += LOG_DEBUG(
-        f"borg command: {used_command}", Logging_file, json_data
-    )
-
-    proc = subprocess.run(
-        Args_process,
-        capture_output=True,
-    )
+    MailMessage_return += return_ewc[0]
+    proc = return_ewc[1]
 
     return_stdout = proc.stdout.decode()
 
@@ -576,3 +484,22 @@ def borg_info(json_data, json_data_current_backup, Logging_file):
         file.write(return_stdout)
 
     return 0, MailMessage_return
+
+
+def execute_write_command(Args, Logging_file, json_data, command_type="borg"):
+    MailMessage_return = ""
+    used_command = ""
+
+    for y in Args:
+        if y == "":
+            continue
+
+        used_command += f"{y} "
+
+    MailMessage_return += LOG_DEBUG(
+        f"{command_type} command: {used_command}", Logging_file, json_data
+    )
+
+    proc = subprocess.run(Args, capture_output=True)
+
+    return MailMessage_return, proc
