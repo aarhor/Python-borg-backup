@@ -28,6 +28,7 @@ def start_backup_routine():
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
+            os.remove(Logging_Folder_Filename)
             continue
 
         try:
