@@ -18,23 +18,23 @@ Mit diesem Python-Skript können Backups mittels [BorgBackup](https://www.borgba
 
 ## Voraussetzungen
 
-Damit das Skript (automatisiert) genutzt werden kann werden folgende Programme benötigt:
+Damit das Skript (automatisiert) genutzt werden kann werden, folgende Programme benötigt:
 
 - [Python3](https://www.python.org/downloads/)<br>
   _Getestet mit 3.14.3_
 - BorgBackup Client und Server Installation.<br>
 
-Des Weiteren werden folgende python module benötigt:
+Des Weiteren werden folgende Python-Module benötigt:
 
 - `prettytable` => `pip install prettytable` or `sudo apt install python3-prettytable`
 
 ## Nutzung
 
-Damit das Skript genutzt werden kann, muss von der Beispiel config Datei `config\config_example.json` eine Kopie erstellt werden und diese `config.json` genannt werden.
-Es ist auch möglich diese Datei in einen anderen Ordner als dem config Unterordner abzuspeichern.
+Damit das Skript genutzt werden kann, muss von der Beispiel-Konfigurationsdatei `config\config_example.json` eine Kopie erstellt werden und diese `config.json` genannt werden.
+Es ist auch möglich diese Datei in einen anderen Ordner als dem Config-Unterordner abzuspeichern.
 
 > [!TIP]  
-> Auch wenn es möglich ist einen anderen Pfad anzugeben, sollte die config Datei in dem config Unterordner belassen werden.
+> Auch wenn es möglich ist einen anderen Pfad anzugeben, sollte die config Datei in dem Config-Unterordner belassen werden.
 
 Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun.
 
@@ -95,7 +95,7 @@ Die Reihenfolge ist folgende: `DEBUG` > `INFO` > `WARNING` > `ERROR` > `FATAL`
   - `yes`
   - `no`
 
-Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fort wenn die Abfrage mit _yes_ oder _no_ beantwortet wurde. Da das Skript im Automatikmodus keine interaktiven Eingaben erlaubt, wird die Antwort über diese Einstellung vorab festgelegt. Bei _yes_ wird die Ausführung fortgeführt und der neue Pfad wird zukünftig akzeptiert. Diese Einstellung betrifft <ins>alle</ins> konfigurierten Sicherungen.
+Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fort, wenn die Abfrage mit _yes_ oder _no_ beantwortet wurde. Da das Skript im Automatikmodus keine interaktiven Eingaben erlaubt, wird die Antwort über diese Einstellung vorab festgelegt. Bei _yes_ wird die Ausführung fortgeführt und der neue Pfad wird zukünftig akzeptiert. Diese Einstellung betrifft <ins>alle</ins> konfigurierten Sicherungen.
 
 > [!NOTE]
 > Wenn die Eingabe nicht dem vorgegebene Muster entspricht (Einstellung bleibt leer oder es steht was komplett anderes drin), wird borg seitig _no_ angegeben.
@@ -147,7 +147,7 @@ Anschließend kann dieser Ordner gesichert werden. Als Quellpfad ist alles erlau
 
 Sollten gewisse Ordner oder Dateien in der Sicherung nicht benötigt werden, da diese z.B. nur temporäre Dateien sind oder Systemdateien, können diese über die Einstellung `Exclude` ausgeschlossen werden.
 Die Pfade können absolute oder auch relative Pfade sein. Wildcards werden auch unterstützt. Für weitere Informationen siehe die [borg create Dokumentation](https://borgbackup.readthedocs.io/en/stable/usage/create.html).
-Es ist möglich, über die Variable `{$SourcePathX}` den Quellpfad zu übernehmen sollten die Ordner / Dateien in einem Unterordner befinden.
+Es ist möglich, über die Variable `{$SourcePathX}` den Quellpfad zu übernehmen sollten sich die Ordner / Dateien in einem Unterordner befinden.
 
 > [!NOTE]
 > Über das _X_ in der Variable `{$SourcePathX}` lässt sich steuern welcher Pfad aus `SourcePath` genutzt werden soll. Die Angabe ist 0-basiert.
@@ -171,7 +171,7 @@ Das Passwort was zur Verschlüsselung des Archives genutzt werden soll.
 
 > [!CAUTION]
 >
-> - Das Skript prüft vor der Initialisierung, ob das Kennwort leer ist oder einem der Platzhalter aus der config_example.json entspricht. In diesem Fall bricht das Skript mit einer Fehlermeldung ab. Ändere in diesem Fall das hinterlegte Kennwort. Nutze hierfür z.B. einen lokalen Passwort Manager wie [KeePass](https://keepass.info/index.html).
+> - Das Skript prüft vor der Initialisierung, ob das Kennwort leer ist oder einem der Platzhalter aus der config_example.json entspricht. In diesem Fall bricht das Skript mit einer Fehlermeldung ab. Ändere in diesem Fall in der `config.json` das hinterlegte Kennwort. Nutze hierfür z.B. einen lokalen Passwort Manager wie [KeePass](https://keepass.info/index.html).
 > - Alle Dateien (außer die Datei `config_example.json`) aus dem Ordner `config` sind standardmäßig in der .gitignore hinterlegt.
 
 **`Repo_Initialized`**<br>
