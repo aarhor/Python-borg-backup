@@ -350,6 +350,8 @@ def borg_check(json_data, json_data_current_backup, Logging_file, sys_args):
     MailMessage_return = ""
     Name = json_data_current_backup["Name"]
     RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    today = datetime.now()
+
     Args_process = [
         "borg",
         "check",
@@ -358,6 +360,16 @@ def borg_check(json_data, json_data_current_backup, Logging_file, sys_args):
 
     if "--verify-data" in sys_args:
         Args_process.insert(2, "--verify-data")
+    else:
+        if today.strftime("%d") == "01":
+            Args_process.insert(2, "--verify-data")
+        else:
+            CalendarWeek = int(today.strftime("%V"))
+
+            if CalendarWeek % 2 == 0:
+                Args_process.insert(2, "--repository-only")
+            else:
+                Args_process.insert(2, "--archives-only")
 
     return_ewc = execute_write_command(Args_process, Logging_file, json_data)
 
