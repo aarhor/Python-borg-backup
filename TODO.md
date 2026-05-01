@@ -8,6 +8,10 @@
   - [ ] healthcheck.io Integration
 - [ ] Zusammenfassung aller Backup-Ergebnisse (Erfolg/Fehler) in einer einzigen Tabelle am Ende der Mail.
 - [ ] Global excludes
+- [ ] **CLI-Erweiterung: `--check-updates` & `--install-updates` Parameter**
+  - [ ] Nach neuen Updates vom borg Client suchen
+  - [ ] Benachrichtigung in der Mail und im Log als WARNING
+  - [ ] Mit `--install-updates` Neue Version installieren (benötigt `--check-updates`)
 
 # Erledigt
 

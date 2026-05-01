@@ -307,7 +307,7 @@ Der benötigte Befehl ist in der Datei hinterlegt.
 Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
 
 - `--single_import="Software 1"` <= Knorke
-- `--single_import=Software 1` <= Nicht so Knorke
+- `--single_import=Software 1`   <= Nicht so Knorke
 
 **`--verify-data`**<br>
 
@@ -331,9 +331,9 @@ Listet alle konfigurierten Sicherungen auf.
 +------------+--------+---------------------+-------+--------------+
 | Name       | Active | Last Run            | Files | Size (Total) |
 +------------+--------+---------------------+-------+--------------+
-| Software 1 | True   | 2026-04-26 13:51:00 |     1 |      4.72 KB |
-| Software 2 | True   | 2026-04-26 12:10:56 |     8 |    472.05 GB |
-| Software 3 | True   | 2026-04-24 14:37:31 |     7 |    133.70 GB |
+| Software 1 | True   | 2026-04-26 13:51:00 |     1 |    472.05 GB |
+| Software 2 | True   | 2026-04-26 12:10:56 |     8 |    133.70 GB |
+| Software 3 | True   | 2026-04-24 14:37:31 |     7 |      4.42 KB |
 +------------+--------+---------------------+-------+--------------+
 ```
 
