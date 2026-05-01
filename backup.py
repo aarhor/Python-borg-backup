@@ -201,8 +201,7 @@ for arg in sys.argv:
         with open(Path_config, "r") as file:
             json_data = json.load(file)
 
-        returnfunc = borg_key_export(json_data)
-        Mail_handling(json_data, returnfunc[1], returnfunc)
+        borg_key_export(json_data)
         exit()
     if arg.startswith("--single_import="):
         Single_Import = True
