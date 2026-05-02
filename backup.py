@@ -15,6 +15,8 @@ def start_backup_routine():
 
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
 
+    ListforMail = []
+
     if "--list" in sys.argv:
         list_all_backups(json_data)
         exit()
@@ -25,15 +27,27 @@ def start_backup_routine():
         Logging_Folder_Filename = (
             f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
         )
+        Begin = datetime.now()
+        BackupStatus = "tmp"
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
             os.remove(Logging_Folder_Filename)
+            BackupStatus = "🟧 Skipped"
             continue
 
         try:
             active = backup["active"]
             Initialized = backup["Repo_Initialized"]
+
+            ListforMail.append(Name)
+            ListforMail.append(
+                str(active)
+                .lower()
+                .replace("true", "Active")
+                .replace("false", "Stopped")
+            )
+            ListforMail.append(Begin.strftime("%Y-%m-%d %H-%M-%S"))
 
             MailMessage += LOG_INFO(
                 f"Current Backup: {Name}", Logging_Folder_Filename, json_data
@@ -52,6 +66,7 @@ def start_backup_routine():
                         json_data,
                     )
                     returnfunc = [0]
+                    BackupStatus = "🟧 Skipped"
                     continue
 
                 if Initialized:
@@ -81,6 +96,7 @@ def start_backup_routine():
                             Logging_Folder_Filename,
                             json_data,
                         )
+                        BackupStatus = "🟥 Error"
                 elif Initialized == False:
                     MailMessage += LOG_INFO(
                         "The repo isn't currently initialized.",
@@ -95,6 +111,7 @@ def start_backup_routine():
                         Logging_Folder_Filename,
                         json_data,
                     )
+                    BackupStatus = "🟩 Success"
 
                 MailMessage += returnfunc[1]
             else:
@@ -108,6 +125,7 @@ def start_backup_routine():
                     Logging_Folder_Filename,
                     json_data,
                 )
+                BackupStatus = "🟧 Skipped"
                 returnfunc = [1]
         except Exception as e:
             MailMessage += LOG_FATAL(
@@ -137,8 +155,38 @@ def start_backup_routine():
                 "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
             )
 
-            Mail_handling(json_data, MailMessage, returnfunc, Name)
+            if BackupStatus == "":
+                if returnfunc[0] == 0:
+                    BackupStatus = "🟩 Success"
+                elif returnfunc[0] == 1:
+                    BackupStatus = "🟧 Warning"
+                elif returnfunc[0] == 2:
+                    BackupStatus = "🟥 Error"
+                elif returnfunc[0] == 3:
+                    BackupStatus = "🟥 Fatal"
+
             LogRotation(json_data, f"{Logfolder}{Name}")
+
+        file_stats_last = f"{Logfolder}{Name}/stats_last.json"
+
+        with open(file_stats_last, "r") as file:
+            json_data_last = json.load(file)
+
+        size = int(json_data_last["cache"]["stats"]["unique_csize"])
+        size_string = ""
+
+        for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+            if size < 1000:
+                size_string = f"{size:.2f} {unit}"
+                break
+            size /= 1000
+
+        End = datetime.now()
+        TimeSpan = str(End - Begin)[:-7]
+        ListforMail.append(End.strftime("%Y-%m-%d %H-%M-%S"))
+        ListforMail.append(TimeSpan)
+        ListforMail.append(BackupStatus)
+        ListforMail.append(size_string)
 
 
 def dependency_check():
