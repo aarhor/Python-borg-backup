@@ -522,7 +522,14 @@ def list_all_backups(json_data):
 
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
     table = PrettyTable()
-    table.field_names = ["Name", "Active", "Last Run", "Files", "Size (Total)", "Size"]
+    table.field_names = [
+        "Name",
+        "Active",
+        "Last Run",
+        "Files",
+        "Size (Total)",
+        "Bytes Size",
+    ]
 
     for backup in json_data["backup"]:
         data = []
@@ -538,14 +545,7 @@ def list_all_backups(json_data):
 
         number_of_files = json_data_last["archives"][0]["stats"]["nfiles"]
         size = int(json_data_repo["cache"]["stats"]["unique_csize"])
-        size_tmp = size
-        size_string = ""
-
-        for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
-            if size < 1000:
-                size_string = f"{size:.2f} {unit}"
-                break
-            size /= 1000
+        size_string = convert_data_unit(size)
 
         date_string = (
             json_data_repo["repository"]["last_modified"]
@@ -559,7 +559,7 @@ def list_all_backups(json_data):
         data.append(date_object)
         data.append(number_of_files)
         data.append(size_string)
-        data.append(size_tmp)
+        data.append(size)
 
         table.add_row(data)
 
@@ -568,8 +568,15 @@ def list_all_backups(json_data):
     table.align["Files"] = "r"
     print(
         table.get_string(
-            sortby="Size",
+            sortby="Bytes Size",
             reversesort=True,
             fields=["Name", "Active", "Last Run", "Files", "Size (Total)"],
         )
     )
+
+
+def convert_data_unit(size):
+    for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+        if size < 1000:
+            return f"{size:.2f} {unit}"
+        size /= 1000

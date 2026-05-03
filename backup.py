@@ -174,13 +174,7 @@ def start_backup_routine():
             json_data_last = json.load(file)
 
         size = int(json_data_last["cache"]["stats"]["unique_csize"])
-        size_string = ""
-
-        for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
-            if size < 1000:
-                size_string = f"{size:.2f} {unit}"
-                break
-            size /= 1000
+        size_string = convert_data_unit(size)
 
         End = datetime.now()
         TimeSpan = str(End - Begin)[:-7]
@@ -226,7 +220,6 @@ def Mail_handling(json_data, ListforMail):
 
     MailMessage = MailMessage.replace("{$Data}", table_data)
 
-    print(MailMessage)
     send_mail(json_data["SMTP"], MailMessage)
 
 
