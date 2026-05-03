@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-def send_mail(smtpsettings, message):
+def send_mail(smtpsettings, message, status):
     LOGINUSER = smtpsettings["Login"]
     SENDER = smtpsettings["Sender"]
     SMTP_SERVER = smtpsettings["SMTP_Server"]
@@ -16,7 +16,7 @@ def send_mail(smtpsettings, message):
     today = datetime.now().strftime("%Y-%m-%d")
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"[BorgBackup] Backup report: tmp - {today}"
+    msg["Subject"] = f"[BorgBackup] Backup report: {status} - {today}"
     msg["From"] = SENDER
     msg["To"] = RECIPIENT
     msg["Date"] = email.utils.format_datetime(

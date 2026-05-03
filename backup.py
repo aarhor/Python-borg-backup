@@ -17,6 +17,7 @@ def start_backup_routine():
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
     new_data_all_backups = 0
     ListforMail = []
+    GlobalStatus = 0
 
     if "--list" in sys.argv:
         list_all_backups(json_data)
@@ -84,7 +85,7 @@ def start_backup_routine():
                             json_data, backup, Logging_Folder_Filename
                         )
                     else:
-                        LOG_ERROR(
+                        LOG_FATAL(
                             "Because of an error with the Integrity of the repo, no backup has been made.\nSee the logs for more information.",
                             Logging_Folder_Filename,
                             json_data,
@@ -94,7 +95,6 @@ def start_backup_routine():
                             Logging_Folder_Filename,
                             json_data,
                         )
-                        BackupStatus = "🟥 Error"
                 elif Initialized == False:
                     LOG_INFO(
                         "The repo isn't currently initialized.",
@@ -151,14 +151,28 @@ def start_backup_routine():
             )
 
             if BackupStatus == "":
+                # Generic Status
                 if returnfunc == 0:
+                    if GlobalStatus <= 0:
+                        GlobalStatus = 0
                     BackupStatus = "🟩 Success"
                 elif returnfunc == 1:
+                    if GlobalStatus <= 1:
+                        GlobalStatus = 1
                     BackupStatus = "🟧 Warning"
                 elif returnfunc == 2:
+                    if GlobalStatus <= 2:
+                        GlobalStatus = 2
                     BackupStatus = "🟥 Error"
                 elif returnfunc == 3:
+                    if GlobalStatus <= 3:
+                        GlobalStatus = 3
                     BackupStatus = "🟥 Fatal"
+
+            # Special Status
+            if BackupStatus == "🟧 Skipped":
+                if GlobalStatus <= 1:
+                    GlobalStatus = 1
 
             LogRotation(json_data, f"{Logfolder}{Name}")
 
@@ -178,7 +192,7 @@ def start_backup_routine():
         ListforMail.append(size_string)
 
     tmp = convert_data_unit(new_data_all_backups)
-    Mail_handling(json_data, ListforMail, tmp)
+    Mail_handling(json_data, ListforMail, tmp, GlobalStatus)
 
 
 def dependency_check():
@@ -202,7 +216,7 @@ def dependency_check():
         return False
 
 
-def Mail_handling(json_data, ListforMail, Size_all_Backups):
+def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus):
     table_data = ""
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
     status_map = {
@@ -211,6 +225,13 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups):
         "🟧 Skipped": "status-warning",
         "🟥 Error": "status-error",
         "🟥 Fatal": "status-error",
+    }
+
+    status_map_title = {
+        0: "Successful",
+        1: "Warning",
+        2: "Error",
+        3: "Fatal",
     }
     MailMessage = open(
         f"{os.path.dirname(os.path.abspath(__file__))}/config/mail_template.html", "r"
@@ -232,7 +253,7 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups):
     with open(f"{Logfolder}/backup_report.html", "w") as file:
         file.write(MailMessage)
 
-    send_mail(json_data["SMTP"], MailMessage)
+    send_mail(json_data["SMTP"], MailMessage, status_map_title[GlobalStatus])
 
 
 Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
