@@ -211,6 +211,7 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups):
     MailMessage = MailMessage.replace("{$Hostname}", socket.gethostname())
     MailMessage = MailMessage.replace("{$NewData}", Size_all_Backups)
     table_data = ""
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
 
     i = 0
     while i < len(ListforMail):
@@ -218,6 +219,9 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups):
         i += 6
 
     MailMessage = MailMessage.replace("{$Data}", table_data)
+
+    with open(f"{Logfolder}/backup_report.html", "w") as file:
+        file.write(MailMessage)
 
     send_mail(json_data["SMTP"], MailMessage)
 
