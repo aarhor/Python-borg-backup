@@ -172,7 +172,7 @@ def start_backup_routine():
         size_string = convert_data_unit(size)
 
         End = datetime.now()
-        TimeSpan = str(End - Begin)[:-7]
+        TimeSpan = str(End - Begin)[:-3]
         ListforMail.append(TimeSpan)
         ListforMail.append(BackupStatus)
         ListforMail.append(size_string)
