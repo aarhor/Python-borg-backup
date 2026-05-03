@@ -4,6 +4,7 @@ import sys
 import shutil
 from datetime import datetime
 import traceback
+import socket
 from smtp import *
 from Logging import *
 from functions import *
@@ -28,7 +29,7 @@ def start_backup_routine():
             f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
         )
         Begin = datetime.now()
-        BackupStatus = "tmp"
+        BackupStatus = ""
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
@@ -47,7 +48,7 @@ def start_backup_routine():
                 .replace("true", "Active")
                 .replace("false", "Stopped")
             )
-            ListforMail.append(Begin.strftime("%Y-%m-%d %H-%M-%S"))
+            ListforMail.append(Begin.strftime("%Y-%m-%d %H:%M:%S"))
 
             MailMessage += LOG_INFO(
                 f"Current Backup: {Name}", Logging_Folder_Filename, json_data
@@ -183,10 +184,12 @@ def start_backup_routine():
 
         End = datetime.now()
         TimeSpan = str(End - Begin)[:-7]
-        ListforMail.append(End.strftime("%Y-%m-%d %H-%M-%S"))
+        ListforMail.append(End.strftime("%Y-%m-%d %H:%M:%S"))
         ListforMail.append(TimeSpan)
         ListforMail.append(BackupStatus)
         ListforMail.append(size_string)
+
+    Mail_handling(json_data, ListforMail)
 
 
 def dependency_check():
@@ -210,27 +213,21 @@ def dependency_check():
         return False
 
 
-def Mail_handling(json_data, MailMessage, returnfunc, Name=""):
-    returncode_func = returnfunc[0]
-    status_map = {
-        0: ("Successful", "Success"),
-        1: ("Warning", "Warning"),
-        2: ("Error", "Error"),
-        3: ("Fatal", "Fatal"),
-    }
+def Mail_handling(json_data, ListforMail):
+    MailMessage = "<html> <h1>Backup Report</h1> <table> <tr> <td><b>Date</b></td> <td>{$Today}</td> </tr> <tr> <td><b>Hostname</b></td> <td>{$Hostname}</td> </tr> </table> <br> <table border='1px solid black'> <tr> <th>Name</th> <th>Active</th> <th>Begin</th> <th>End</th> <th>TimeSpan</th> <th>Status</th> <th>New</th> </tr>{$Data}</table></html>"
+    table_data = ""
+    MailMessage = MailMessage.replace("{$Today}", datetime.now().strftime("%Y-%m-%d"))
+    MailMessage = MailMessage.replace("{$Hostname}", socket.gethostname())
 
-    if returncode_func in status_map:
-        status_text, config_key = status_map[returncode_func]
+    i = 0
+    while i < len(ListforMail):
+        table_data += f"<tr><td>{ListforMail[i]}</td> <td>{ListforMail[i+1]}</td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td>{ListforMail[i+4]}</td> <td>{ListforMail[i+5]}</td> <td align='right'>{ListforMail[i+6]}</td></tr>"
+        i += 7
 
-        if json_data["SMTP"]["SendMailOn"].get(config_key):
-            MailMessage = MailMessage.replace("\n\n", "\n")
+    MailMessage = MailMessage.replace("{$Data}", table_data)
 
-            send_mail(
-                json_data["SMTP"],
-                Name,
-                MailMessage,
-                status_text,
-            )
+    print(MailMessage)
+    send_mail(json_data["SMTP"], MailMessage)
 
 
 Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
