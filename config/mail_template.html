@@ -36,22 +36,22 @@
             border-bottom: 1px solid #ddd;
         }
 
-        .status-success {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .status-warning {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
         .Active {
             color: #28a745;
             font-weight: bold;
         }
 
         .Stopped {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-warning {
             color: #ffc107;
             font-weight: bold;
         }
@@ -73,6 +73,14 @@
             font-family: "Courier New", Courier, monospace;
             font-weight: bold;
         }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
     </style>
 </head>
 
@@ -82,7 +90,7 @@
 
     <table class="header-table">
         <tr>
-            <td><b>Datum:</b></td>
+            <td><b>Date:</b></td>
             <td>{$Today}</td>
         </tr>
         <tr>
@@ -100,7 +108,7 @@
             <tr>
                 <th>Name</th>
                 <th>Active</th>
-                <th>Backup Status</th>
+                <th>Status</th>
                 <th>Begin</th>
                 <th>Time</th>
                 <th style="text-align: right;">New Data</th>
@@ -110,6 +118,13 @@
             {$Data}
         </tbody>
     </table>
+
+    <div class="footer">
+        For a better view of the backup report, open the html file directly in your preffered Browser. The Display of
+        html mails are directly from hell<br>
+        and likely from 1999... You can find the report file on the host "<strong>{$Hostname}</strong>" in the logging
+        base folder "<strong>{$Loggingbasefolder}</strong>", it's the file "<strong> backup_report.html</strong>"
+    </div>
 
 </body>
 

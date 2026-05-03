@@ -79,9 +79,8 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
                     returnfunc = borg_create(
                         json_data, json_data_current_backup, Logging_file
                     )
-                    returnfunc[1]
 
-                    return returnfunc[0]
+                    return returnfunc
                 else:
                     LOG_INFO(
                         "Due to the parameter '--repo_init', no initial backup was created.",

@@ -204,18 +204,28 @@ def dependency_check():
 
 
 def Mail_handling(json_data, ListforMail, Size_all_Backups):
+    table_data = ""
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
+    status_map = {
+        "🟩 Success": "status-success",
+        "🟧 Warning": "status-warning",
+        "🟧 Skipped": "status-warning",
+        "🟥 Error": "status-error",
+        "🟥 Fatal": "status-error",
+    }
     MailMessage = open(
         f"{os.path.dirname(os.path.abspath(__file__))}/config/mail_template.html", "r"
     ).read()
-    MailMessage = MailMessage.replace("{$Today}", datetime.now().strftime("%Y-%m-%d"))
-    MailMessage = MailMessage.replace("{$Hostname}", socket.gethostname())
-    MailMessage = MailMessage.replace("{$NewData}", Size_all_Backups)
-    table_data = ""
-    Logfolder = json_data["General"]["Logging"]["Logfolder"]
+    MailMessage = (
+        MailMessage.replace("{$Today}", datetime.now().strftime("%Y-%m-%d"))
+        .replace("{$Hostname}", socket.gethostname())
+        .replace("{$NewData}", Size_all_Backups)
+        .replace("{$Loggingbasefolder}", Logfolder)
+    )
 
     i = 0
     while i < len(ListforMail):
-        table_data += f"<tr> <td><b>{ListforMail[i]}</b></td> <td><span class='{ListforMail[i+1]}'>{ListforMail[i+1]}</span></td> <td><span class='status-success'>{ListforMail[i+4]}</span></td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td align='right' class='new-data'>{ListforMail[i+5]}</td> </tr>"
+        table_data += f"<tr> <td><b>{ListforMail[i]}</b></td> <td><span class='{ListforMail[i+1]}'>{ListforMail[i+1]}</span></td> <td><span class='{status_map[ListforMail[i+4]]}'>{ListforMail[i+4]}</span></td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td align='right' class='new-data'>{ListforMail[i+5]}</td> </tr>"
         i += 6
 
     MailMessage = MailMessage.replace("{$Data}", table_data)
