@@ -50,9 +50,7 @@ def start_backup_routine():
             )
             ListforMail.append(Begin.strftime("%Y-%m-%d %H:%M:%S"))
 
-            MailMessage += LOG_INFO(
-                f"Current Backup: {Name}", Logging_Folder_Filename, json_data
-            )
+            LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename, json_data)
 
             if active:
                 os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
@@ -61,7 +59,7 @@ def start_backup_routine():
                 ]
 
                 if Initialized and Only_Init:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "Due to the parameter '--repo_init' and because it is already initialized, this backup was skipped.",
                         Logging_Folder_Filename,
                         json_data,
@@ -71,7 +69,7 @@ def start_backup_routine():
                     continue
 
                 if Initialized:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "The repo is initialized.", Logging_Folder_Filename, json_data
                     )
 
@@ -82,24 +80,24 @@ def start_backup_routine():
                     else:
                         returnfunc = [0]
 
-                    if returnfunc[0] == 0:
+                    if returnfunc == 0:
                         returnfunc = borg_create(
                             json_data, backup, Logging_Folder_Filename
                         )
                     else:
-                        MailMessage += LOG_ERROR(
+                        LOG_ERROR(
                             "Because of an error with the Integrity of the repo, no backup has been made.\nSee the logs for more information.",
                             Logging_Folder_Filename,
                             json_data,
                         )
-                        MailMessage += LOG_INFO(
+                        LOG_INFO(
                             f"Backup '{Name}' done with errors.",
                             Logging_Folder_Filename,
                             json_data,
                         )
                         BackupStatus = "🟥 Error"
                 elif Initialized == False:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "The repo isn't currently initialized.",
                         Logging_Folder_Filename,
                         json_data,
@@ -107,21 +105,19 @@ def start_backup_routine():
                     returnfunc = borg_init(
                         json_data, backup, Logging_Folder_Filename, Only_Init
                     )
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         f"Backup '{Name}' done.",
                         Logging_Folder_Filename,
                         json_data,
                     )
                     BackupStatus = "🟩 Success"
-
-                MailMessage += returnfunc[1]
             else:
-                MailMessage += LOG_WARNING(
+                LOG_WARNING(
                     f"Backup '{Name}' is not active.",
                     Logging_Folder_Filename,
                     json_data,
                 )
-                MailMessage += LOG_INFO(
+                LOG_INFO(
                     f"Backup '{Name}' done with warnings.",
                     Logging_Folder_Filename,
                     json_data,
@@ -129,22 +125,22 @@ def start_backup_routine():
                 BackupStatus = "🟧 Skipped"
                 returnfunc = [1]
         except Exception as e:
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"There were a unhandled Error while Backing up '{Name}':",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"\t{e.args[0]}",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"\t{traceback.format_exc()}",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_INFO(
+            LOG_INFO(
                 f"Backup '{Name}' done with errors.", Logging_Folder_Filename, json_data
             )
             returnfunc = [3]
@@ -157,13 +153,13 @@ def start_backup_routine():
             )
 
             if BackupStatus == "":
-                if returnfunc[0] == 0:
+                if returnfunc == 0:
                     BackupStatus = "🟩 Success"
-                elif returnfunc[0] == 1:
+                elif returnfunc == 1:
                     BackupStatus = "🟧 Warning"
-                elif returnfunc[0] == 2:
+                elif returnfunc == 2:
                     BackupStatus = "🟥 Error"
-                elif returnfunc[0] == 3:
+                elif returnfunc == 3:
                     BackupStatus = "🟥 Fatal"
 
             LogRotation(json_data, f"{Logfolder}{Name}")
