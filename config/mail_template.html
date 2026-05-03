@@ -1,0 +1,116 @@
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header-table {
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .header-table td {
+            padding: 5px 15px 5px 0;
+        }
+
+        .main-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid #ddd;
+        }
+
+        .main-table th {
+            background-color: #f4f4f4;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .main-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .Active {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .Stopped {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .new-data {
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>BorgBackup Report</h2>
+
+    <table class="header-table">
+        <tr>
+            <td><b>Datum:</b></td>
+            <td>{$Today}</td>
+        </tr>
+        <tr>
+            <td><b>Hostname:</b></td>
+            <td>{$Hostname}</td>
+        </tr>
+        <tr>
+            <td><b>New Data:</b></td>
+            <td>{$NewData}</td>
+        </tr>
+    </table>
+
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Active</th>
+                <th>Backup Status</th>
+                <th>Begin</th>
+                <th>Time</th>
+                <th style="text-align: right;">New Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {$Data}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

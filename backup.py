@@ -15,7 +15,7 @@ def start_backup_routine():
         json_data = json.load(file)
 
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
-
+    new_data_all_backups = 0
     ListforMail = []
 
     if "--list" in sys.argv:
@@ -23,7 +23,6 @@ def start_backup_routine():
         exit()
 
     for backup in json_data["backup"]:
-        MailMessage = ""
         Name = backup["Name"]
         Logging_Folder_Filename = (
             f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
@@ -48,7 +47,7 @@ def start_backup_routine():
                 .replace("true", "Active")
                 .replace("false", "Stopped")
             )
-            ListforMail.append(Begin.strftime("%Y-%m-%d %H:%M:%S"))
+            ListforMail.append(Begin.strftime("%H:%M:%S"))
 
             LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename, json_data)
 
@@ -170,16 +169,17 @@ def start_backup_routine():
             json_data_last = json.load(file)
 
         size = int(json_data_last["cache"]["stats"]["unique_csize"])
+        new_data_all_backups += size
         size_string = convert_data_unit(size)
 
         End = datetime.now()
         TimeSpan = str(End - Begin)[:-7]
-        ListforMail.append(End.strftime("%Y-%m-%d %H:%M:%S"))
         ListforMail.append(TimeSpan)
         ListforMail.append(BackupStatus)
         ListforMail.append(size_string)
 
-    Mail_handling(json_data, ListforMail)
+    tmp = convert_data_unit(new_data_all_backups)
+    Mail_handling(json_data, ListforMail, tmp)
 
 
 def dependency_check():
@@ -203,16 +203,19 @@ def dependency_check():
         return False
 
 
-def Mail_handling(json_data, ListforMail):
-    MailMessage = "<html> <h1>Backup Report</h1> <table> <tr> <td><b>Date</b></td> <td>{$Today}</td> </tr> <tr> <td><b>Hostname</b></td> <td>{$Hostname}</td> </tr> </table> <br> <table border='1px solid black'> <tr> <th>Name</th> <th>Active</th> <th>Begin</th> <th>End</th> <th>TimeSpan</th> <th>Status</th> <th>New</th> </tr>{$Data}</table></html>"
-    table_data = ""
+def Mail_handling(json_data, ListforMail, Size_all_Backups):
+    MailMessage = open(
+        f"{os.path.dirname(os.path.abspath(__file__))}/config/mail_template.html", "r"
+    ).read()
     MailMessage = MailMessage.replace("{$Today}", datetime.now().strftime("%Y-%m-%d"))
     MailMessage = MailMessage.replace("{$Hostname}", socket.gethostname())
+    MailMessage = MailMessage.replace("{$NewData}", Size_all_Backups)
+    table_data = ""
 
     i = 0
     while i < len(ListforMail):
-        table_data += f"<tr><td>{ListforMail[i]}</td> <td>{ListforMail[i+1]}</td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td>{ListforMail[i+4]}</td> <td>{ListforMail[i+5]}</td> <td align='right'>{ListforMail[i+6]}</td></tr>"
-        i += 7
+        table_data += f"<tr> <td><b>{ListforMail[i]}</b></td> <td><span class='{ListforMail[i+1]}'>{ListforMail[i+1]}</span></td> <td><span class='status-success'>{ListforMail[i+4]}</span></td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td align='right' class='new-data'>{ListforMail[i+5]}</td> </tr>"
+        i += 6
 
     MailMessage = MailMessage.replace("{$Data}", table_data)
 
