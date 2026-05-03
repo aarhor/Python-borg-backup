@@ -109,7 +109,6 @@ def start_backup_routine():
                         Logging_Folder_Filename,
                         json_data,
                     )
-                    BackupStatus = "🟩 Success"
             else:
                 LOG_WARNING(
                     f"Backup '{Name}' is not active.",
