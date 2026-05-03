@@ -1,0 +1,131 @@
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header-table {
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .header-table td {
+            padding: 5px 15px 5px 0;
+        }
+
+        .main-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid #ddd;
+        }
+
+        .main-table th {
+            background-color: #f4f4f4;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .main-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .Active {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .Stopped {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .new-data {
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>BorgBackup Report</h2>
+
+    <table class="header-table">
+        <tr>
+            <td><b>Date:</b></td>
+            <td>{$Today}</td>
+        </tr>
+        <tr>
+            <td><b>Hostname:</b></td>
+            <td>{$Hostname}</td>
+        </tr>
+        <tr>
+            <td><b>New Data:</b></td>
+            <td>{$NewData}</td>
+        </tr>
+    </table>
+
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Active</th>
+                <th>Status</th>
+                <th>Begin</th>
+                <th>Time</th>
+                <th style="text-align: right;">New Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {$Data}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        For a better view of the backup report, open the html file directly in your preffered Browser. The Display of
+        html mails are directly from hell<br>
+        and likely from 1999... You can find the report file on the host "<strong>{$Hostname}</strong>" in the logging
+        base folder "<strong>{$Loggingbasefolder}</strong>", it's the file "<strong> backup_report.html</strong>"
+    </div>
+
+</body>
+
+</html>

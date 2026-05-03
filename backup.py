@@ -4,6 +4,7 @@ import sys
 import shutil
 from datetime import datetime
 import traceback
+import socket
 from smtp import *
 from Logging import *
 from functions import *
@@ -14,30 +15,42 @@ def start_backup_routine():
         json_data = json.load(file)
 
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
+    new_data_all_backups = 0
+    ListforMail = []
+    GlobalStatus = 0
 
     if "--list" in sys.argv:
         list_all_backups(json_data)
         exit()
 
     for backup in json_data["backup"]:
-        MailMessage = ""
         Name = backup["Name"]
         Logging_Folder_Filename = (
             f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
         )
+        Begin = datetime.now()
+        BackupStatus = ""
 
         if Single_Import == True and Name != Single_Import_Name:
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
             os.remove(Logging_Folder_Filename)
+            BackupStatus = "🟧 Skipped"
             continue
 
         try:
             active = backup["active"]
             Initialized = backup["Repo_Initialized"]
 
-            MailMessage += LOG_INFO(
-                f"Current Backup: {Name}", Logging_Folder_Filename, json_data
+            ListforMail.append(Name)
+            ListforMail.append(
+                str(active)
+                .lower()
+                .replace("true", "Active")
+                .replace("false", "Stopped")
             )
+            ListforMail.append(Begin.strftime("%H:%M:%S"))
+
+            LOG_INFO(f"Current Backup: {Name}", Logging_Folder_Filename, json_data)
 
             if active:
                 os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
@@ -46,16 +59,17 @@ def start_backup_routine():
                 ]
 
                 if Initialized and Only_Init:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "Due to the parameter '--repo_init' and because it is already initialized, this backup was skipped.",
                         Logging_Folder_Filename,
                         json_data,
                     )
                     returnfunc = [0]
+                    BackupStatus = "🟧 Skipped"
                     continue
 
                 if Initialized:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "The repo is initialized.", Logging_Folder_Filename, json_data
                     )
 
@@ -66,23 +80,23 @@ def start_backup_routine():
                     else:
                         returnfunc = [0]
 
-                    if returnfunc[0] == 0:
+                    if returnfunc == 0:
                         returnfunc = borg_create(
                             json_data, backup, Logging_Folder_Filename
                         )
                     else:
-                        MailMessage += LOG_ERROR(
+                        LOG_FATAL(
                             "Because of an error with the Integrity of the repo, no backup has been made.\nSee the logs for more information.",
                             Logging_Folder_Filename,
                             json_data,
                         )
-                        MailMessage += LOG_INFO(
+                        LOG_INFO(
                             f"Backup '{Name}' done with errors.",
                             Logging_Folder_Filename,
                             json_data,
                         )
                 elif Initialized == False:
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         "The repo isn't currently initialized.",
                         Logging_Folder_Filename,
                         json_data,
@@ -90,42 +104,41 @@ def start_backup_routine():
                     returnfunc = borg_init(
                         json_data, backup, Logging_Folder_Filename, Only_Init
                     )
-                    MailMessage += LOG_INFO(
+                    LOG_INFO(
                         f"Backup '{Name}' done.",
                         Logging_Folder_Filename,
                         json_data,
                     )
-
-                MailMessage += returnfunc[1]
             else:
-                MailMessage += LOG_WARNING(
+                LOG_WARNING(
                     f"Backup '{Name}' is not active.",
                     Logging_Folder_Filename,
                     json_data,
                 )
-                MailMessage += LOG_INFO(
+                LOG_INFO(
                     f"Backup '{Name}' done with warnings.",
                     Logging_Folder_Filename,
                     json_data,
                 )
+                BackupStatus = "🟧 Skipped"
                 returnfunc = [1]
         except Exception as e:
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"There were a unhandled Error while Backing up '{Name}':",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"\t{e.args[0]}",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_FATAL(
+            LOG_FATAL(
                 f"\t{traceback.format_exc()}",
                 Logging_Folder_Filename,
                 json_data,
             )
-            MailMessage += LOG_INFO(
+            LOG_INFO(
                 f"Backup '{Name}' done with errors.", Logging_Folder_Filename, json_data
             )
             returnfunc = [3]
@@ -137,8 +150,49 @@ def start_backup_routine():
                 "We are the Borg. Lower your shields and surrender your ships. We will add your biological and technological distinctiveness to our own. Your culture will adapt to service us. Resistance is futile."
             )
 
-            Mail_handling(json_data, MailMessage, returnfunc, Name)
+            if BackupStatus == "":
+                # Generic Status
+                if returnfunc == 0:
+                    if GlobalStatus <= 0:
+                        GlobalStatus = 0
+                    BackupStatus = "🟩 Success"
+                elif returnfunc == 1:
+                    if GlobalStatus <= 1:
+                        GlobalStatus = 1
+                    BackupStatus = "🟧 Warning"
+                elif returnfunc == 2:
+                    if GlobalStatus <= 2:
+                        GlobalStatus = 2
+                    BackupStatus = "🟥 Error"
+                elif returnfunc == 3:
+                    if GlobalStatus <= 3:
+                        GlobalStatus = 3
+                    BackupStatus = "🟥 Fatal"
+
+            # Special Status
+            if BackupStatus == "🟧 Skipped":
+                if GlobalStatus <= 1:
+                    GlobalStatus = 1
+
             LogRotation(json_data, f"{Logfolder}{Name}")
+
+        file_stats_last = f"{Logfolder}{Name}/stats_last.json"
+
+        with open(file_stats_last, "r") as file:
+            json_data_last = json.load(file)
+
+        size = int(json_data_last["cache"]["stats"]["unique_csize"])
+        new_data_all_backups += size
+        size_string = convert_data_unit(size)
+
+        End = datetime.now()
+        TimeSpan = str(End - Begin)[:-3]
+        ListforMail.append(TimeSpan)
+        ListforMail.append(BackupStatus)
+        ListforMail.append(size_string)
+
+    tmp = convert_data_unit(new_data_all_backups)
+    Mail_handling(json_data, ListforMail, tmp, GlobalStatus)
 
 
 def dependency_check():
@@ -162,27 +216,44 @@ def dependency_check():
         return False
 
 
-def Mail_handling(json_data, MailMessage, returnfunc, Name=""):
-    returncode_func = returnfunc[0]
+def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus):
+    table_data = ""
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
     status_map = {
-        0: ("Successful", "Success"),
-        1: ("Warning", "Warning"),
-        2: ("Error", "Error"),
-        3: ("Fatal", "Fatal"),
+        "🟩 Success": "status-success",
+        "🟧 Warning": "status-warning",
+        "🟧 Skipped": "status-warning",
+        "🟥 Error": "status-error",
+        "🟥 Fatal": "status-error",
     }
 
-    if returncode_func in status_map:
-        status_text, config_key = status_map[returncode_func]
+    status_map_title = {
+        0: "Successful",
+        1: "Warning",
+        2: "Error",
+        3: "Fatal",
+    }
+    MailMessage = open(
+        f"{os.path.dirname(os.path.abspath(__file__))}/config/mail_template.html", "r"
+    ).read()
+    MailMessage = (
+        MailMessage.replace("{$Today}", datetime.now().strftime("%Y-%m-%d"))
+        .replace("{$Hostname}", socket.gethostname())
+        .replace("{$NewData}", Size_all_Backups)
+        .replace("{$Loggingbasefolder}", Logfolder)
+    )
 
-        if json_data["SMTP"]["SendMailOn"].get(config_key):
-            MailMessage = MailMessage.replace("\n\n", "\n")
+    i = 0
+    while i < len(ListforMail):
+        table_data += f"<tr> <td><b>{ListforMail[i]}</b></td> <td><span class='{ListforMail[i+1]}'>{ListforMail[i+1]}</span></td> <td><span class='{status_map[ListforMail[i+4]]}'>{ListforMail[i+4]}</span></td> <td>{ListforMail[i+2]}</td> <td>{ListforMail[i+3]}</td> <td align='right' class='new-data'>{ListforMail[i+5]}</td> </tr>"
+        i += 6
 
-            send_mail(
-                json_data["SMTP"],
-                Name,
-                MailMessage,
-                status_text,
-            )
+    MailMessage = MailMessage.replace("{$Data}", table_data)
+
+    with open(f"{Logfolder}/backup_report.html", "w") as file:
+        file.write(MailMessage)
+
+    send_mail(json_data["SMTP"], MailMessage, status_map_title[GlobalStatus])
 
 
 Path_config = f"{os.path.dirname(os.path.abspath(__file__))}/config/config.json"
@@ -201,8 +272,7 @@ for arg in sys.argv:
         with open(Path_config, "r") as file:
             json_data = json.load(file)
 
-        returnfunc = borg_key_export(json_data)
-        Mail_handling(json_data, returnfunc[1], returnfunc)
+        borg_key_export(json_data)
         exit()
     if arg.startswith("--single_import="):
         Single_Import = True

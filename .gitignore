@@ -2,6 +2,7 @@ config/*
 export/*
 
 !config/config_example.json
+!config/mail_template.html
 !export/.placeholder
 
 # Byte-compiled / optimized / DLL files
