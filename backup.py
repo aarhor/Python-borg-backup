@@ -64,7 +64,7 @@ def start_backup_routine():
                         Logging_Folder_Filename,
                         json_data,
                     )
-                    returnfunc = [0]
+                    returnfunc = 0
                     BackupStatus = "🟧 Skipped"
                     continue
 
@@ -78,7 +78,7 @@ def start_backup_routine():
                             json_data, backup, Logging_Folder_Filename, sys.argv
                         )
                     else:
-                        returnfunc = [0]
+                        returnfunc = 0
 
                     if returnfunc == 0:
                         returnfunc = borg_create(
@@ -121,7 +121,7 @@ def start_backup_routine():
                     json_data,
                 )
                 BackupStatus = "🟧 Skipped"
-                returnfunc = [1]
+                returnfunc = 1
         except Exception as e:
             LOG_FATAL(
                 f"There were a unhandled Error while Backing up '{Name}':",
@@ -141,7 +141,7 @@ def start_backup_routine():
             LOG_INFO(
                 f"Backup '{Name}' done with errors.", Logging_Folder_Filename, json_data
             )
-            returnfunc = [3]
+            returnfunc = 3
         finally:
             LOG_INFO(
                 "--------------------------------", Logging_Folder_Filename, json_data
