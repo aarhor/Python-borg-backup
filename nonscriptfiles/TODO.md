@@ -6,7 +6,6 @@
     - [ ] Gesamte Größe der Sicherung
     - [ ] Dauer der Sicherung
   - [ ] healthcheck.io Integration
-- [ ] Zusammenfassung aller Backup-Ergebnisse (Erfolg/Fehler) in einer einzigen Tabelle am Ende der Mail.
 - [ ] Global excludes
 - [ ] **CLI-Erweiterung: `--check-updates` & `--install-updates` Parameter**
   - [ ] Nach neuen Updates vom borg Client suchen
@@ -28,3 +27,4 @@
   - [x] Übersichtstabelle aller konfigurierten Backup-Jobs
   - [x] Anzeige von Status, letztem erfolgreichen Lauf und Repository-Größe
 - [x] Einmal im Monat `borg check --verify-data` ausführen.
+- [x] Zusammenfassung aller Backup-Ergebnisse (Erfolg/Fehler) in einer einzigen Tabelle am Ende der Mail.
