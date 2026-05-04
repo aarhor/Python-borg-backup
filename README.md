@@ -307,7 +307,7 @@ Der benötigte Befehl ist in der Datei hinterlegt.
 Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
 
 - `--single_import="Software 1"` <= Knorke
-- `--single_import=Software 1`   <= Nicht so Knorke
+- `--single_import=Software 1` <= Nicht so Knorke
 
 **`--verify-data`**<br>
 
@@ -339,7 +339,7 @@ Listet alle konfigurierten Sicherungen auf.
 
 ## Monitoring
 
-Nach jedem Durchlauf wird eine Mail mit den aktuellen Logausgaben versendet. In der config Datei kann der SMTP Server unter `SMTP` eingerichtet werden.<br>
+In der config Datei kann der SMTP Server und seine Zugangsdaten unter `SMTP` eingerichtet werden.<br>
 Für Monitoring tools werden in dem Logging verzeichnis zwei json Dateien gespeichert. Der Inhalt wird nach jeder Sicherung überschrieben.
 
 | Datei             | Inhalt                                       |
@@ -347,9 +347,16 @@ Für Monitoring tools werden in dem Logging verzeichnis zwei json Dateien gespei
 | `stats.json`      | Informationen über das komplette repo.       |
 | `stats_last.json` | Informationen über die **letzte** Sicherung. |
 
+Sobald die Sicherung komplett abgeschlossen ist (egal ob erfolgreich oder nicht) wird eine Mail versendet mit dem jeweiligen Status der Sicherung. Mögliche Werte sind: `🟩 Success`, `🟧 Warning`, `🟧 Skipped`, `🟥 Error`, `🟥 Fatal`. Je nach Status wird die Zelle eingefärbt.<br>
+`🟧 Warning` & `🟧 Skipped` gehören beide zu der Kategorie "Warning" und `🟥 Error` & `🟥 Fatal` gehören beide zur Kategorie "Error".<br>
+
+![Beispiel](/nonscriptfiles/backupreport.png)
+
+Falls der Report in dem Mailprogramm nicht leserlich sein sollte (z.B. im Thunderbird im Zusammenhang mit dem Darkmode) befindet sich in dem Logging Verzeichnis eine Kopie des Reports als html Datei => `backup_report.html`.
+
 ### TODO
 
-Die noch geplanten Anpassungen finden sich [hier](TODO.md).
+Die noch geplanten Anpassungen finden sich [hier](/nonscriptfiles/TODO.md).
 
 ---
 
