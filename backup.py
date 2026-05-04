@@ -9,6 +9,8 @@ from smtp import *
 from Logging import *
 from functions import *
 
+Begin_backupprocess = datetime.now()
+
 
 def start_backup_routine():
     with open(Path_config, "r") as file:
@@ -24,6 +26,7 @@ def start_backup_routine():
         exit()
 
     for backup in json_data["backup"]:
+        SkipBackup = False
         Name = backup["Name"]
         Logging_Folder_Filename = (
             f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
@@ -35,6 +38,7 @@ def start_backup_routine():
             LOG_INFO(f"Skipped backup: {Name}", Logging_Folder_Filename, json_data)
             os.remove(Logging_Folder_Filename)
             BackupStatus = "🟧 Skipped"
+            SkipBackup = True
             continue
 
         try:
@@ -66,6 +70,7 @@ def start_backup_routine():
                     )
                     returnfunc = 0
                     BackupStatus = "🟧 Skipped"
+                    SkipBackup = True
                     continue
 
                 if Initialized:
@@ -121,6 +126,7 @@ def start_backup_routine():
                     json_data,
                 )
                 BackupStatus = "🟧 Skipped"
+                SkipBackup = True
                 returnfunc = 1
         except Exception as e:
             LOG_FATAL(
@@ -176,12 +182,16 @@ def start_backup_routine():
 
             LogRotation(json_data, f"{Logfolder}{Name}")
 
-        file_stats_last = f"{Logfolder}{Name}/stats_last.json"
+        if SkipBackup == False:
+            file_stats_last = f"{Logfolder}{Name}/stats_last.json"
 
-        with open(file_stats_last, "r") as file:
-            json_data_last = json.load(file)
+            with open(file_stats_last, "r") as file:
+                json_data_last = json.load(file)
 
-        size = int(json_data_last["cache"]["stats"]["unique_csize"])
+            size = int(json_data_last["cache"]["stats"]["unique_csize"])
+        else:
+            size = 0
+
         new_data_all_backups += size
         size_string = convert_data_unit(size)
 
@@ -241,6 +251,8 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus):
         .replace("{$Hostname}", socket.gethostname())
         .replace("{$NewData}", Size_all_Backups)
         .replace("{$Loggingbasefolder}", Logfolder)
+        .replace("{$BeginProcess}", Begin_backupprocess.strftime("%H:%M:%S"))
+        .replace("{$EndProcess}", datetime.now().strftime("%H:%M:%S"))
     )
 
     i = 0
