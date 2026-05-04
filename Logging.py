@@ -45,74 +45,39 @@ def Write_Log(STATUS, MESSAGE, LogFile, print_Message):
 
 def LOG_DEBUG(MESSAGE, LogFile, json_data):
     LogLevel_File = json_data["General"]["Logging"]["LogLevel_File"]
-    LogLevel_Mail = json_data["General"]["Logging"]["LogLevel_Mail"]
 
     # stdout and Filelogging
     if enum_LogLevel.debug.value >= enum_LogLevel[LogLevel_File.lower()].value:
         Write_Log("DEBUG", MESSAGE, LogFile, True)
 
-    # Logging Mail
-    if enum_LogLevel.debug.value >= enum_LogLevel[LogLevel_Mail.lower()].value:
-        return Write_Log("DEBUG", MESSAGE, LogFile, False)
-
-    return ""
-
 
 def LOG_INFO(MESSAGE, LogFile, json_data):
     LogLevel_File = json_data["General"]["Logging"]["LogLevel_File"]
-    LogLevel_Mail = json_data["General"]["Logging"]["LogLevel_Mail"]
 
     # stdout and Filelogging
     if enum_LogLevel.info.value >= enum_LogLevel[LogLevel_File.lower()].value:
         Write_Log("INFO", MESSAGE, LogFile, True)
 
-    # Logging Mail
-    if enum_LogLevel.info.value >= enum_LogLevel[LogLevel_Mail.lower()].value:
-        return Write_Log("INFO", MESSAGE, LogFile, False)
-
-    return ""
-
 
 def LOG_WARNING(MESSAGE, LogFile, json_data):
     LogLevel_File = json_data["General"]["Logging"]["LogLevel_File"]
-    LogLevel_Mail = json_data["General"]["Logging"]["LogLevel_Mail"]
 
     # stdout and Filelogging
     if enum_LogLevel.warning.value >= enum_LogLevel[LogLevel_File.lower()].value:
         Write_Log("WARNING", MESSAGE, LogFile, True)
 
-    # Logging Mail
-    if enum_LogLevel.warning.value >= enum_LogLevel[LogLevel_Mail.lower()].value:
-        return Write_Log("WARNING", MESSAGE, LogFile, False)
-
-    return ""
-
 
 def LOG_ERROR(MESSAGE, LogFile, json_data):
     LogLevel_File = json_data["General"]["Logging"]["LogLevel_File"]
-    LogLevel_Mail = json_data["General"]["Logging"]["LogLevel_Mail"]
 
     # stdout and Filelogging
     if enum_LogLevel.error.value >= enum_LogLevel[LogLevel_File.lower()].value:
         Write_Log("ERROR", MESSAGE, LogFile, True)
 
-    # Logging Mail
-    if enum_LogLevel.error.value >= enum_LogLevel[LogLevel_Mail.lower()].value:
-        return Write_Log("ERROR", MESSAGE, LogFile, False)
-
-    return ""
-
 
 def LOG_FATAL(MESSAGE, LogFile, json_data):
     LogLevel_File = json_data["General"]["Logging"]["LogLevel_File"]
-    LogLevel_Mail = json_data["General"]["Logging"]["LogLevel_Mail"]
 
     # stdout and Filelogging
     if enum_LogLevel.fatal.value >= enum_LogLevel[LogLevel_File.lower()].value:
         Write_Log("FATAL", MESSAGE, LogFile, True)
-
-    # Logging Mail
-    if enum_LogLevel.fatal.value >= enum_LogLevel[LogLevel_Mail.lower()].value:
-        return Write_Log("FATAL", MESSAGE, LogFile, False)
-
-    return ""

@@ -3,7 +3,6 @@
     "Timestamp": "%Y-%m-%d",
     "Logging": {
       "Logfolder": "/var/lib/log/pythonBorgBackup/",
-      "LogLevel_Mail": "INFO",
       "LogLevel_File": "DEBUG"
     },
     "Allow Relocated Repos": "no",
@@ -27,9 +26,9 @@
       "dry_run": false,
       "active": true,
       "Cleanup": {
-        "daily": "14",
-        "monthly": "6",
-        "yearly": "1"
+        "daily": 14,
+        "monthly": 6,
+        "yearly": 1
       }
     },
     {
@@ -45,9 +44,9 @@
       "dry_run": false,
       "active": false,
       "Cleanup": {
-        "daily": "7",
-        "monthly": "3",
-        "yearly": "2"
+        "daily": 7,
+        "monthly": 3,
+        "yearly": 2
       }
     }
   ],
