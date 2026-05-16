@@ -1,22 +1,20 @@
 # BorgBackup mit Python
 
-**🦅🦅ENGLISH VERSION BELOW🦅🦅**
+**🦅🦅ENGLISH VERSION [HERE](/README.en.md)🦅🦅**
 
-- [Deutsch / German](#deutsch--german)
-  - [Voraussetzungen](#voraussetzungen)
-  - [Nutzung](#nutzung)
-    - [General](#general)
-    - [backup](#backup)
-    - [SMTP](#smtp)
-    - [Skript Parameter](#skript-parameter)
-  - [Monitoring](#monitoring)
-- [English / Englisch](#english--englisch)
+- [Voraussetzungen](#voraussetzungen)
+- [Nutzung](#nutzung)
+  - [General](#general)
+  - [backup](#backup)
+  - [SMTP](#smtp)
+  - [Skript Parameter](#skript-parameter)
+- [Monitoring](#monitoring)
 
-# Deutsch / German
+---
 
 Mit diesem Python-Skript können Backups mittels [BorgBackup](https://www.borgbackup.org/) angestoßen und auf einem externen Ziel gesichert werden. Über eine JSON-Konfigurationsdatei lassen sich mehrere Backup-Quellen und -Ziele definieren, die sequenziell abgearbeitet werden.
 
-## Voraussetzungen
+# Voraussetzungen
 
 Damit das Skript (automatisiert) genutzt werden kann werden, folgende Programme benötigt:
 
@@ -26,9 +24,10 @@ Damit das Skript (automatisiert) genutzt werden kann werden, folgende Programme 
 
 Des Weiteren werden folgende Python-Module benötigt:
 
-- `prettytable` => `pip install prettytable` or `sudo apt install python3-prettytable`
+- `prettytable` => `pip install prettytable` oder `sudo apt install python3-prettytable`<br>
+  (wird nur beim Parameter `--list` benötigt und Importiert)
 
-## Nutzung
+# Nutzung
 
 Damit das Skript genutzt werden kann, muss von der Beispiel-Konfigurationsdatei `config\config_example.json` eine Kopie erstellt werden und diese `config.json` genannt werden.
 Es ist auch möglich diese Datei in einen anderen Ordner als dem Config-Unterordner abzuspeichern.
@@ -38,7 +37,7 @@ Es ist auch möglich diese Datei in einen anderen Ordner als dem Config-Unterord
 
 Innerhalb der config Datei ist es teilweise möglich auf andere Einstellungen zu verweisen. Diese Variablen haben mit BorgBackup nichts zu tun.
 
-### General
+## General
 
 | Einstellung             | Doku                                                                                                                                                | Nutzbare Variablen | Empfohlene Einstellung           |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | -------------------------------- |
@@ -112,7 +111,7 @@ Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fo
 2026-04-05 17:13:16.306	INFO	|  Backup 'Software 1' done.
 ```
 
-### backup
+## backup
 
 | Einstellung          | Doku                                                                                        | Nutzbare Variablen | Empfohlene Einstellung |
 | -------------------- | ------------------------------------------------------------------------------------------- | ------------------ | ---------------------- |
@@ -225,7 +224,7 @@ Gibt an ob eine Sicherung aktiv ist (`true`) oder nicht (`false`). Eine nicht ak
 Nach jeder erfolgreichen Sicherung werden im Zielarchiv veraltete Sicherungen als zu löschen markiert und mittels [borg compact](https://borgbackup.readthedocs.io/en/stable/usage/compact.html) gelöscht.
 Für ein genaues Verhalten dieser Einstellung, siehe die [borg Beispiel Dokumentation](https://borgbackup.readthedocs.io/en/stable/usage/prune.html#examples).
 
-### SMTP
+## SMTP
 
 | Einstellung          | Doku                                                                           | Nutzbare Variablen | Empfohlene Einstellung |
 | -------------------- | ------------------------------------------------------------------------------ | ------------------ | ---------------------- |
@@ -284,7 +283,7 @@ Der Absender der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup 
 
 Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBackup <mail1@example.com>`
 
-### Skript Parameter
+## Skript Parameter
 
 **`--config_file="[Pfad zur config Datei]"`**<br>
 
@@ -337,7 +336,7 @@ Listet alle konfigurierten Sicherungen auf.
 +------------+--------+---------------------+-------+--------------+
 ```
 
-## Monitoring
+# Monitoring
 
 In der config Datei kann der SMTP Server und seine Zugangsdaten unter `SMTP` eingerichtet werden.<br>
 Für Monitoring tools werden in dem Logging verzeichnis zwei json Dateien gespeichert. Der Inhalt wird nach jeder Sicherung überschrieben.
@@ -354,12 +353,6 @@ Sobald die Sicherung komplett abgeschlossen ist (egal ob erfolgreich oder nicht)
 
 Falls der Report in dem Mailprogramm nicht leserlich sein sollte (z.B. im Thunderbird im Zusammenhang mit dem Darkmode) befindet sich in dem Logging Verzeichnis eine Kopie des Reports als html Datei => `backup_report.html`.
 
-### TODO
+## TODO
 
 Die noch geplanten Anpassungen finden sich [hier](/nonscriptfiles/TODO.md).
-
----
-
-# English / Englisch
-
-Later please be patient.
