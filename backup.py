@@ -25,6 +25,10 @@ def start_backup_routine():
         list_all_backups(json_data)
         exit()
 
+    if "--check_borg_updates" in sys.argv:
+        borg_update_check(json_data)
+        exit()
+
     for backup in json_data["backup"]:
         SkipBackup = False
         Name = backup["Name"]

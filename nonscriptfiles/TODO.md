@@ -8,7 +8,7 @@
   - [ ] healthcheck.io Integration
 - [ ] Global excludes
 - [ ] **CLI-Erweiterung: `--check-updates` & `--install-updates` Parameter**
-  - [ ] Nach neuen Updates vom borg Client suchen
+  - [x] Nach neuen Updates vom borg Client suchen
   - [ ] Benachrichtigung in der Mail und im Log als WARNING
   - [ ] Mit `--install-updates` Neue Version installieren (benötigt `--check-updates`)
 

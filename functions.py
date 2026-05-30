@@ -518,3 +518,36 @@ def convert_data_unit(size):
         if size < 1000:
             return f"{size:.2f} {unit}"
         size /= 1000
+
+
+def borg_update_check(json_data):
+    import urllib.request
+
+    Logfolder = json_data["General"]["Logging"]["Logfolder"]
+    Logging_file = (
+        f"{Logfolder}General/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+    )
+
+    json_string = urllib.request.urlopen(
+        "https://api.github.com/repos/borgbackup/borg/releases/latest"
+    )
+    json_data_github = json.load(json_string)
+    borg_version_new = json_data_github["tag_name"]
+    borg_version_new_prerelease = json_data_github["prerelease"]
+
+    Args_process = ["borg", "--version"]
+
+    proc = execute_write_command(Args_process, Logging_file, json_data)
+    borg_version_current = proc.stdout.decode().replace("\n", "").replace("borg ", "")
+
+    if (borg_version_new != borg_version_current) & (not borg_version_new_prerelease):
+        LOG_WARNING(
+            f"There is a new version of borg avaible ({borg_version_current} => {borg_version_new}).",
+            Logging_file,
+            json_data,
+        )
+        LOG_WARNING(
+            f"You can download it from here: https://github.com/borgbackup/borg/releases/tag/{borg_version_new}",
+            Logging_file,
+            json_data,
+        )
