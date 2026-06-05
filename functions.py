@@ -551,3 +551,14 @@ def borg_update_check(json_data):
             Logging_file,
             json_data,
         )
+        return (
+            "status-warning",
+            f"🟧 There is a new version of borg avaible ({borg_version_current} => {borg_version_new})",
+        )
+    else:
+        LOG_INFO(
+            f"The installed borg version is up to date. No Update needed.",
+            Logging_file,
+            json_data,
+        )
+        return "status-success", f"🟩 Borg is up to date ({borg_version_current})"

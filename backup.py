@@ -25,9 +25,7 @@ def start_backup_routine():
         list_all_backups(json_data)
         exit()
 
-    if "--check_borg_updates" in sys.argv:
-        borg_update_check(json_data)
-        exit()
+    returnUpdateCheck = borg_update_check(json_data)
 
     for backup in json_data["backup"]:
         SkipBackup = False
@@ -206,7 +204,7 @@ def start_backup_routine():
         ListforMail.append(size_string)
 
     tmp = convert_data_unit(new_data_all_backups)
-    Mail_handling(json_data, ListforMail, tmp, GlobalStatus)
+    Mail_handling(json_data, ListforMail, tmp, GlobalStatus, returnUpdateCheck)
 
 
 def dependency_check():
@@ -230,7 +228,7 @@ def dependency_check():
         return False
 
 
-def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus):
+def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus, UpdateCheck):
     table_data = ""
     Logfolder = json_data["General"]["Logging"]["Logfolder"]
     status_map = {
@@ -257,6 +255,8 @@ def Mail_handling(json_data, ListforMail, Size_all_Backups, GlobalStatus):
         .replace("{$Loggingbasefolder}", Logfolder)
         .replace("{$BeginProcess}", Begin_backupprocess.strftime("%H:%M:%S"))
         .replace("{$EndProcess}", datetime.now().strftime("%H:%M:%S"))
+        .replace("{$UpdateClass}", UpdateCheck[0])
+        .replace("{$UpdateMessage}", UpdateCheck[1])
     )
 
     i = 0

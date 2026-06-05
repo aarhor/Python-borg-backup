@@ -336,10 +336,6 @@ Listet alle konfigurierten Sicherungen auf.
 +------------+--------+---------------------+-------+--------------+
 ```
 
-**`--check_borg_updates`**<br>
-
-Prüft ob ein neues Update von borg zur verfügung steht (nutzt die GitHub API dafür). Wenn ein Update zur Verfügung steht wird dies mit geloggt. Vorabversionen werden bei dieser Prüfung _nicht_ mit beachtet und übersprungen. Die aktuelle Version wird über die GitHub API abgerufen.
-
 # Monitoring
 
 In der config Datei kann der SMTP Server und seine Zugangsdaten unter `SMTP` eingerichtet werden.<br>

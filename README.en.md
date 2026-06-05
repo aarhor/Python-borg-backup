@@ -342,10 +342,6 @@ Lists all configured backups.
 +------------+--------+---------------------+-------+--------------+
 ```
 
-**`--check_borg_updates`**<br>
-
-Checks whether a new Borg release is available by using the GitHub API. If a newer release is available, this information is written to the log output. Pre-release versions are ignored and skipped during this check. The currently available version information is retrieved directly from the GitHub API.
-
 # Monitoring
 
 The SMTP server and its credentials can be configured in the `SMTP` section of the configuration file.<br>
