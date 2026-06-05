@@ -16,7 +16,7 @@ Mit diesem Python-Skript können Backups mittels [BorgBackup](https://www.borgba
 
 # Voraussetzungen
 
-Damit das Skript (automatisiert) genutzt werden kann werden, folgende Programme benötigt:
+Damit das Skript (automatisiert) genutzt werden kann, werden folgende Programme benötigt:
 
 - [Python3](https://www.python.org/downloads/)<br>
   _Getestet mit 3.14.3_
@@ -202,7 +202,7 @@ Die einzelnen Teile des Befehls müssen mit einem Semikolon ";" getrennt werden.
   - `true`
   - `false`
 
-Ein Durchlauf <ins>ohne</ins> dabei etwas wirklich zu sichern. In der Abschließenden Ausgabe werden einem alle Dateien aufgelistet die betroffen wären.
+Ein Durchlauf <ins>ohne</ins> dabei etwas wirklich zu sichern. In der Abschließenden Ausgabe werden einem alle Dateien aufgelistet die betroffen *wären*.
 
 **`active`**<br>
 
@@ -294,7 +294,7 @@ Der Empfänger der Mail. Es ist auch möglich einen Namen mitzugeben. `BorgBacku
 Initiiert alle repos wo die Einstellung `Repo_Initialized` auf `False` gestellt ist. Nach der Einrichtung muss `Repo_Initialized` auf `True` umgestellt werden!
 
 > [!NOTE]
-> Mit dieser Einstellung wird nach der Erfolgreichen Initiierung keine Sicherung angelegt.
+> Mit dieser Einstellung wird nach der erfolgreichen Initiierung keine Sicherung angelegt.
 
 **`--key_export`**<br>
 
