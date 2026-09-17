@@ -190,7 +190,7 @@ def start_backup_routine():
             with open(file_stats_last, "r") as file:
                 json_data_last = json.load(file)
 
-            size = int(json_data_last["cache"]["stats"]["unique_csize"])
+            size = int(json_data_last["archives"][0]["stats"]["deduplicated_size"])
         else:
             size = 0
 
