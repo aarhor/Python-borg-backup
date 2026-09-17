@@ -1,4 +1,5 @@
 import json
+import glob
 import subprocess
 from datetime import datetime, timedelta
 import re
@@ -128,6 +129,9 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     ]
 
     for SourcePath in SourcePath_list:
+        for f in glob.glob(f"{SourcePath}/*Zone.Identifier"):
+            os.remove(f)
+
         if Path(SourcePath).exists():
             Args_process.append(SourcePath)
         else:
