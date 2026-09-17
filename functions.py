@@ -1,4 +1,4 @@
-import json, glob, subprocess, re
+import json, glob, subprocess, re, sys
 from datetime import datetime, timedelta
 from Logging import *
 from pathlib import Path
@@ -110,6 +110,9 @@ def borg_create(json_data, json_data_current_backup, Logging_file):
     SourcePath_list = json_data_current_backup["SourcePath"]
     Pre_BackupCommand = json_data_current_backup["Pre_BackupCommand"]
     Post_BackupCommand = json_data_current_backup["Post_BackupCommand"]
+
+    if "--random_arc_string" in sys.argv:
+        ArchiveName += f"_{os.urandom(3).hex()}"
 
     if Pre_BackupCommand != "":
         Args_process = Pre_BackupCommand.split(";")

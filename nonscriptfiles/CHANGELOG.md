@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-17
+
+### Added
+
+- Script Parameter
+  - **`--random_arc_string`**
+
+### Fix
+
+- Display the correct size for newly added files.
+
 ## 2026-04-29
 
 ### Added

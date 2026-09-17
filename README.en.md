@@ -342,6 +342,10 @@ Lists all configured backups.
 +------------+--------+---------------------+-------+--------------+
 ```
 
+**`--random_arc_string`**<br>
+
+Creates a short random hex string and adds it to the archivename.
+
 # Monitoring
 
 The SMTP server and its credentials can be configured in the `SMTP` section of the configuration file.<br>

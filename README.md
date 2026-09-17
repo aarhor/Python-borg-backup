@@ -336,6 +336,10 @@ Listet alle konfigurierten Sicherungen auf.
 +------------+--------+---------------------+-------+--------------+
 ```
 
+**`--random_arc_string`**<br>
+
+Erzeugt einen kurzen zufälligen hexadezimalen String und fügt den an das Ende des Archivnamens an.
+
 # Monitoring
 
 In der config Datei kann der SMTP Server und seine Zugangsdaten unter `SMTP` eingerichtet werden.<br>
