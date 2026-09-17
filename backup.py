@@ -1,10 +1,5 @@
-import json
-import os
-import sys
-import shutil
+import json, os, sys, shutil, traceback, socket
 from datetime import datetime
-import traceback
-import socket
 from smtp import *
 from Logging import *
 from functions import *

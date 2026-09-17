@@ -1,5 +1,4 @@
-import smtplib
-import email
+import smtplib, email
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from email.mime.multipart import MIMEMultipart

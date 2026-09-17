@@ -1,8 +1,5 @@
-import json
-import glob
-import subprocess
+import json, glob, subprocess, re
 from datetime import datetime, timedelta
-import re
 from Logging import *
 from pathlib import Path
 
