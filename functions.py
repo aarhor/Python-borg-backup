@@ -34,6 +34,14 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
             f"{RemoteRepo}",
         ]
 
+        filename = Path(f"{os.path.dirname(Logging_file)}/stats.json")
+        filename.touch()
+        
+        filename2 = Path(f"{os.path.dirname(Logging_file)}/stats_last.json")
+        filename2.touch()
+        
+        
+        
         proc = execute_write_command(Args_process, Logging_file, json_data)
         output_init = proc.stderr.decode()
         returncode = proc.returncode
