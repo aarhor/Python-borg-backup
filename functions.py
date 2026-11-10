@@ -600,4 +600,33 @@ def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
         json_data,
     )
 
+    borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename)
+
     return 0
+
+
+def borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename):
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    DownloadPath = json_data_current_backup["BackupDownloadPath"]
+    Args_process = [
+        "borg",
+        "export-tar",
+        f"{RemoteRepo}::{archivename}",
+        f"{DownloadPath}/{archivename}.tar",
+    ]
+
+    proc = execute_write_command(Args_process, Logging_file, json_data)
+    returncode = proc.returncode
+
+    match (returncode):
+        case 0:
+            returnstats = proc.stdout.decode().split("\n")
+        case 2:
+            returnstats = proc.stderr.decode().split("\n")
+
+    for y in returnstats:
+        if y == "":
+            continue
+
+        LOG_INFO(y, Logging_file, json_data)
