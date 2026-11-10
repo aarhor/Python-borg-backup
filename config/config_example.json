@@ -17,7 +17,7 @@
         "/mnt/tools/backupdir1/subdir2/file.txt",
         "{$SourcePath0}/subdir2/picture.jpg"
       ],
-      "RestorePath": "/mnt/ssd/backuprestore/Software_1",
+      "BackupDownloadPath": "/mnt/ssd/backuprestore/Software_1",
       "RemoteRepo": "ssh://user@host:port/path/to/repo1",
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "supersecurePassword1337",
@@ -36,7 +36,7 @@
       "Name": "Software 2",
       "SourcePath": ["/mnt/tools/backupdir2"],
       "Exclude": [],
-      "RestorePath": "{$SourcePath0}/restoredbackups",
+      "BackupDownloadPath": "{$SourcePath0}/restoredbackups",
       "RemoteRepo": "ssh://user@host:port/path/to/{$Name}",
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
