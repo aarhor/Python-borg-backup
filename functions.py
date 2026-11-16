@@ -604,6 +604,12 @@ def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
             Logging_file,
             json_data,
         )
+
+        LOG_INFO(
+            'Use "list:{Name of Archive}" to list all files in the backup.',
+            Logging_file,
+            json_data,
+        )
         archivename = input()
 
         if archivename.startswith("list:"):
