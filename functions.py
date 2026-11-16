@@ -580,29 +580,41 @@ def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
     Args_process = ["borg", "list", f"{RemoteRepo}"]
 
     proc = execute_write_command(Args_process, Logging_file, json_data)
-    returnstats = proc.stdout.decode().split("\n")
+    returncode = proc.returncode
 
-    for y in returnstats:
-        if y == "":
-            continue
+    if returncode >= 1:
+        returnstats = proc.stderr.decode().split("\n")
+        for y in returnstats:
+            if y == "":
+                continue
 
-        LOG_INFO(y, Logging_file, json_data)
+            LOG_ERROR(y, Logging_file, json_data)
+        return returncode
+    else:
+        print(proc)
+        returnstats = proc.stdout.decode().split("\n")
 
-    LOG_INFO(
-        "Please choose the Backupo which you want to download. Use the archivename.",
-        Logging_file,
-        json_data,
-    )
-    archivename = input()
-    LOG_INFO(
-        f'You took the archive "{archivename}" for the download.',
-        Logging_file,
-        json_data,
-    )
+        for y in returnstats:
+            if y == "":
+                continue
 
-    borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename)
+            LOG_INFO(y, Logging_file, json_data)
 
-    return 0
+        LOG_INFO(
+            "Please choose the Backup which you want to download. Use the archivename.",
+            Logging_file,
+            json_data,
+        )
+        archivename = input()
+        LOG_INFO(
+            f'You took the archive "{archivename}" for the download.',
+            Logging_file,
+            json_data,
+        )
+
+        borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename)
+
+        return 0
 
 
 def borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename):
@@ -619,7 +631,7 @@ def borg_export_tar(json_data, json_data_current_backup, Logging_file, archivena
     proc = execute_write_command(Args_process, Logging_file, json_data)
     returncode = proc.returncode
 
-    match (returncode):
+    match returncode:
         case 0:
             returnstats = proc.stdout.decode().split("\n")
         case 2:
