@@ -36,7 +36,7 @@
       "Name": "Software 2",
       "SourcePath": ["/mnt/tools/backupdir2"],
       "Exclude": [],
-      "BackupDownloadPath": "{$SourcePath0}/restoredbackups",
+      "BackupDownloadPath": "/mnt/nas/restoredbackups",
       "RemoteRepo": "ssh://user@host:port/path/to/{$Name}",
       "ArchiveName": "{now:$Timestamp}",
       "EncryptionPwd": "anothersupersecurePassword420",
