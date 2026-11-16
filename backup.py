@@ -20,6 +20,25 @@ def start_backup_routine():
         list_all_backups(json_data)
         exit()
 
+    i = 0
+    for arg in sys.argv:
+        if arg.startswith("--backupDownload="):
+            BackupName_Downlaod = (
+                f"{sys.argv[i].replace("--backupDownload=", "").replace("\"","")}"
+            )
+            for backup in json_data["backup"]:
+                Name = backup["Name"]
+                if Name == BackupName_Downlaod:
+                    Logging_Folder_Filename = f"{Logfolder}{Name}/{datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log"
+                    os.environ["BORG_PASSPHRASE"] = backup["EncryptionPwd"]
+                    os.environ["BORG_RELOCATED_REPO_ACCESS_IS_OK"] = json_data[
+                        "General"
+                    ]["Allow Relocated Repos"]
+                    borg_get_all_backups(json_data, backup, Logging_Folder_Filename)
+
+            exit()
+        i = i + 1
+
     returnUpdateCheck = borg_update_check(json_data)
 
     for backup in json_data["backup"]:

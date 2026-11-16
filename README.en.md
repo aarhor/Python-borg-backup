@@ -121,6 +121,7 @@ If the destination repository has been moved, Borg will only continue after the 
 | `Name`               | -                                                                                                    | -                   |                     |
 | `SourcePath`         | -                                                                                                    | -                   |                     |
 | `Exclude`            | -                                                                                                    | `{$SourcePathX}`    |                     |
+| `BackupDownloadPath` | -                                                                                                    | -                   |                     |
 | `RemoteRepo`         | [Borg Documentation](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls) | -                   |                     |
 | `ArchiveName`        | -                                                                                                    | `{now:$Timestamp}`  | `{now:$Timestamp}`  |
 | `EncryptionPwd`      | -                                                                                                    | -                   |                     |
@@ -155,6 +156,13 @@ The variable `{$SourcePathX}` can be used to reference a source path when the di
 > The _X_ in the variable `{$SourcePathX}` determines which path from `SourcePath` should be used. The index is zero-based.
 > To use the first entry, replace X with `0` (`{$SourcePath0}`). To use the third entry, replace X with `2` (`{$SourcePath2}`).
 > This syntax must also be used when only **one** source path is configured and the variable is used.
+
+**`BackupDownloadPath`**<br>
+
+The Folder where the `.tar` should be saved.
+
+> [!NOTE]
+> The User needs read and write permissions on the folder.
 
 **`RemoteRepo`**<br>
 
@@ -345,6 +353,16 @@ Lists all configured backups.
 **`--random_arc_string`**<br>
 
 Creates a short random hex string and adds it to the archivename.
+
+**`--backupDownload=[Name of the backup]`**<br>
+
+Downloads a specific archive of the selected backup as a `.tar` file (the archive is selected interactively afterward).<br>
+The file is saved to the path specified in `config.json` (under `BackupDownloadPath`).
+
+Backups with spaces in their names must be enclosed in `"`.
+
+- `--backupDownload="Software 1"` <= Correct
+- `--backupDownload=Software 1` <= Incorrect
 
 # Monitoring
 

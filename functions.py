@@ -34,6 +34,12 @@ def borg_init(json_data, json_data_current_backup, Logging_file, Only_init):
             f"{RemoteRepo}",
         ]
 
+        filename = Path(f"{os.path.dirname(Logging_file)}/stats.json")
+        filename.touch()
+
+        filename2 = Path(f"{os.path.dirname(Logging_file)}/stats_last.json")
+        filename2.touch()
+
         proc = execute_write_command(Args_process, Logging_file, json_data)
         output_init = proc.stderr.decode()
         returncode = proc.returncode
@@ -566,3 +572,93 @@ def borg_update_check(json_data):
             json_data,
         )
         return "status-success", f"🟩 Borg is up to date ({borg_version_current})"
+
+
+def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    Args_process = ["borg", "list", f"{RemoteRepo}"]
+
+    proc = execute_write_command(Args_process, Logging_file, json_data)
+    returncode = proc.returncode
+
+    if returncode >= 1:
+        returnstats = proc.stderr.decode().split("\n")
+        for y in returnstats:
+            if y == "":
+                continue
+
+            LOG_ERROR(y, Logging_file, json_data)
+        return returncode
+    else:
+        returnstats = proc.stdout.decode().split("\n")
+
+        for y in returnstats:
+            if y == "":
+                continue
+
+            LOG_INFO(y, Logging_file, json_data)
+
+        LOG_INFO(
+            "Please choose the Backup which you want to download. Use the archivename.",
+            Logging_file,
+            json_data,
+        )
+
+        LOG_INFO(
+            'Use "list:{Name of Archive}" to list all files in the backup.',
+            Logging_file,
+            json_data,
+        )
+        archivename = input()
+
+        if archivename.startswith("list:"):
+            archivename = archivename.replace("list:", "")
+            Args_process = ["borg", "list", f"{RemoteRepo}::{archivename}"]
+            proc = execute_write_command(Args_process, Logging_file, json_data)
+            returnstats = proc.stdout.decode().split("\n")
+
+            for y in returnstats:
+                if y == "":
+                    continue
+
+                LOG_INFO(y, Logging_file, json_data)
+        else:
+            LOG_INFO(
+                f'You took the archive "{archivename}" for the download.',
+                Logging_file,
+                json_data,
+            )
+
+            borg_export_tar(
+                json_data, json_data_current_backup, Logging_file, archivename
+            )
+
+            return 0
+
+
+def borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename):
+    Name = json_data_current_backup["Name"]
+    RemoteRepo = json_data_current_backup["RemoteRepo"].replace("{$Name}", Name)
+    DownloadPath = json_data_current_backup["BackupDownloadPath"]
+    Args_process = [
+        "borg",
+        "export-tar",
+        f"{RemoteRepo}::{archivename}",
+        f"{DownloadPath}/{archivename}.tar",
+    ]
+
+    proc = execute_write_command(Args_process, Logging_file, json_data)
+    returncode = proc.returncode
+
+    match returncode:
+        case 0:
+            returnstats = proc.stdout.decode().split("\n")
+        case 2:
+            returnstats = proc.stderr.decode().split("\n")
+
+    for y in returnstats:
+        if y == "":
+            continue
+
+        LOG_INFO(y, Logging_file, json_data)

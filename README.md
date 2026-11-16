@@ -118,6 +118,7 @@ Wenn das Ziel Repository verschoben wurde, fährt borg erst mit der Sicherung fo
 | `Name`               | -                                                                                           | -                  |                        |
 | `SourcePath`         | -                                                                                           | -                  |                        |
 | `Exclude`            | -                                                                                           | `{$SourcePathX}`   |                        |
+| `BackupDownloadPath` | -                                                                                           | -                  |                        |
 | `RemoteRepo`         | [Borg Doku](https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls) | -                  |                        |
 | `ArchiveName`        | -                                                                                           | `{now:$Timestamp}` | `{now:$Timestamp}`     |
 | `EncryptionPwd`      | -                                                                                           | -                  |                        |
@@ -152,6 +153,13 @@ Es ist möglich, über die Variable `{$SourcePathX}` den Quellpfad zu übernehme
 > Über das _X_ in der Variable `{$SourcePathX}` lässt sich steuern welcher Pfad aus `SourcePath` genutzt werden soll. Die Angabe ist 0-basiert.
 > Wenn nun der 1. Eintrag genutzt werden soll, so muss das X mit einer "0" getauscht werden (`{$SourcePath0}`). Bei dem 3. Eintrag ist es dann "2" (`{$SourcePath2}`).
 > Diese Schreibweise muss auch dann genutzt werden, vorausgesetzt die Variable wird genutzt, wenn unter `SourcePath` nur **ein** Pfad angegeben ist.
+
+**`BackupDownloadPath`**<br>
+
+Der Pfad an dem das heruntergeladene Archiv als `.tar` gespeichert werden soll.
+
+> [!NOTE]
+> Der Benutzer benötigt lesende und Schreibende Rechte auf den entsprechenden Pfad.
 
 **`RemoteRepo`**<br>
 
@@ -202,7 +210,7 @@ Die einzelnen Teile des Befehls müssen mit einem Semikolon ";" getrennt werden.
   - `true`
   - `false`
 
-Ein Durchlauf <ins>ohne</ins> dabei etwas wirklich zu sichern. In der Abschließenden Ausgabe werden einem alle Dateien aufgelistet die betroffen *wären*.
+Ein Durchlauf <ins>ohne</ins> dabei etwas wirklich zu sichern. In der Abschließenden Ausgabe werden einem alle Dateien aufgelistet die betroffen _wären_.
 
 **`active`**<br>
 
@@ -303,7 +311,9 @@ Der benötigte Befehl ist in der Datei hinterlegt.
 
 **`--single_import=[Name der Sicherung]`**<br>
 
-Startet nur eine einzelne Sicherung. Sicherungen mit Leerzeichen im Namen müssen mit " umschlossen werden.
+Startet nur eine einzelne Sicherung.
+
+Sicherungen mit Leerzeichen im Namen müssen mit `"` umschlossen werden.
 
 - `--single_import="Software 1"` <= Knorke
 - `--single_import=Software 1` <= Nicht so Knorke
@@ -339,6 +349,16 @@ Listet alle konfigurierten Sicherungen auf.
 **`--random_arc_string`**<br>
 
 Erzeugt einen kurzen zufälligen hexadezimalen String und fügt den an das Ende des Archivnamens an.
+
+**`--backupDownload=[Name der Sicherung]`**<br>
+
+Lädt ein bestimmtes Archiv der gewählten Sicherung als `.tar`-Datei herunter (die Auswahl des Archivs erfolgt anschließend interaktiv).<br>
+Die Datei wird unter dem Pfad gespeichert, der in der `config.json` (unter `BackupDownloadPath`) angegeben ist.
+
+Sicherungen mit Leerzeichen im Namen müssen mit `"` umschlossen werden.
+
+- `--backupDownload="Software 1"` <= Knorke
+- `--backupDownload=Software 1` <= Nicht so Knorke
 
 # Monitoring
 
