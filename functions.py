@@ -591,7 +591,6 @@ def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
             LOG_ERROR(y, Logging_file, json_data)
         return returncode
     else:
-        print(proc)
         returnstats = proc.stdout.decode().split("\n")
 
         for y in returnstats:
@@ -606,15 +605,30 @@ def borg_get_all_backups(json_data, json_data_current_backup, Logging_file):
             json_data,
         )
         archivename = input()
-        LOG_INFO(
-            f'You took the archive "{archivename}" for the download.',
-            Logging_file,
-            json_data,
-        )
 
-        borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename)
+        if archivename.startswith("list:"):
+            archivename = archivename.replace("list:", "")
+            Args_process = ["borg", "list", f"{RemoteRepo}::{archivename}"]
+            proc = execute_write_command(Args_process, Logging_file, json_data)
+            returnstats = proc.stdout.decode().split("\n")
 
-        return 0
+            for y in returnstats:
+                if y == "":
+                    continue
+
+                LOG_INFO(y, Logging_file, json_data)
+        else:
+            LOG_INFO(
+                f'You took the archive "{archivename}" for the download.',
+                Logging_file,
+                json_data,
+            )
+
+            borg_export_tar(
+                json_data, json_data_current_backup, Logging_file, archivename
+            )
+
+            return 0
 
 
 def borg_export_tar(json_data, json_data_current_backup, Logging_file, archivename):
